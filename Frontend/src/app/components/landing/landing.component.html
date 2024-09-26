@@ -9,6 +9,12 @@
 			<mat-label>Outline form field</mat-label>
 			<input matInput placeholder="Outline form field">
 		</mat-form-field>
-<!--		<app-form-field label="Email" [control]="logInForm.controls.email"></app-form-field>-->
+		<app-form-field label="Email" [control]="logInForm.controls.email">
+			<ng-container errors>
+				@if (logInForm.controls.email.errors) {
+					<span>Email is required</span>
+				}
+			</ng-container>
+		</app-form-field>
 	</form>
 </div>

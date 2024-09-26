@@ -1,4 +1,13 @@
 <mat-form-field appearance="outline">
 	<mat-label>{{ label }}</mat-label>
-	<input matInput [placeholder]="label">
+	<input
+			matInput
+			[placeholder]="label"
+			[formControl]="control"
+	>
+	@if (control.invalid) {
+		<mat-error>
+			<ng-content select="[errors]"/>
+		</mat-error>
+	}
 </mat-form-field>
