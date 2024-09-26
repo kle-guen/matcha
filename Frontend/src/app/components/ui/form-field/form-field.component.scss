@@ -1,0 +1,5 @@
+:host {
+  .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mat-mdc-notch-piece {
+    display: none;
+  }
+}
