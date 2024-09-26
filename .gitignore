@@ -1,5 +1,6 @@
-./.idea
-./Backend/target
-./Frontend/node_modules
-./Frontend/dist
-./Frontend/.angular
+/.idea
+/Backend/target
+/Frontend/node_modules
+/Frontend/dist
+/Frontend/.angular
+/Frontend/Frontend.iml
