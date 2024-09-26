@@ -1,9 +1,12 @@
 import {Component, inject} from '@angular/core';
 import {LoginHeaderComponent} from "./landing-header/login-header.component";
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
-import {MatFormField, MatFormFieldModule, MatLabel} from "@angular/material/form-field";
-import {MatInput, MatInputModule} from "@angular/material/input";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {ButtonComponent} from "../../../ui/components/button/button.component";
+import {MatCardModule} from "@angular/material/card";
+import {RouterModule} from "@angular/router";
 
 @Component({
 	selector: 'app-login',
@@ -13,7 +16,10 @@ import {MatInput, MatInputModule} from "@angular/material/input";
 		ReactiveFormsModule,
 		MatFormFieldModule,
 		MatInputModule,
-		FormFieldComponent
+		FormFieldComponent,
+		ButtonComponent,
+		MatCardModule,
+		RouterModule
 	],
 	templateUrl: './login.component.html',
 	styleUrl: './login.component.scss'
@@ -23,8 +29,11 @@ export class LoginComponent {
 	private readonly formBuilder = inject(FormBuilder);
 
 	protected logInForm = this.formBuilder.group({
-		email: [null as string | null, Validators.required],
-		password: [null as string | null, Validators.required],
+		email: [null as string | null, [Validators.required, Validators.email]],
+		password: [null as string | null, [Validators.required, Validators.minLength(8)]],
 	});
 
+	public logIn(): void {
+		console.log('Logging in...');
+	}
 }

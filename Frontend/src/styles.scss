@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+  * Remove the notched outline border added by Tailwind preflight
+ */
 .mat-mdc-notch-piece.mdc-notched-outline__notch {
   border-right: none;
 }
