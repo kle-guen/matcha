@@ -1,24 +1,24 @@
 import {Component, inject} from '@angular/core';
-import {LandingHeaderComponent} from "./landing-header/landing-header.component";
+import {LoginHeaderComponent} from "./landing-header/login-header.component";
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {FormFieldComponent} from "../ui/form-field/form-field.component";
+import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
 import {MatFormField, MatFormFieldModule, MatLabel} from "@angular/material/form-field";
 import {MatInput, MatInputModule} from "@angular/material/input";
 
 @Component({
-	selector: 'app-landing',
+	selector: 'app-login',
 	standalone: true,
 	imports: [
-		LandingHeaderComponent,
+		LoginHeaderComponent,
 		ReactiveFormsModule,
 		MatFormFieldModule,
 		MatInputModule,
 		FormFieldComponent
 	],
-	templateUrl: './landing.component.html',
-	styleUrl: './landing.component.scss'
+	templateUrl: './login.component.html',
+	styleUrl: './login.component.scss'
 })
-export class LandingComponent {
+export class LoginComponent {
 
 	private readonly formBuilder = inject(FormBuilder);
 
