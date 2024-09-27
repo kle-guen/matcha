@@ -1,0 +1,6 @@
+:host {
+  :has(.mat-drawer-shown) {
+    overflow: hidden;
+    height: 100vh;
+  }
+}

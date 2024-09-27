@@ -1,9 +1,40 @@
-<button
-		mat-flat-button
-		color="primary"
-		[disabled]="disabled"
-		[type]="type"
-		(click)="onClick()"
->
-	{{ label }}
-</button>
+@if (type === 'primary') {
+	<button
+			mat-flat-button
+			color="primary"
+			[disabled]="disabled"
+			type="button"
+			(click)="onClick()"
+	>
+		@if (icon) {
+			<mat-icon>{{ icon }}</mat-icon>
+		}
+		{{ label }}
+	</button>
+} @else if (type === 'secondary') {
+	<button
+			mat-raised-button
+			color="primary"
+			[disabled]="disabled"
+			type="button"
+			(click)="onClick()"
+	>
+		@if (icon) {
+			<mat-icon>{{ icon }}</mat-icon>
+		}
+		{{ label }}
+	</button>
+} @else if (type === 'tertiary') {
+	<button
+			mat-button
+			color="primary"
+			[disabled]="disabled"
+			type="button"
+			(click)="onClick()"
+	>
+		@if (icon) {
+			<mat-icon>{{ icon }}</mat-icon>
+		}
+		{{ label }}
+	</button>
+}

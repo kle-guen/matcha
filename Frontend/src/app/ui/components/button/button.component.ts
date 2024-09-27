@@ -1,11 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {MatButton} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
 
 @Component({
   selector: 'app-button',
   standalone: true,
 	imports: [
-		MatButton
+		MatButton,
+		MatIconModule
 	],
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss'
@@ -30,7 +32,12 @@ export class ButtonComponent {
 	/**
 	 * The type of the button.
 	 */
-	@Input() type = '';
+	@Input() type: 'primary' | 'secondary' | 'tertiary' = 'primary';
+
+	/**
+	 * The icon of the button.
+	 */
+	@Input() icon: string | null = null;
 
 	/**
 	 * Handles the click event of the button.
