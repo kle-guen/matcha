@@ -3,6 +3,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/** tailwind aliases */
+.page-wrapper {
+  @apply w-full max-w-7xl mx-auto px-4 tablet:px-6 desktop:px-8;
+}
+
+.sticky-top {
+  @apply sticky top-0 z-10;
+}
+
 /**
   * Remove the notched outline border added by Tailwind preflight
  */

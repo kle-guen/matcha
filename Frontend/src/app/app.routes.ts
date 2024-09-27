@@ -2,12 +2,18 @@ import {Routes} from '@angular/router';
 import {PageLayoutComponent} from "./parts/page-layout/page-layout.component";
 import {HomeComponent} from "./pages/components/home/home.component";
 import {LoginComponent} from "./pages/components/login/login.component";
+import {RegisterComponent} from "./pages/components/register/register.component";
 
 export const routes: Routes = [
 	{
 		path: '',
 		component: LoginComponent,
 	},
+	{
+		path: 'register',
+		component: RegisterComponent,
+	},
+
 	{
 		path: 'home',
 		component: PageLayoutComponent,
