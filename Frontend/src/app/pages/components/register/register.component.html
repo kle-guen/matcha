@@ -1,0 +1,61 @@
+<app-register-header/>
+<div class="warning-box-wrapper w-full bg-amber-200">
+	<div class="page-wrapper">
+		<div class="flex warning-box  py-6 gap-2">
+			<span class="material-icons">
+				error
+			</span>
+			You need to complete your profile before you can access the platform.
+		</div>
+	</div>
+</div>
+<div class="page-wrapper">
+	<div class="register-container">
+		<mat-card class="flex-grow flex max-w-md gap-10 items-center">
+			<mat-card-header>
+				<mat-card-title>Choose a profile picture</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="flex text-center ">
+				<span class="material-icons text-iconXl text-gray-300">
+					account_circle
+				</span>
+				<app-image-uploader class="flex w-full"/>
+			</mat-card-content>
+		</mat-card>
+	</div>
+	<div class="register-container">
+	<mat-card class="flex-grow flex  gap-10 items-center">
+		<mat-card-header>
+			<mat-card-title>Choose more pictures</mat-card-title>
+		</mat-card-header>
+		<mat-card-content class="flex w-full text-center ">
+			<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4">
+				<div class="upload-image flex flex-col">
+					<span class="material-icons text-gray-300 text-iconXl">
+						add_photo_alternate
+					</span>
+					<app-image-uploader class="flex"/>
+				</div>
+				<div class="upload-image flex flex-col">
+					<span class="material-icons text-gray-300 text-iconXl">
+						add_photo_alternate
+					</span>
+					<app-image-uploader class="flex"/>
+				</div>
+				<div class="upload-image flex flex-col">
+					<span class="material-icons text-gray-300 text-iconXl">
+						add_photo_alternate
+					</span>
+					<app-image-uploader class="flex"/>
+				</div>
+				<div class="upload-image flex flex-col">
+					<span class="material-icons text-gray-300 text-iconXl">
+						add_photo_alternate
+					</span>
+					<app-image-uploader class="flex"/>
+				</div>
+			</div>
+		</mat-card-content>
+	</mat-card>
+	</div>
+</div>
