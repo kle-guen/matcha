@@ -34,6 +34,9 @@ export class ButtonComponent {
 	 */
 	@Input() type: 'primary' | 'secondary' | 'tertiary' = 'primary';
 
+	/**
+	 * The icon of the button.
+	 */
 	@Input() icon: string | null = null;
 
 	/**

@@ -5,7 +5,7 @@
 
 /** tailwind aliases */
 .page-wrapper {
-  @apply w-full max-w-7xl mx-auto px-4 tablet:px-6 desktop:px-8;
+  @apply w-full h-full max-w-7xl mx-auto px-4 tablet:px-6 desktop:px-8
 }
 
 .sticky-top {
@@ -22,7 +22,4 @@
 .mat-drawer {
   border-bottom-right-radius: unset !important;
   border-top-right-radius: unset !important;
-}
-.page-wrapper {
-  @apply w-full h-full max-w-7xl mx-auto px-4 tablet:px-6 desktop:px-8
 }
