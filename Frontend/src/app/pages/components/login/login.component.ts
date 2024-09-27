@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {LoginHeaderComponent} from "./landing-header/login-header.component";
+import {LoginHeaderComponent} from "./login-header/login-header.component";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -26,13 +26,22 @@ import {RouterModule} from "@angular/router";
 })
 export class LoginComponent {
 
+	/**
+	 * The form builder.
+	 */
 	private readonly formBuilder = inject(FormBuilder);
 
+	/**
+	 * The login form.
+	 */
 	protected logInForm = this.formBuilder.group({
 		email: [null as string | null, [Validators.required, Validators.email]],
 		password: [null as string | null, [Validators.required, Validators.minLength(8)]],
 	});
 
+	/**
+	 * Logs the user in.
+	 */
 	public logIn(): void {
 		console.log('Logging in...');
 	}

@@ -2,7 +2,7 @@ import {Routes} from '@angular/router';
 import {PageLayoutComponent} from "./parts/page-layout/page-layout.component";
 import {HomeComponent} from "./pages/components/home/home.component";
 import {LoginComponent} from "./pages/components/login/login.component";
-import {RegisterComponent} from "./pages/components/register/register.component";
+import {CompleteProfileComponent} from "./pages/components/complete-profile/complete-profile.component";
 
 export const routes: Routes = [
 	{
@@ -11,7 +11,7 @@ export const routes: Routes = [
 	},
 	{
 		path: 'register',
-		component: RegisterComponent,
+		component: CompleteProfileComponent,
 	},
 
 	{

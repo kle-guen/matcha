@@ -1,0 +1,115 @@
+<app-complete-profile-header/>
+<div class="warning-box-wrapper w-full bg-amber-200">
+	<div class="page-wrapper">
+		<div class="flex warning-box  py-6 gap-2">
+			<span class="material-icons">
+				error
+			</span>
+			You need to complete your profile before you can access the platform.
+		</div>
+	</div>
+</div>
+<div class="page-wrapper">
+	<form [formGroup]="completeProfileForm">
+		<div class="complete-profile-container">
+			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
+				<mat-card-header>
+					<mat-card-title>Choose a profile picture</mat-card-title>
+				</mat-card-header>
+				<mat-card-content class="flex text-center ">
+					<span class="material-icons text-iconXl text-gray-300">
+						account_circle
+					</span>
+					<app-image-uploader class="flex w-full"/>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="complete-profile-container">
+			<mat-card class="flex-grow flex  gap-10 items-center">
+				<mat-card-header>
+					<mat-card-title>Choose more pictures</mat-card-title>
+				</mat-card-header>
+				<mat-card-content class="flex w-full text-center ">
+					<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4">
+						<div class="upload-image flex flex-col">
+							<span class="material-icons text-gray-300 text-iconXl">
+								add_photo_alternate
+							</span>
+							<app-image-uploader class="flex"/>
+						</div>
+						<div class="upload-image flex flex-col">
+							<span class="material-icons text-gray-300 text-iconXl">
+								add_photo_alternate
+							</span>
+							<app-image-uploader class="flex"/>
+						</div>
+						<div class="upload-image flex flex-col">
+							<span class="material-icons text-gray-300 text-iconXl">
+								add_photo_alternate
+							</span>
+							<app-image-uploader class="flex"/>
+						</div>
+						<div class="upload-image flex flex-col">
+							<span class="material-icons text-gray-300 text-iconXl">
+								add_photo_alternate
+							</span>
+							<app-image-uploader class="flex"/>
+						</div>
+					</div>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="complete-profile-container">
+			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
+				<mat-card-header>
+					<mat-card-title>Date of birth</mat-card-title>
+				</mat-card-header>
+				<mat-card-content class="flex w-full text-center ">
+					<app-date-picker/>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="complete-profile-container">
+			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
+				<mat-card-header>
+					<mat-card-title>Gender and sexual orientation</mat-card-title>
+				</mat-card-header>
+				<mat-card-content class="w-full">
+					<div class="flex flex-col mb-5">
+						<span class="text-left text-sm">Select your gender: </span>
+						<mat-radio-group class="flex justify-center" aria-label="Select an option">
+							<mat-radio-button value="1">Male</mat-radio-button>
+							<mat-radio-button value="2">Female</mat-radio-button>
+						</mat-radio-group>
+					</div>
+
+					<div class="flex flex-wrap flex-col">
+						<span class="text-left text-sm">Select your sexual orientation: </span>
+						<mat-radio-group class="flex flex-wrap justify-center" aria-label="Select an option">
+							<mat-radio-button value="1">Straight</mat-radio-button>
+							<mat-radio-button value="2">Homosexual</mat-radio-button>
+							<mat-radio-button value="2">Bisexual</mat-radio-button>
+						</mat-radio-group>
+					</div>
+
+				</mat-card-content>
+			</mat-card>
+		</div>
+
+		<div class="complete-profile-container">
+			<mat-card class="flex-grow flex max-w-lg gap-10 items-center">
+				<mat-card-header>
+					<mat-card-title>Add a description to your profile</mat-card-title>
+				</mat-card-header>
+				<mat-card-content class="w-full">
+					<app-form-field
+							type="textarea"
+							class="w-full flex"
+							[control]="completeProfileForm.controls.description"
+							label="Tell us more about yourself..."
+					/>
+				</mat-card-content>
+			</mat-card>
+		</div>
+	</form>
+</div>

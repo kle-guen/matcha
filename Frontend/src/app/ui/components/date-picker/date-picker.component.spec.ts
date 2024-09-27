@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegisterHeaderComponent } from './register-header.component';
+import { DatePickerComponent } from './date-picker.component';
 
-describe('RegisterHeaderComponent', () => {
-  let component: RegisterHeaderComponent;
-  let fixture: ComponentFixture<RegisterHeaderComponent>;
+describe('DatePickerComponent', () => {
+  let component: DatePickerComponent;
+  let fixture: ComponentFixture<DatePickerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegisterHeaderComponent]
+      imports: [DatePickerComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RegisterHeaderComponent);
+    fixture = TestBed.createComponent(DatePickerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
