@@ -7,15 +7,9 @@ module.exports = {
 	theme: {
 		extend: {
 			screens: {
+				'mobile': {'max': '767px'},
 				'tablet': '768px',
-				// => @media (min-width: 768px) { ... }
-
 				'desktop': '1280px',
-				// => @media (min-width: 1024px) { ... }
-				//
-				// 'mobile': '600px',
-				// 'tablet': '900px',
-				// 'laptop': '1024px'
 			}
 		},
 		fontSize: {

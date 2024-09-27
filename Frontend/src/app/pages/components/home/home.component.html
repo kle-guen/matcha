@@ -1,12 +1,84 @@
-<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4 gap-4 page-wrapper">
-	<app-user-card></app-user-card>
-	<app-user-card></app-user-card>
-	<app-user-card></app-user-card>
-	<app-user-card></app-user-card>
-	<app-user-card></app-user-card>
-	<app-user-card></app-user-card>
-	<app-user-card></app-user-card>
-	<app-user-card></app-user-card>
-	<app-user-card></app-user-card>
-	<app-user-card></app-user-card>
-</div>
+<mat-drawer-container class="h-full">
+	<mat-drawer #drawer class="mobile:w-full" mode="over">
+		<div class="p-8 flex flex-col justify-center items-center w-full gap-4">
+			<div class="flex justify-between items-center w-full">
+				<mat-label>Age:</mat-label>
+				<mat-slider min="18" max="99" discrete color="primary">
+					<input
+							[value]="researchFormGroup.controls.ageMin.value"
+							[formControl]="researchFormGroup.controls.ageMin"
+							matSliderStartThumb
+					>
+					<input
+							[value]="researchFormGroup.controls.ageMax.value"
+							[formControl]="researchFormGroup.controls.ageMax"
+							matSliderEndThumb
+					>
+				</mat-slider>
+			</div>
+			<div class="flex justify-between items-center  w-full">
+				<mat-label>Fame rating:</mat-label>
+				<mat-slider min="0" max="10" discrete>
+					<input
+							[value]="researchFormGroup.controls.fameRatingMin.value"
+							[formControl]="researchFormGroup.controls.fameRatingMin"
+							matSliderThumb
+					>
+				</mat-slider>
+			</div>
+			<div class="flex justify-between items-center  w-full">
+				<mat-label>Distance:</mat-label>
+				<mat-slider min="1" max="1000" discrete>
+					<input
+							[value]="researchFormGroup.controls.distanceMax.value"
+							[formControl]="researchFormGroup.controls.distanceMax"
+							matSliderThumb
+					>
+				</mat-slider>
+			</div>
+			<app-form-field
+					class="w-full"
+					[label]="'Interests'"
+					[control]="researchFormGroup.controls.interests"
+					[options]="interests"
+					[multipleSelection]="true"
+			/>
+			<div class="flex justify-between w-full">
+				<app-button
+						label="Reset filters"
+						[disabled]="researchFormGroup.invalid"
+						type="secondary"
+						(clicked)="submit()"
+				/>
+				<app-button
+						label="Search"
+						[disabled]="researchFormGroup.invalid"
+						(clicked)="submit()"
+				/>
+			</div>
+		</div>
+
+	</mat-drawer>
+
+	<div class="page-wrapper">
+		<div class="example-sidenav-content">
+			<button type="button" mat-button (click)="drawer.toggle()">
+				Toggle sidenav
+			</button>
+		</div>
+
+		<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-4">
+			<app-user-card></app-user-card>
+			<app-user-card></app-user-card>
+			<app-user-card></app-user-card>
+			<app-user-card></app-user-card>
+			<app-user-card></app-user-card>
+			<app-user-card></app-user-card>
+			<app-user-card></app-user-card>
+			<app-user-card></app-user-card>
+			<app-user-card></app-user-card>
+			<app-user-card></app-user-card>
+		</div>
+	</div>
+
+</mat-drawer-container>

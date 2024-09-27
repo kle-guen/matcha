@@ -1,6 +1,8 @@
-<div class="page-layout flex flex-col flex-grow">
+<div class="page-layout flex flex-col flex-grow h-screen">
 	<div class="header sticky-top">
-		<app-main-header class="flex-grow"></app-main-header>
+		<app-main-header class="w-full"/>
 	</div>
-	<router-outlet/>
+	<div class="h-full">
+		<router-outlet/>
+	</div>
 </div>
