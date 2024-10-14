@@ -1,4 +1,7 @@
-export class UserResultDto {
+/**
+ * The user dto class.
+ */
+export class UserDto {
 	/**
 	 * The id of the user.
 	 */

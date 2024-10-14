@@ -1,20 +1,26 @@
 import {ResearchUsersDto} from "../dto/send/research-users.dto";
-import {UserResultDto} from "../dto/receive/user-result.dto";
-import {AbstractHttpService} from "./abstract-http.service";
+import {UserDto} from "../dto/receive/user.dto";
 import {HttpClient} from "@angular/common/http";
 import {Observable, of} from "rxjs";
-import {Injectable} from "@angular/core";
+import {inject, Injectable} from "@angular/core";
+import {UserCompleteDto} from "../dto/receive/user-complete.dto";
 
 @Injectable({
 	providedIn: "root"
 })
-export class UsersHttpService extends AbstractHttpService {
+export class UsersHttpService {
 
-	constructor(http: HttpClient) {
-		super(http);
-	}
+	/**
+	 * The http client.
+	 * @private
+	 */
+	private readonly http = inject(HttpClient)
 
-	researchUsers(researchUsers: ResearchUsersDto): Observable<UserResultDto[]> {
+	/**
+	 * Research users.
+	 * @param researchUsers
+	 */
+	researchUsers(researchUsers: ResearchUsersDto): Observable<UserDto[]> {
 		return of([
 			{
 				id: 1,
@@ -51,16 +57,21 @@ export class UsersHttpService extends AbstractHttpService {
 		]);
 	}
 
-	getUserById(id: number): Observable<UserResultDto> {
-		return of(
-			{
-				id: 1,
-				name: 'John Doe',
-				age: '25',
-				nickname: 'johndoe',
-				description: 'Hello, I am John Doe.',
-				sexe: 'H'
-			});
+	/**
+	 * Get user by id.
+	 * @param id
+	 */
+	getUserById(id: number): Observable<UserCompleteDto> {
+		return of({
+			id: 1,
+			name: 'John Doe',
+			age: '25',
+			nickname: 'johndoe',
+			description: 'Hello, I am John Doe.',
+			sexe: 'H',
+			city: "",
+			interests: [],
+			sexuality: "",
+		});
 	}
-
 }

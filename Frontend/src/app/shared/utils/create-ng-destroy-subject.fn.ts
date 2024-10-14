@@ -1,6 +1,9 @@
 import {DestroyRef, inject} from "@angular/core";
 import {Observable, Subject} from "rxjs";
 
+/**
+ * Create a ng destroy subject.
+ */
 export function createNgDestroySubject(): Observable<boolean> {
 	const subject: Subject<boolean> = new Subject<boolean>();
 

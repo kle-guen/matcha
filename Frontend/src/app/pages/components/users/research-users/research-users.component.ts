@@ -1,22 +1,23 @@
 import {Component, inject, OnInit, ViewEncapsulation} from '@angular/core';
-import {UserCardComponent} from "../../../ui/components/user-card/user-card.component";
+import {UserCardComponent} from "../../../../ui/components/user-card/user-card.component";
 import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from "@angular/material/slider";
-import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
+import {FormFieldComponent} from "../../../../ui/components/form-field/form-field.component";
 import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
-import {ButtonComponent} from "../../../ui/components/button/button.component";
+import {ButtonComponent} from "../../../../ui/components/button/button.component";
 import {MatLabel} from "@angular/material/form-field";
 import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatButton} from "@angular/material/button";
-import {UserResultDto} from "../../../data/dto/receive/user-result.dto";
-import {ResearchUsersDto} from "../../../data/dto/send/research-users.dto";
+import {UserDto} from "../../../../data/dto/receive/user.dto";
+import {ResearchUsersDto} from "../../../../data/dto/send/research-users.dto";
 import {takeUntil} from "rxjs";
-import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
-import {UsersHttpService} from "../../../data/http/users-http.service";
+import {createNgDestroySubject} from "../../../../shared/utils/create-ng-destroy-subject.fn";
+import {UsersHttpService} from "../../../../data/http/users-http.service";
 import {ActivatedRoute} from "@angular/router";
-import {HttpClientModule} from "@angular/common/http";
+import {MatIcon} from "@angular/material/icon";
+import {ReferentielDto} from "../../../../data/dto/receive/referentiel-dto";
 
 @Component({
-	selector: 'app-home',
+	selector: 'app-research-users',
 	standalone: true,
 	imports: [
 		UserCardComponent,
@@ -30,22 +31,41 @@ import {HttpClientModule} from "@angular/common/http";
 		MatDrawerContainer,
 		MatButton,
 		MatDrawer,
+		MatIcon,
 	],
-	templateUrl: './home.component.html',
-	styleUrl: './home.component.scss',
+	templateUrl: './research-users.component.html',
+	styleUrl: './research-users.component.scss',
 	encapsulation: ViewEncapsulation.None
 })
-export class HomeComponent implements OnInit {
+export class ResearchUsersComponent implements OnInit {
 
+	/**
+	 * The ng destroy subject.
+	 * @private
+	 */
 	private readonly ngDestroy$ = createNgDestroySubject();
 
-	constructor(private readonly usersHttpService: UsersHttpService) {
-	}
+	/**
+	 * The users http service.
+	 * @private
+	 */
+	private readonly usersHttpService = inject(UsersHttpService);
 
+	/**
+	 * The activated route.
+	 * @private
+	 */
 	private readonly activatedRoute = inject(ActivatedRoute);
 
+	/**
+	 * The form builder.
+	 * @private
+	 */
 	private readonly formBuilder = inject(FormBuilder);
 
+	/**
+	 * The research form group.
+	 */
 	researchFormGroup = this.formBuilder.group({
 		ageMin: [18],
 		ageMax: [99],
@@ -54,9 +74,19 @@ export class HomeComponent implements OnInit {
 		interests: [[] as string[]],
 	});
 
-	interests: { value: any, label: string }[] = [];
-	users: UserResultDto[] = [];
+	/**
+	 * The interests.
+	 */
+	interests: ReferentielDto[] = [];
 
+	/**
+	 * The users.
+	 */
+	users: UserDto[] = [];
+
+	/**
+	 * The on init.
+	 */
 	ngOnInit() {
 		this.interests = [
 			{value: 'sports', label: 'Sports'},
@@ -72,10 +102,17 @@ export class HomeComponent implements OnInit {
 		this.users = this.activatedRoute.snapshot.data['users'];
 	}
 
+	/**
+	 * The submit method.
+	 */
 	submit() {
 		this.researchUsers(this.researchFormGroup.value as ResearchUsersDto);
 	}
 
+	/**
+	 * The research users method.
+	 * @param researchUsers
+	 */
 	researchUsers(researchUsers: ResearchUsersDto) {
 		this.usersHttpService.researchUsers(researchUsers).pipe(
 			takeUntil(this.ngDestroy$)
