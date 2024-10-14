@@ -1,0 +1,30 @@
+<div class="page-wrapper" xmlns="http://www.w3.org/1999/html">
+	<div class="flex">
+		<img width='500'
+			 height='500'
+			 src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+			 alt="Photo of a Shiba Inu">
+		<div>
+			<h2>{{ user.name + " " + user.age }}</h2>
+			<br/>
+			<mat-chip-set aria-label="">
+			@for (interest of user.interests; track interest.value) {
+				<mat-chip>{{interest.label}}</mat-chip>
+			}
+			</mat-chip-set>
+			<p>{{ user.description }}</p>
+			<app-button
+				label="Block"
+				icon="block"
+			/>
+			<app-button
+					label="Chat"
+					icon="chat"
+			/>
+			<app-button
+					label="Like"
+					icon="favorite"
+			/>
+		</div>
+	</div>
+</div>
