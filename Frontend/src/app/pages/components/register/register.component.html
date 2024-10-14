@@ -1,61 +1,84 @@
-<app-register-header/>
-<div class="warning-box-wrapper w-full bg-amber-200">
-	<div class="page-wrapper">
-		<div class="flex warning-box  py-6 gap-2">
-			<span class="material-icons">
-				error
-			</span>
-			You need to complete your profile before you can access the platform.
-		</div>
-	</div>
-</div>
-<div class="page-wrapper">
-	<div class="register-container">
-		<mat-card class="flex-grow flex max-w-md gap-10 items-center">
-			<mat-card-header>
-				<mat-card-title>Choose a profile picture</mat-card-title>
-			</mat-card-header>
-			<mat-card-content class="flex text-center ">
-				<span class="material-icons text-iconXl text-gray-300">
-					account_circle
-				</span>
-				<app-image-uploader class="flex w-full"/>
-			</mat-card-content>
-		</mat-card>
-	</div>
-	<div class="register-container">
-	<mat-card class="flex-grow flex  gap-10 items-center">
+<app-login-header/>
+<div class="page-wrapper flex justify-center flex-grow">
+	<mat-card class="flex-grow flex max-w-md gap-10">
 		<mat-card-header>
-			<mat-card-title>Choose more pictures</mat-card-title>
+			<mat-card-title>Register</mat-card-title>
+			<mat-card-subtitle>
+				You already have an account?
+				<a routerLink="/" class="text-blue-600 hover:text-blue-400">
+					Login
+				</a>
+			</mat-card-subtitle>
 		</mat-card-header>
-		<mat-card-content class="flex w-full text-center ">
-			<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4">
-				<div class="upload-image flex flex-col">
-					<span class="material-icons text-gray-300 text-iconXl">
-						add_photo_alternate
-					</span>
-					<app-image-uploader class="flex"/>
-				</div>
-				<div class="upload-image flex flex-col">
-					<span class="material-icons text-gray-300 text-iconXl">
-						add_photo_alternate
-					</span>
-					<app-image-uploader class="flex"/>
-				</div>
-				<div class="upload-image flex flex-col">
-					<span class="material-icons text-gray-300 text-iconXl">
-						add_photo_alternate
-					</span>
-					<app-image-uploader class="flex"/>
-				</div>
-				<div class="upload-image flex flex-col">
-					<span class="material-icons text-gray-300 text-iconXl">
-						add_photo_alternate
-					</span>
-					<app-image-uploader class="flex"/>
-				</div>
-			</div>
+		<mat-card-content>
+			<form [formGroup]="registerForm" class="flex items-center flex-col gap-3">
+
+				<app-form-field class="flex flex-grow w-full" label="Name" [control]="registerForm.controls.name">
+					<ng-container errors>
+						@if (registerForm.controls.name.hasError('required')) {
+							<span>Name is required</span>
+						}
+					</ng-container>
+				</app-form-field>
+				<app-form-field class="flex flex-grow w-full" label="Firstname"
+								[control]="registerForm.controls.firstName">
+					<ng-container errors>
+						@if (registerForm.controls.firstName.hasError('required')) {
+							<span>Firstname is required</span>
+						}
+					</ng-container>
+				</app-form-field>
+
+				<app-form-field class="flex flex-grow w-full" label="Username"
+								[control]="registerForm.controls.username">
+					<ng-container errors>
+						@if (registerForm.controls.username.hasError('required')) {
+							<span>Username is required</span>
+						}
+					</ng-container>
+				</app-form-field>
+				<app-form-field class="flex flex-grow w-full" label="Email" [control]="registerForm.controls.email">
+					<ng-container errors>
+						@if (registerForm.controls.email.hasError('required')) {
+							<span>Email is required</span>
+						} @else if (registerForm.controls.email.hasError('email')) {
+							<span>Email is invalid</span>
+						}
+					</ng-container>
+				</app-form-field>
+
+				<app-form-field class="flex flex-grow w-full" label="Password"
+								[control]="registerForm.controls.password">
+					<ng-container errors>
+						@if (registerForm.controls.password.hasError('required')) {
+							<span>Password is required</span>
+						} @else if (registerForm.controls.password.hasError('minlength')) {
+							<span>Password must be at least 8 characters</span>
+						} @else if (registerForm.controls.password.hasError('invalid')) {
+							<span>Password is invalid</span>
+						}
+					</ng-container>
+				</app-form-field>
+
+				<app-form-field class="flex flex-grow w-full" label="Confirm password"
+								[control]="registerForm.controls.confirmPassword">
+					<ng-container errors>
+						@if (registerForm.controls.confirmPassword.hasError('required')) {
+							<span>Password is required</span>
+						} @else if (registerForm.controls.confirmPassword.hasError('minlength')) {
+							<span>Password must be at least 8 characters</span>
+						} @else if (registerForm.errors?.['mismatch']) {
+							<span>Passwords do not match</span>
+						}
+					</ng-container>
+				</app-form-field>
+				<app-button
+						label="Register"
+						[disabled]="registerForm.invalid"
+						(clicked)="register()"
+
+				/>
+			</form>
 		</mat-card-content>
 	</mat-card>
-	</div>
 </div>

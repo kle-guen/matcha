@@ -111,5 +111,33 @@
 				</mat-card-content>
 			</mat-card>
 		</div>
+
+		<div class="complete-profile-container">
+			<mat-card class="flex-grow flex max-w-lg gap-10 items-center">
+				<mat-card-header>
+					<mat-card-title>Choose your interests</mat-card-title>
+				</mat-card-header>
+				<mat-card-content class="w-full">
+					<app-form-field
+							class="w-full"
+							[label]="'Interests'"
+							[control]="completeProfileForm.controls.interests"
+							[options]="interests"
+							[multipleSelection]="true"
+					/>
+				</mat-card-content>
+			</mat-card>
+		</div>
+
+		<div class="complete-profile-container">
+			<mat-card class="flex-grow flex max-w-lg gap-10 items-center">
+				<mat-card-header>
+					<mat-card-title>Choose your interests</mat-card-title>
+				</mat-card-header>
+				<mat-card-content class="w-full">
+					<google-map></google-map>
+				</mat-card-content>
+			</mat-card>
+		</div>
 	</form>
 </div>
