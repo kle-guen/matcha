@@ -8,6 +8,12 @@ import {MatLabel} from "@angular/material/form-field";
 import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatButton} from "@angular/material/button";
 import {UserResultDto} from "../../../data/dto/receive/user-result.dto";
+import {ResearchUsersDto} from "../../../data/dto/send/research-users.dto";
+import {takeUntil} from "rxjs";
+import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
+import {UsersHttpService} from "../../../data/http/users-http.service";
+import {ActivatedRoute} from "@angular/router";
+import {HttpClientModule} from "@angular/common/http";
 
 @Component({
 	selector: 'app-home',
@@ -23,13 +29,20 @@ import {UserResultDto} from "../../../data/dto/receive/user-result.dto";
 		MatLabel,
 		MatDrawerContainer,
 		MatButton,
-		MatDrawer
+		MatDrawer,
 	],
 	templateUrl: './home.component.html',
 	styleUrl: './home.component.scss',
 	encapsulation: ViewEncapsulation.None
 })
 export class HomeComponent implements OnInit {
+
+	private readonly ngDestroy$ = createNgDestroySubject();
+
+	constructor(private readonly usersHttpService: UsersHttpService) {
+	}
+
+	private readonly activatedRoute = inject(ActivatedRoute);
 
 	private readonly formBuilder = inject(FormBuilder);
 
@@ -56,44 +69,16 @@ export class HomeComponent implements OnInit {
 			{value: 'photography', label: 'Photography'},
 			{value: 'fashion', label: 'Fashion'}
 		]
-
-		this.users = [
-			{
-				id: 1,
-				name: 'John Doe',
-				age: '25',
-				nickname: 'johndoe',
-				description: 'Hello, I am John Doe.',
-				sexe: 'H'
-			},
-			{
-				id: 2,
-				name: 'Jane Doe',
-				age: '22',
-				nickname: 'janedoe',
-				description: 'Hello, I am Jane Doe.',
-				sexe: 'F'
-			},
-			{
-				id: 3,
-				name: 'Alice',
-				age: '21',
-				nickname: 'alice',
-				description: 'Hello, I am Alice.',
-				sexe: 'F'
-			},
-			{
-				id: 4,
-				name: 'Bob',
-				age: '24',
-				nickname: 'bob',
-				description: 'Hello, I am Bob.\nI like sports.\nI like music.\nI like movies.\nI like gaming.\nI like cooking.\nI like reading.\nI like traveling.\nI like photography.\nI like fashion.Hello, I am Bob.\nI like sports.\nI like music.\nI like movies.\nI like gaming.\nI like cooking.\nI like reading.\nI like traveling.\nI like photography.\nI like fashion.',
-				sexe: 'H'
-			}
-			]
+		this.users = this.activatedRoute.snapshot.data['users'];
 	}
 
 	submit() {
+		this.researchUsers(this.researchFormGroup.value as ResearchUsersDto);
+	}
 
+	researchUsers(researchUsers: ResearchUsersDto) {
+		this.usersHttpService.researchUsers(researchUsers).pipe(
+			takeUntil(this.ngDestroy$)
+		).subscribe(res => this.users = res);
 	}
 }

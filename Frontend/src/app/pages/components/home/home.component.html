@@ -61,11 +61,14 @@
 	</mat-drawer>
 
 	<div class="page-wrapper">
-		<div class="example-sidenav-content">
-			<button type="button" mat-button (click)="drawer.toggle()">
-				Toggle sidenav
-			</button>
-		</div>
+		<span class="material-symbols-outlined" (click)="drawer.toggle()">
+			tune
+		</span>
+		<!--<div class="example-sidenav-content">-->
+		<!--	<button type="button" mat-button (click)="drawer.toggle()">-->
+		<!--		Toggle sidenav-->
+		<!--	</button>-->
+		<!--</div>-->
 
 		<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-4">
 			@for(user of users; track user.id) {
