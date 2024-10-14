@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegisterHeaderComponent } from './register-header.component';
+import { CompleteProfileComponent } from './complete-profile.component';
 
-describe('RegisterHeaderComponent', () => {
-  let component: RegisterHeaderComponent;
-  let fixture: ComponentFixture<RegisterHeaderComponent>;
+describe('RegisterComponent', () => {
+  let component: CompleteProfileComponent;
+  let fixture: ComponentFixture<CompleteProfileComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegisterHeaderComponent]
+      imports: [CompleteProfileComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(RegisterHeaderComponent);
+    fixture = TestBed.createComponent(CompleteProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
