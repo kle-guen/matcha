@@ -8,8 +8,10 @@ import {provideNativeDateAdapter} from "@angular/material/core";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatFormField} from "@angular/material/form-field";
 import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
-import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {GoogleMapsModule} from "@angular/google-maps";
+import {ButtonComponent} from "../../../ui/components/button/button.component";
+import {AdressPickerComponent} from "../../../ui/components/adress-picker/adress-picker.component";
 
 @Component({
 	selector: 'app-complete-profile',
@@ -29,7 +31,9 @@ import {GoogleMapsModule} from "@angular/google-maps";
 		MatFormField,
 		FormFieldComponent,
 		ReactiveFormsModule,
-		GoogleMapsModule
+		GoogleMapsModule,
+		ButtonComponent,
+		AdressPickerComponent
 	],
 	templateUrl: './complete-profile.component.html',
 	styleUrl: './complete-profile.component.scss'
@@ -45,20 +49,23 @@ export class CompleteProfileComponent implements OnInit {
 	 * The complete-profile form.
 	 */
 	public completeProfileForm = this.formBuilder.group({
-		profilePicture: [null as string | null],
-		firstAdditionalPicture: [null as string | null],
-		secondAdditionalPicture: [null as string | null],
-		thirdAdditionalPicture: [null as string | null],
-		fourthAdditionalPicture: [null as string | null],
-		birthDate: [null as Date | null],
-		gender: [null as string | null],
-		sexualOrientation: [null as string | null],
-		description: [null as string | null],
-		interests: [null as string[] | null as string | null],
-		localisation: [null as string | null],
+		profilePicture: [null as string | null, Validators.required],
+		firstAdditionalPicture: [null as string | null, Validators.required],
+		secondAdditionalPicture: [null as string | null, Validators.required],
+		thirdAdditionalPicture: [null as string | null, Validators.required],
+		fourthAdditionalPicture: [null as string | null, Validators.required],
+		birthDate: [null as Date | null, Validators.required],
+		gender: [null as string | null, Validators.required],
+		sexualOrientation: [null as string | null, Validators.required],
+		description: [null as string | null, Validators.required],
+		interests: [null as string[] | null as string | null, Validators.required],
+		localisation: [null as string | null, Validators.required],
 	});
 
-	interests: { value: any, label: string }[] = [];
+	/**
+	 * The list of interests.
+	 */
+	public interests: { value: any, label: string }[] = [];
 
 	ngOnInit() {
 		this.interests = [

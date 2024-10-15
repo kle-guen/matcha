@@ -1,0 +1,12 @@
+:host {
+  .update-profile-container {
+    position: relative;
+    justify-content: center;
+    @apply desktop:py-12 py-8 flex;
+    &:after {
+      content: '';
+      height: 1px;
+      @apply w-full bg-gray-200 absolute bottom-0;
+    }
+  }
+}
