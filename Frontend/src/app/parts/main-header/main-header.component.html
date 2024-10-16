@@ -1,18 +1,50 @@
 <header class="w-full flex-grow bg-gray-800 text-white sticky-top">
 	<div class="page-wrapper">
-		<div class="flex justify-between items-center h-16">
+		<div class="flex justify-end items-center h-16 gap-10">
 			<!-- Logo -->
-			<div class="flex-shrink-0">
-				<a href="#" class="text-xl font-bold">Matcha</a>
+			<div class="flex-grow">
+				<a href="/users" class="text-xl font-bold">Matcha</a>
 			</div>
 
 			<!-- Navigation Links -->
 			<nav class="hidden tablet:flex space-x-4">
-				<a href="#" class="text-gray-300 hover:text-white">Home</a>
-				<a href="#" class="text-gray-300 hover:text-white">About</a>
-				<a href="#" class="text-gray-300 hover:text-white">Services</a>
-				<a href="#" class="text-gray-300 hover:text-white">Contact</a>
+				<a href="/chat" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+					@if (messages > 0) {
+						<mat-icon aria-hidden="false" [matBadge]="messages">question_answer</mat-icon>
+					} @else {
+						<span class="material-icons-outlined">question_answer</span>
+					}
+					Chat
+				</a>
+				<a href="#" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+					@if (notifications > 0) {
+						<mat-icon aria-hidden="false" [matBadge]="notifications">notifications</mat-icon>
+					} @else {
+						<mat-icon aria-hidden="false">notifications_none</mat-icon>
+					}
+					Notifications
+				</a>
+				<a href="#" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+					<span class="material-icons-outlined">history</span>
+					History
+				</a>
+				<a href="/update-profile" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+					<span class="material-icons-outlined">manage_accounts</span>
+					Profile
+				</a>
+
+
 			</nav>
+
+			<!-- Disconnect button-->
+			<div class="flex flex-row items-center justify-center">
+				<a routerLink="/" class="flex text-red-500 text-md">
+					<span class="text-md material-icons">
+						logout
+					</span>
+					Logout
+				</a>
+			</div>
 
 			<!-- Mobile Menu Button -->
 			<div class="tablet:hidden">

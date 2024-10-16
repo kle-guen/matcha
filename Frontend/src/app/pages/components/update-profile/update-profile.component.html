@@ -1,41 +1,73 @@
-<app-complete-profile-header/>
-<div class="warning-box-wrapper w-full bg-amber-200">
-	<div class="page-wrapper">
-		<div class="flex warning-box  py-6 gap-2">
-			<span class="material-icons">
-				error
-			</span>
-			You need to complete your profile before you can access the platform.
-		</div>
-	</div>
-</div>
 <div class="page-wrapper">
-	<form [formGroup]="completeProfileForm">
-		<div class="complete-profile-container">
-			<mat-card class="flex-grow flex gap-10 max-w-xl items-center">
+	<form [formGroup]="updateProfileForm">
+		<div class="update-profile-container">
+			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
+				<mat-card-header>
+					<mat-card-title class="items-center">
+						<div class="flex items-center gap-2">
+							<span class="material-icons-outlined">
+								manage_accounts
+							</span>
+							Modify your personal information
+						</div>
+					</mat-card-title>
+				</mat-card-header>
+				<mat-card-content class="flex flex-col text-center ">
+					<app-form-field
+							class="w-full"
+							[control]="updateProfileForm.controls.name"
+							label="Name"
+							value="John Doe"
+					/>
+					<app-form-field
+							class="w-full"
+							[control]="updateProfileForm.controls.firstName"
+							label="First name"
+					/>
+					<app-form-field
+							class="w-full"
+							[control]="updateProfileForm.controls.username"
+							label="Username"
+					/>
+					<app-form-field
+							class="w-full"
+							[control]="updateProfileForm.controls.email"
+							label="Email"
+					>
+						<ng-container errors>
+							@if (updateProfileForm.controls.email.hasError('email')) {
+								<span>Email is invalid</span>
+							}
+						</ng-container>
+					</app-form-field>
+				</mat-card-content>
+			</mat-card>
+		</div>
+		<div class="update-profile-container">
+			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
 				<mat-card-header>
 					<mat-card-title class="items-center">
 						<div class="flex items-center gap-2">
 							<span class="material-icons">face</span>
-							Choose a profile picture
+							Modify your profile picture
 						</div>
 					</mat-card-title>
 				</mat-card-header>
-				<mat-card-content class="flex flex-grow w-full  text-center ">
+				<mat-card-content class="flex text-center ">
 					<span class="material-icons text-iconXl text-gray-300">
 						account_circle
 					</span>
-					<app-image-uploader class="flex flex-grow justify-center w-full"/>
+					<app-image-uploader class="flex w-full"/>
 				</mat-card-content>
 			</mat-card>
 		</div>
-		<div class="complete-profile-container">
+		<div class="update-profile-container">
 			<mat-card class="flex-grow flex  gap-10 items-center">
 				<mat-card-header>
 					<mat-card-title class="items-center">
 						<div class="flex items-center gap-2">
 							<span class="material-icons-outlined">add_to_photos</span>
-							Choose more pictures
+							Modify your additional pictures
 						</div>
 					</mat-card-title>
 				</mat-card-header>
@@ -69,7 +101,7 @@
 				</mat-card-content>
 			</mat-card>
 		</div>
-		<div class="complete-profile-container">
+		<div class="update-profile-container">
 			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
 				<mat-card-header>
 					<mat-card-title class="items-center">
@@ -84,7 +116,7 @@
 				</mat-card-content>
 			</mat-card>
 		</div>
-		<div class="complete-profile-container">
+		<div class="update-profile-container">
 			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
 				<mat-card-header>
 					<mat-card-title class="items-center">
@@ -119,7 +151,7 @@
 			</mat-card>
 		</div>
 
-		<div class="complete-profile-container">
+		<div class="update-profile-container">
 			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
 				<mat-card-header>
 					<mat-card-title class="items-center">
@@ -132,19 +164,19 @@
 					<app-form-field
 							type="textarea"
 							class="w-full flex"
-							[control]="completeProfileForm.controls.description"
+							[control]="updateProfileForm.controls.description"
 							label="Tell us more about yourself..."
 					/>
 				</mat-card-content>
 			</mat-card>
 		</div>
-		<div class="complete-profile-container">
+		<div class="update-profile-container">
 			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
 				<mat-card-header>
 					<mat-card-title class="items-center">
 						<div class="flex items-center gap-2">
 							<span class="material-icons-outlined">interests</span>
-							Choose your interests
+							Modify your interests
 						</div>
 					</mat-card-title>
 				</mat-card-header>
@@ -152,20 +184,20 @@
 					<app-form-field
 							class="w-full"
 							[label]="'Interests'"
-							[control]="completeProfileForm.controls.interests"
+							[control]="updateProfileForm.controls.interests"
 							[options]="interests"
 							[multipleSelection]="true"
 					/>
 				</mat-card-content>
 			</mat-card>
 		</div>
-		<div class="complete-profile-container">
+		<div class="update-profile-container">
 			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
 				<mat-card-header>
 					<mat-card-title class="items-center">
 						<div class="flex items-center gap-2">
 							<span class="material-icons-outlined">location_on</span>
-							Add your location
+							Modify your location
 						</div>
 					</mat-card-title>
 				</mat-card-header>
@@ -174,11 +206,11 @@
 				</mat-card-content>
 			</mat-card>
 		</div>
-		<div class="complete-profile-container text-center">
+		<div class="update-profile-container text-center">
 			<app-button
 					class="w-full"
-					[disabled]="completeProfileForm.invalid"
-					label="Complete profile"
+					[disabled]="updateProfileForm.invalid"
+					label="Save changes"
 			>
 			</app-button>
 		</div>

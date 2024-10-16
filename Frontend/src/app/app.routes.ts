@@ -7,6 +7,7 @@ import {RegisterComponent} from "./pages/components/register/register.component"
 import {UserPage} from "./pages/components/users/user-page/user-page.component";
 import {ResearchUsersResolver} from "./data/resolvers/research-users.resolver";
 import {ChatComponent} from "./pages/components/chat/chat.component";
+import {UpdateProfileComponent} from "./pages/components/update-profile/update-profile.component";
 
 export const routes: Routes = [
 	{
@@ -46,6 +47,10 @@ export const routes: Routes = [
 			{
 				path: 'chat',
 				component: ChatComponent
+			},
+			{
+				path: 'update-profile',
+				component: UpdateProfileComponent
 			}
 		]
 	},

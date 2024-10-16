@@ -1,0 +1,27 @@
+:host {
+  #map {
+    height: 500px;
+    width: 100%;
+  }
+
+  .panel {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  input {
+    width: 100%;
+    height: 30px;
+    margin-bottom: 10px;
+  }
+
+  .half-input-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .half-input {
+    width: 48%;
+  }
+}
