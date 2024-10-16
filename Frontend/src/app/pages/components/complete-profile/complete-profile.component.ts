@@ -58,7 +58,7 @@ export class CompleteProfileComponent implements OnInit {
 		gender: [null as string | null, Validators.required],
 		sexualOrientation: [null as string | null, Validators.required],
 		description: [null as string | null, Validators.required],
-		interests: [null as string[] | null as string | null, Validators.required],
+		interests: [null as { value: any, label: string }[] | null, Validators.required],
 		localisation: [null as string | null, Validators.required],
 	});
 
