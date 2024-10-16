@@ -1,14 +1,14 @@
-import {ResearchUsersDto} from "../dto/send/research-users.dto";
-import {UserDto} from "../dto/receive/user.dto";
+import {ResearchMembersDto} from "../dto/send/research-members.dto";
+import {MemberDto} from "../dto/receive/member.dto";
 import {HttpClient} from "@angular/common/http";
 import {Observable, of} from "rxjs";
 import {inject, Injectable} from "@angular/core";
-import {UserCompleteDto} from "../dto/receive/user-complete.dto";
+import {MemberCompleteDto} from "../dto/receive/member-complete.dto";
 
 @Injectable({
 	providedIn: "root"
 })
-export class UsersHttpService {
+export class MembersHttpService {
 
 	/**
 	 * The http client.
@@ -17,10 +17,10 @@ export class UsersHttpService {
 	private readonly http = inject(HttpClient)
 
 	/**
-	 * Research users.
-	 * @param researchUsers
+	 * Research members.
+	 * @param researchMembers
 	 */
-	researchUsers(researchUsers: ResearchUsersDto): Observable<UserDto[]> {
+	researchMembers(researchMembers: ResearchMembersDto): Observable<MemberDto[]> {
 		return of([
 			{
 				id: 1,
@@ -58,10 +58,10 @@ export class UsersHttpService {
 	}
 
 	/**
-	 * Get user by id.
+	 * Get member by id.
 	 * @param id
 	 */
-	getUserById(id: number): Observable<UserCompleteDto> {
+	getMemberById(id: number): Observable<MemberCompleteDto> {
 		return of({
 			id: 1,
 			name: 'John Doe',

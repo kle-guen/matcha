@@ -46,13 +46,11 @@
 			<div class="flex justify-between w-full">
 				<app-button
 						label="Reset filters"
-						[disabled]="researchFormGroup.invalid"
 						type="secondary"
-						(clicked)="submit()"
+						(clicked)="reset()"
 				/>
 				<app-button
 						label="Search"
-						[disabled]="researchFormGroup.invalid"
 						(clicked)="submit()"
 				/>
 			</div>
@@ -63,7 +61,6 @@
 	<div class="page-wrapper">
 		<div class="my-4">
 			<app-button
-
 					label="Search"
 					[disabled]="researchFormGroup.invalid"
 					(clicked)="drawer.toggle()"
@@ -73,7 +70,7 @@
 		</div>
 		<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-4">
 			@for (user of users; track user.id) {
-				<app-user-card [user]="user"></app-user-card>
+				<app-user-card [user]="user"/>
 			}
 		</div>
 	</div>
