@@ -12,7 +12,7 @@
 <div class="page-wrapper">
 	<form [formGroup]="completeProfileForm">
 		<div class="complete-profile-container">
-			<mat-card class="flex-grow flex gap-10 items-center">
+			<mat-card class="flex-grow flex gap-10 max-w-xl items-center">
 				<mat-card-header>
 					<mat-card-title class="items-center">
 						<div class="flex items-center gap-2">
@@ -21,11 +21,11 @@
 						</div>
 					</mat-card-title>
 				</mat-card-header>
-				<mat-card-content class="flex w-full text-center ">
+				<mat-card-content class="flex flex-grow w-full  text-center ">
 					<span class="material-icons text-iconXl text-gray-300">
 						account_circle
 					</span>
-					<app-image-uploader class="flex w-full"/>
+					<app-image-uploader class="flex flex-grow justify-center w-full"/>
 				</mat-card-content>
 			</mat-card>
 		</div>

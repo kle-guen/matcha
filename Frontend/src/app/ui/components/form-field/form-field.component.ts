@@ -38,4 +38,9 @@ export class FormFieldComponent {
 	 * Whether multiple selection is allowed
 	 */
 	@Input() multipleSelection = false;
+
+	/**
+	 * The value of the input
+	 */
+	@Input() value: string | null = null;
 }

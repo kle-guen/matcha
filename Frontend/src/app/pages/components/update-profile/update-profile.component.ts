@@ -8,7 +8,7 @@ import {DatePickerComponent} from "../../../ui/components/date-picker/date-picke
 import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
 import {ImageUploaderComponent} from "../../../ui/components/image-uploader/image-uploader.component";
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
-import {MatRadioButton, MatRadioGroup, MatRadioModule} from "@angular/material/radio";
+import {MatRadioModule} from "@angular/material/radio";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {RouterLink} from "@angular/router";
 import {MatFormField} from "@angular/material/form-field";
@@ -51,6 +51,10 @@ export class UpdateProfileComponent implements OnInit{
 	 * The update profile form.
 	 */
 	protected updateProfileForm = this.formBuilder.group({
+		name: [null as string | null],
+		firstName: [null as string | null],
+		username: [null as string | null],
+		email: [null as string | null, Validators.email],
 		profilePicture: [null as string | null],
 		firstAdditionalPicture: [null as string | null],
 		secondAdditionalPicture: [null as string | null],
@@ -81,5 +85,12 @@ export class UpdateProfileComponent implements OnInit{
 			{value: 'photography', label: 'Photography'},
 			{value: 'fashion', label: 'Fashion'}
 		]
+
+		this.updateProfileForm.patchValue({
+			name: 'Doe',
+			firstName: 'John',
+			username: 'johndoe',
+			email: 'johndoe@gmail.com',
+		});
 	}
 }
