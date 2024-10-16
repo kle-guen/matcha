@@ -1,0 +1,21 @@
+.bubble {
+  max-width: 300px;
+  padding: 4px 20px 4px 20px;
+  border-radius: 20px;
+  position: relative;
+}
+
+.left {
+  @apply text-gray-700;
+  border-bottom-left-radius: 0 0;
+  place-self: start;
+  background: lightgrey;
+}
+
+.right {
+  @apply text-white;
+  border-top-right-radius: 0 0;
+  place-self: end;
+
+  @apply bg-gray-700;
+}

@@ -1,11 +1,11 @@
 import {Routes} from '@angular/router';
 import {PageLayoutComponent} from "./parts/page-layout/page-layout.component";
-import {ResearchUsersComponent} from "./pages/components/users/research-users/research-users.component";
+import {ResearchMembersComponent} from "./pages/components/members/research-members/research-members.component";
 import {LoginComponent} from "./pages/components/login/login.component";
 import {CompleteProfileComponent} from "./pages/components/complete-profile/complete-profile.component";
 import {RegisterComponent} from "./pages/components/register/register.component";
-import {UserPage} from "./pages/components/users/user-page/user-page.component";
-import {ResearchUsersResolver} from "./data/resolvers/research-users.resolver";
+import {UserPage} from "./pages/components/members/member-page/member-page.component";
+import {ResearchMembersResolver} from "./data/resolvers/research-members.resolver";
 import {ChatComponent} from "./pages/components/chat/chat.component";
 import {UpdateProfileComponent} from "./pages/components/update-profile/update-profile.component";
 
@@ -34,9 +34,9 @@ export const routes: Routes = [
 					{
 						path: '',
 						resolve: {
-							users: ResearchUsersResolver
+							users: ResearchMembersResolver
 						},
-						component: ResearchUsersComponent
+						component: ResearchMembersComponent
 					},
 					{
 						path: ':id',
@@ -46,7 +46,11 @@ export const routes: Routes = [
 			},
 			{
 				path: 'chat',
-				component: ChatComponent
+				component: ChatComponent,
+				// resolve: {
+				// 	matchs: MatchsResolver,
+				// 	messages: MessagesResolver
+				// }
 			},
 			{
 				path: 'update-profile',

@@ -1,7 +1,7 @@
 import {Component, inject, Input} from '@angular/core';
 import {MatCardModule} from "@angular/material/card";
 import {ButtonComponent} from "../button/button.component";
-import {UserDto} from "../../../data/dto/receive/user.dto";
+import {MemberDto} from "../../../data/dto/receive/member.dto";
 import {Router} from "@angular/router";
 
 @Component({
@@ -26,13 +26,13 @@ export class UserCardComponent {
 	 * The user.
 	 */
 	@Input({required: true})
-	user!: UserDto;
+	user!: MemberDto;
 
 	/**
 	 * Navigate to the user page.
 	 * @param user
 	 */
-	navigateToUserPage(user: UserDto) {
+	navigateToUserPage(user: MemberDto) {
 		this.route.navigate(['users', user.id],
 			{
 				state: {user: user}

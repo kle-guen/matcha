@@ -7,17 +7,17 @@ import {ButtonComponent} from "../../../../ui/components/button/button.component
 import {MatLabel} from "@angular/material/form-field";
 import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatButton} from "@angular/material/button";
-import {UserDto} from "../../../../data/dto/receive/user.dto";
-import {ResearchUsersDto} from "../../../../data/dto/send/research-users.dto";
+import {MemberDto} from "../../../../data/dto/receive/member.dto";
+import {ResearchMembersDto} from "../../../../data/dto/send/research-members.dto";
 import {takeUntil} from "rxjs";
 import {createNgDestroySubject} from "../../../../shared/utils/create-ng-destroy-subject.fn";
-import {UsersHttpService} from "../../../../data/http/users-http.service";
+import {MembersHttpService} from "../../../../data/http/members-http.service";
 import {ActivatedRoute} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
-import {ReferentielDto} from "../../../../data/dto/receive/referentiel-dto";
+import {ReferentielDto} from "../../../../data/dto/receive/referentiel.dto";
 
 @Component({
-	selector: 'app-research-users',
+	selector: 'app-research-members',
 	standalone: true,
 	imports: [
 		UserCardComponent,
@@ -33,11 +33,11 @@ import {ReferentielDto} from "../../../../data/dto/receive/referentiel-dto";
 		MatDrawer,
 		MatIcon,
 	],
-	templateUrl: './research-users.component.html',
-	styleUrl: './research-users.component.scss',
-	encapsulation: ViewEncapsulation.None
+	templateUrl: './research-members.component.html',
+	styleUrl: './research-members.component.scss',
+	encapsulation: ViewEncapsulation.None //TODO: Check if this is necessary
 })
-export class ResearchUsersComponent implements OnInit {
+export class ResearchMembersComponent implements OnInit {
 
 	/**
 	 * The ng destroy subject.
@@ -49,7 +49,7 @@ export class ResearchUsersComponent implements OnInit {
 	 * The users http service.
 	 * @private
 	 */
-	private readonly usersHttpService = inject(UsersHttpService);
+	private readonly usersHttpService = inject(MembersHttpService);
 
 	/**
 	 * The activated route.
@@ -82,7 +82,7 @@ export class ResearchUsersComponent implements OnInit {
 	/**
 	 * The users.
 	 */
-	users: UserDto[] = [];
+	users: MemberDto[] = [];
 
 	/**
 	 * The on init.
@@ -106,15 +106,22 @@ export class ResearchUsersComponent implements OnInit {
 	 * The submit method.
 	 */
 	submit() {
-		this.researchUsers(this.researchFormGroup.value as ResearchUsersDto);
+		this.researchUsers(this.researchFormGroup.value as ResearchMembersDto);
+	}
+
+	/**
+	 * The reset method.
+	 */
+	reset() {
+		this.researchFormGroup.reset();
 	}
 
 	/**
 	 * The research users method.
 	 * @param researchUsers
 	 */
-	researchUsers(researchUsers: ResearchUsersDto) {
-		this.usersHttpService.researchUsers(researchUsers).pipe(
+	researchUsers(researchUsers: ResearchMembersDto) {
+		this.usersHttpService.researchMembers(researchUsers).pipe(
 			takeUntil(this.ngDestroy$)
 		).subscribe(res => this.users = res);
 	}

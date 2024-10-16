@@ -61,7 +61,7 @@ export class RegisterComponent {
 /**
  * A password match validator.
  */
-export function passwordMatchValidator(): ValidatorFn {
+export function passwordMatchValidator(): ValidatorFn { //TODO: a bouger dans un fichier (dans shared/validators)
 	return (control: AbstractControl) => {
 		const password = control.get('password')?.value;
 		const confirmPassword = control.get('confirmPassword')?.value;
