@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {AdressPickerComponent} from "../../../ui/components/adress-picker/adress-picker.component";
+import {AddressPickerComponent} from "../../../ui/components/address-picker/address-picker.component";
 import {ButtonComponent} from "../../../ui/components/button/button.component";
 import {
 	CompleteProfileHeaderComponent
@@ -36,7 +36,7 @@ import {ProfileDto} from "../../../data/dto/receive/profile.dto";
 		ReactiveFormsModule,
 		GoogleMapsModule,
 		ButtonComponent,
-		AdressPickerComponent
+		AddressPickerComponent
 	],
   templateUrl: './update-profile.component.html',
   styleUrl: './update-profile.component.scss'
@@ -98,8 +98,6 @@ export class UpdateProfileComponent implements OnInit{
 		]
 		this.profile = this.activatedRoute.snapshot.data['profile'];
 
-		console.log(this.profile);
-
 		this.updateProfileForm.patchValue({
 			name: this.profile.name,
 			firstName: this.profile.firstName,
@@ -117,7 +115,5 @@ export class UpdateProfileComponent implements OnInit{
 			interests: [...this.profile.interests],
 			localisation: this.profile.localisation,
 		});
-
-		console.log("Form", this.updateProfileForm.value);
 	}
 }

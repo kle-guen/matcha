@@ -9,7 +9,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data  # Persistante des données
     ports:
-      - "5432:5432"  # Exposition du port PostgreSQL
+      - "5432:5432"  # Exposition du port PostgreSQLls
+      -
 
 volumes:
   postgres_data:
