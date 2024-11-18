@@ -9,6 +9,7 @@ import {ResearchMembersResolver} from "./data/resolvers/research-members.resolve
 import {ChatComponent} from "./pages/components/chat/chat.component";
 import {UpdateProfileComponent} from "./pages/components/update-profile/update-profile.component";
 import {updateProfileResolver} from "./data/resolvers/update-profile.resolver";
+import {ipInfoResolver} from "./data/resolvers/ip-info.resolver";
 
 export const routes: Routes = [
 	{
@@ -21,6 +22,9 @@ export const routes: Routes = [
 	},
 	{
 		path: 'complete-profile',
+		resolve: {
+			ipInfo: ipInfoResolver
+		},
 		component: CompleteProfileComponent,
 	},
 
