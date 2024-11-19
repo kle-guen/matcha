@@ -14,7 +14,7 @@ public class UserDAO {
 
 	public List<User> getAllUsers() {
 		List<User> users = new ArrayList<>();
-		String sql = "SELECT id, name, email FROM users";
+		String sql = "SELECT id, username, email FROM users";
 
 		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     PreparedStatement stmt = conn.prepareStatement(sql);
@@ -46,7 +46,7 @@ public class UserDAO {
 			if (rs.next()) {
 				return new User(
 						rs.getInt("id"),
-						rs.getString("name"),
+						rs.getString("username"),
 						rs.getString("email")
 				);
 			}
