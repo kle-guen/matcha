@@ -5,8 +5,8 @@ import io.javalin.Javalin;
 
 public final class App {
 
-    public static void main(String[] args) throws Exception {
-        Javalin app = Javalin.create(config -> config.showJavalinBanner = false).start(7000);
+    public static void main(final String[] args) {
+        final Javalin app = Javalin.create(config -> config.showJavalinBanner = false).start(7000);
 
         RoutesConfig.configure(app);
     }

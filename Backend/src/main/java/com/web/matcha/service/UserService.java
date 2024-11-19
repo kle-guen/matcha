@@ -1,5 +1,6 @@
 package com.web.matcha.service;
 
+import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.model.User;
 
 import java.util.ArrayList;
@@ -8,20 +9,21 @@ import java.util.List;
 
 public class UserService {
 
-	private List<User> users = new ArrayList<>();
+	final private UserDAO userDAO;
 
-	public UserService() {
-		// Données fictives pour commencer
-		users.add(new User(1, "Alice", "alice@example.com"));
-		users.add(new User(2, "Bob", "bob@example.com"));
+	public UserService(final UserDAO userDAO) {
+		this.userDAO = userDAO;
 	}
 
 	public List<User> getAllUsers() {
-		return users;
+		return userDAO.getAllUsers();
 	}
 
 	public User getUserById(int id) {
-		return users.stream().filter(user -> user.getId() == id).findFirst().orElse(null);
+		return users.stream()
+				.filter(user -> user.getId() == id)
+				.findFirst()
+				.orElse(null);
 	}
 
 	public void addUser(User user) {

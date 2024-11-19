@@ -1,5 +1,6 @@
 package com.web.matcha.web.controller;
 
+import com.web.matcha.DatabaseManager;
 import com.web.matcha.domain.model.User;
 import com.web.matcha.service.UserService;
 import io.javalin.Javalin;

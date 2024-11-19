@@ -3,13 +3,13 @@ services:
     image: postgres:15.8-alpine
     container_name: postgres_container
     environment:
-      POSTGRES_USER: matcha      # Nom d'utilisateur
-      POSTGRES_PASSWORD: matcha  # Mot de passe
-      POSTGRES_DB: matcha    # Nom de la base de données
+      POSTGRES_USER: matcha
+      POSTGRES_PASSWORD: matcha
+      POSTGRES_DB: matcha
     volumes:
-      - postgres_data:/var/lib/postgresql/data  # Persistante des données
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"  # Exposition du port PostgreSQL
+      - "5432:5432"
 
 volumes:
   postgres_data:

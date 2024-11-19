@@ -6,9 +6,9 @@ import com.web.matcha.web.controller.UserController;
 
 public class RoutesConfig {
 
-	public static void configure(Javalin app) {
-		UserService userService = new UserService();
-		UserController userController = new UserController(userService);
+	public static void configure(final Javalin app) {
+		final UserService userService = new UserService();
+		final UserController userController = new UserController(userService);
 
 		// Enregistre les routes
 		userController.registerRoutes(app);
