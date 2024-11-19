@@ -1,6 +1,5 @@
 package com.web.matcha.web.controller;
 
-import com.web.matcha.DatabaseManager;
 import com.web.matcha.domain.model.User;
 import com.web.matcha.service.UserService;
 import io.javalin.Javalin;
@@ -25,7 +24,7 @@ public class UserController {
 	}
 
 	private void getUserById(final Context ctx) {
-		int id = Integer.parseInt(ctx.pathParam("id"));
+		Long id = Long.parseLong(ctx.pathParam("id"));
 		User user = userService.getUserById(id);
 		if (user != null) {
 			ctx.json(user);

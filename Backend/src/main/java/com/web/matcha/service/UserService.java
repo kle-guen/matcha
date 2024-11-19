@@ -19,14 +19,11 @@ public class UserService {
 		return userDAO.getAllUsers();
 	}
 
-	public User getUserById(int id) {
-		return users.stream()
-				.filter(user -> user.getId() == id)
-				.findFirst()
-				.orElse(null);
+	public User getUserById(Long id) {
+		return userDAO.getUserById(id);
 	}
 
 	public void addUser(User user) {
-		users.add(user);
+		userDAO.insertUser(user);
 	}
 }
