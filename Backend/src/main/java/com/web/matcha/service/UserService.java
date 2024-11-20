@@ -14,10 +14,6 @@ public class UserService {
 		this.userDAO = userDAO;
 	}
 
-	public List<UserModel> getAllUsers() {
-		return userDAO.getAllUsers();
-	}
-
 	public UserModel getUserById(Long id) {
 		return userDAO.getUserById(id);
 	}

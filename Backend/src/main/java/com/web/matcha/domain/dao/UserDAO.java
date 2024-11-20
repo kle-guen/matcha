@@ -12,34 +12,6 @@ import java.util.List;
 
 public class UserDAO {
 
-	public List<UserModel> getAllUsers() {
-		List<UserModel> userModels = new ArrayList<>();
-		String sql = "SELECT id, username, email FROM users";
-
-		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql);
-		     ResultSet rs = stmt.executeQuery()) {
-
-			while (rs.next()) {
-				userModels.add(new UserModel(
-						rs.getInt("id"),
-						rs.getString("username"),
-						rs.getString("email"),
-						rs.getString("password_hash"),
-						rs.getString("first_name"),
-						rs.getString("last_name"),
-						rs.getBoolean("is_verified"),
-						rs.getTimestamp("last_login_at")
-				));
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace(); // Gère les erreurs ici ou utilise un logger
-		}
-
-		return userModels;
-	}
-
 	public UserModel getUserById(Long id) {
 		String sql = "SELECT * FROM users where id = ?";
 
@@ -69,7 +41,7 @@ public class UserDAO {
 
 	// Retrieves a user by their email
 	public UserModel getUserByEmail(String email) {
-		String sql = "SELECT id, username, email, password_hash, first_name, last_name, is_verified, last_login_at FROM users WHERE email = ?";
+		String sql = "SELECT * FROM users WHERE email = ?";
 
 		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -81,7 +53,7 @@ public class UserDAO {
 						rs.getInt("id"),
 						rs.getString("username"),
 						rs.getString("email"),
-						rs.getString("password_hash"),
+						rs.getString("password"),
 						rs.getString("first_name"),
 						rs.getString("last_name"),
 						rs.getBoolean("is_verified"),

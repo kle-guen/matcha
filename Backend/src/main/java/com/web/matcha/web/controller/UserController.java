@@ -14,13 +14,8 @@ public class UserController {
 	}
 
 	public void registerRoutes(final Javalin app) {
-		app.get("/users", this::getAllUsers);
 		app.get("/users/{id}", this::getUserById);
 		app.post("/users", this::createUser);
-	}
-
-	private void getAllUsers(final Context ctx) {
-		ctx.json(userService.getAllUsers());
 	}
 
 	private void getUserById(final Context ctx) {
