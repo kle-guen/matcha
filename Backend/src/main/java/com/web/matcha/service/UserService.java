@@ -1,9 +1,8 @@
 package com.web.matcha.service;
 
 import com.web.matcha.domain.dao.UserDAO;
-import com.web.matcha.domain.model.User;
+import com.web.matcha.domain.model.UserModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,15 +14,15 @@ public class UserService {
 		this.userDAO = userDAO;
 	}
 
-	public List<User> getAllUsers() {
+	public List<UserModel> getAllUsers() {
 		return userDAO.getAllUsers();
 	}
 
-	public User getUserById(Long id) {
+	public UserModel getUserById(Long id) {
 		return userDAO.getUserById(id);
 	}
 
-	public void addUser(User user) {
-		userDAO.insertUser(user);
+	public void addUser(UserModel userModel) {
+		userDAO.insertUser(userModel);
 	}
 }

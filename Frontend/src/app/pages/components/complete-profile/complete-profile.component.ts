@@ -115,8 +115,7 @@ export class CompleteProfileComponent implements OnInit {
 						}
 					);
 				})
-		}
-		else {
+		} else {
 			this.completeProfileForm.controls['localisation'].setValue(
 				{
 					latitude: this.ipInfo.latitude,
