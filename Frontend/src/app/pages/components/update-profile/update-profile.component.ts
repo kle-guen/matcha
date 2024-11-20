@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {AdressPickerComponent} from "../../../ui/components/adress-picker/adress-picker.component";
+import {AddressPickerComponent} from "../../../ui/components/address-picker/address-picker.component";
 import {ButtonComponent} from "../../../ui/components/button/button.component";
 import {
 	CompleteProfileHeaderComponent
@@ -10,10 +10,11 @@ import {ImageUploaderComponent} from "../../../ui/components/image-uploader/imag
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
 import {MatRadioModule} from "@angular/material/radio";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
-import {RouterLink} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatFormField} from "@angular/material/form-field";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {provideNativeDateAdapter} from "@angular/material/core";
+import {ProfileDto} from "../../../data/dto/receive/profile.dto";
 
 @Component({
   selector: 'app-update-profile',
@@ -35,12 +36,22 @@ import {provideNativeDateAdapter} from "@angular/material/core";
 		ReactiveFormsModule,
 		GoogleMapsModule,
 		ButtonComponent,
-		AdressPickerComponent
+		AddressPickerComponent
 	],
   templateUrl: './update-profile.component.html',
   styleUrl: './update-profile.component.scss'
 })
 export class UpdateProfileComponent implements OnInit{
+
+	/**
+	 * The activated route.
+	 */
+	private readonly activatedRoute = inject(ActivatedRoute);
+
+	/**
+	 * The user profile.
+	 */
+	private profile: ProfileDto = {} as ProfileDto;
 
 	/**
 	 * The form builder.
@@ -64,7 +75,7 @@ export class UpdateProfileComponent implements OnInit{
 		gender: [null as string | null],
 		sexualOrientation: [null as string | null],
 		description: [null as string | null],
-		interests: [null as string[] | null as string | null],
+		interests: [[] as string[]],
 		localisation: [null as string | null],
 	});
 
@@ -85,12 +96,24 @@ export class UpdateProfileComponent implements OnInit{
 			{value: 'photography', label: 'Photography'},
 			{value: 'fashion', label: 'Fashion'}
 		]
+		this.profile = this.activatedRoute.snapshot.data['profile'];
 
 		this.updateProfileForm.patchValue({
-			name: 'Doe',
-			firstName: 'John',
-			username: 'johndoe',
-			email: 'johndoe@gmail.com',
+			name: this.profile.name,
+			firstName: this.profile.firstName,
+			username: this.profile.username,
+			email: this.profile.email,
+			profilePicture: this.profile.profilePicture,
+			firstAdditionalPicture: this.profile.firstAdditionalPicture,
+			secondAdditionalPicture: this.profile.secondAdditionalPicture,
+			thirdAdditionalPicture: this.profile.thirdAdditionalPicture,
+			fourthAdditionalPicture: this.profile.fourthAdditionalPicture,
+			birthDate: new Date(this.profile.birthDate),
+			gender: this.profile.gender,
+			sexualOrientation: this.profile.sexualOrientation,
+			description: this.profile.description,
+			interests: [...this.profile.interests],
+			localisation: this.profile.localisation,
 		});
 	}
 }

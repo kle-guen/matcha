@@ -7,7 +7,6 @@ import {Observable} from "rxjs";
 
 /**
  * The research members resolver.
- * @constructor
  */
 export const ResearchMembersResolver: ResolveFn<MemberDto[]> = (): Observable<MemberDto[]> => {
 	const usersHttpService = inject(MembersHttpService);

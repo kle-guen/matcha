@@ -80,7 +80,7 @@
 					</mat-card-title>
 				</mat-card-header>
 				<mat-card-content class="flex w-full text-center ">
-					<app-date-picker/>
+					<app-date-picker [control]="completeProfileForm.controls.interests"/>
 				</mat-card-content>
 			</mat-card>
 		</div>
@@ -100,7 +100,7 @@
 				<mat-card-content class="w-full">
 					<div class="flex flex-col mb-5">
 						<span class="text-left text-sm">Select your gender: </span>
-						<mat-radio-group class="flex justify-center" aria-label="Select an option">
+						<mat-radio-group [formControl]="completeProfileForm.controls.gender" class="flex justify-center" aria-label="Select an option">
 							<mat-radio-button value="1">Male</mat-radio-button>
 							<mat-radio-button value="2">Female</mat-radio-button>
 						</mat-radio-group>
@@ -108,7 +108,7 @@
 
 					<div class="flex flex-wrap flex-col">
 						<span class="text-left text-sm">Select your sexual orientation: </span>
-						<mat-radio-group class="flex flex-wrap justify-center" aria-label="Select an option">
+						<mat-radio-group [formControl]="completeProfileForm.controls.sexualOrientation" class="flex flex-wrap justify-center" aria-label="Select an option">
 							<mat-radio-button value="1">Straight</mat-radio-button>
 							<mat-radio-button value="2">Homosexual</mat-radio-button>
 							<mat-radio-button value="2">Bisexual</mat-radio-button>
@@ -159,21 +159,21 @@
 				</mat-card-content>
 			</mat-card>
 		</div>
-		<div class="complete-profile-container">
-			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">
-				<mat-card-header>
-					<mat-card-title class="items-center">
-						<div class="flex items-center gap-2">
-							<span class="material-icons-outlined">location_on</span>
-							Add your location
-						</div>
-					</mat-card-title>
-				</mat-card-header>
-				<mat-card-content class="w-full">
-					<app-adress-picker></app-adress-picker>
-				</mat-card-content>
-			</mat-card>
-		</div>
+<!--		<div class="complete-profile-container">-->
+<!--			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">-->
+<!--				<mat-card-header>-->
+<!--					<mat-card-title class="items-center">-->
+<!--						<div class="flex items-center gap-2">-->
+<!--							<span class="material-icons-outlined">location_on</span>-->
+<!--							Add your location-->
+<!--						</div>-->
+<!--					</mat-card-title>-->
+<!--				</mat-card-header>-->
+<!--				<mat-card-content class="w-full">-->
+<!--					<app-address-picker></app-address-picker>-->
+<!--				</mat-card-content>-->
+<!--			</mat-card>-->
+<!--		</div>-->
 		<div class="complete-profile-container text-center">
 			<app-button
 					class="w-full"

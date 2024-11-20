@@ -112,7 +112,7 @@
 					</mat-card-title>
 				</mat-card-header>
 				<mat-card-content class="flex w-full text-center ">
-					<app-date-picker/>
+					<app-date-picker [control]="updateProfileForm.controls.birthDate"/>
 				</mat-card-content>
 			</mat-card>
 		</div>
@@ -132,18 +132,18 @@
 				<mat-card-content class="w-full">
 					<div class="flex flex-col mb-5">
 						<span class="text-left text-sm">Select your gender: </span>
-						<mat-radio-group class="flex justify-center" aria-label="Select an option">
-							<mat-radio-button value="1">Male</mat-radio-button>
-							<mat-radio-button value="2">Female</mat-radio-button>
+						<mat-radio-group [formControl]="updateProfileForm.controls.gender" class="flex justify-center" aria-label="Select an option">
+							<mat-radio-button value="Male">Male</mat-radio-button>
+							<mat-radio-button value="Female">Female</mat-radio-button>
 						</mat-radio-group>
 					</div>
 
 					<div class="flex flex-wrap flex-col">
 						<span class="text-left text-sm">Select your sexual orientation: </span>
-						<mat-radio-group class="flex flex-wrap justify-center" aria-label="Select an option">
-							<mat-radio-button value="1">Straight</mat-radio-button>
-							<mat-radio-button value="2">Homosexual</mat-radio-button>
-							<mat-radio-button value="2">Bisexual</mat-radio-button>
+						<mat-radio-group [formControl]="updateProfileForm.controls.sexualOrientation" class="flex flex-wrap justify-center" aria-label="Select an option">
+							<mat-radio-button value="Straight">Straight</mat-radio-button>
+							<mat-radio-button value="Homosexual">Homosexual</mat-radio-button>
+							<mat-radio-button value="Bisexual">Bisexual</mat-radio-button>
 						</mat-radio-group>
 					</div>
 
@@ -202,7 +202,7 @@
 					</mat-card-title>
 				</mat-card-header>
 				<mat-card-content class="w-full">
-					<app-adress-picker></app-adress-picker>
+					<app-address-picker [control]="updateProfileForm.controls.localisation"></app-address-picker>
 				</mat-card-content>
 			</mat-card>
 		</div>
