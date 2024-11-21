@@ -20,12 +20,12 @@ public class BlockDAO {
 		final String sql = "SELECT * FROM blocks where blocker_id = ? or blocked_id = ?";
 		final List<BlockModel> blocks = new ArrayList<>();
 
-		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setLong(1, id);
 			stmt.setLong(2, id);
-			ResultSet rs = stmt.executeQuery();
+			final ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				blocks.add(new BlockModel(
 						rs.getInt("blocker_id"),

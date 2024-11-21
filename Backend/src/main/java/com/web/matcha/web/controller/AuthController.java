@@ -15,16 +15,16 @@ public class AuthController {
 		this.authService = authService;
 	}
 
-	public void registerRoutes(Javalin app) {
+	public void registerRoutes(final Javalin app) {
 		app.post("/auth/token", ctx -> {
-			String email = ctx.formParam("email");
-			String password = ctx.formParam("password");
+			final String email = ctx.formParam("email");
+			final String password = ctx.formParam("password");
 
 			if (email == null || password == null) {
 				throw new BadRequestResponse("Email and password are required");
 			}
 
-			String token = authService.authenticate(email, password);
+			final String token = authService.authenticate(email, password);
 				ctx.status(200)
 					.contentType("application/json")
 					.json(Collections.singletonMap("token", token));

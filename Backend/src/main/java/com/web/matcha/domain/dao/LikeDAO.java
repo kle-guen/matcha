@@ -22,12 +22,12 @@ public class LikeDAO {
 		final String sql = "SELECT * FROM likes where liker_id = ? or liked_id = ?";
 		final List<LikeModel> blocks = new ArrayList<>();
 
-		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setLong(1, id);
 			stmt.setLong(2, id);
-			ResultSet rs = stmt.executeQuery();
+			final ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				blocks.add(new LikeModel(
 						rs.getInt("liker_id"),

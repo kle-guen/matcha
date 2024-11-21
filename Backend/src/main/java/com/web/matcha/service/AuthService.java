@@ -24,7 +24,7 @@ public class AuthService {
 		try {
 			return JwtUtils.getUsernameFromToken(token);
 		} catch (Exception e) {
-			return null; // Invalid token
+			return null;
 		}
 	}
 }

@@ -1,5 +1,6 @@
 package com.web.matcha.domain.utils;
 
+import com.web.matcha.config.Env;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -7,28 +8,32 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 
 public class JwtUtils {
-	// todo Secret key to sign JWT tokens, keep this private and secure in production
-	private static final String SECRET_KEY = "0K6HD1csfgep+OHLuMJHz84gw1oPbZ0lE3bTdQG1RwXqYEbdQFFwcZElGt91r37pXQsxrXzot+Cod9qoeLOgUg==";
 
-	public static String generateToken(String username) {
-		long expirationTime = 1000 * 60 * 60; // Token valid for 1 hour
+	private static final String secretKey;
+
+	static {
+		secretKey = Env.getDotenv().get("API_TOKEN_SECRET_KEY");
+	}
+
+	public static String generateToken(final String username) {
+		final long expirationTime = 1000 * 60 * 60; // Token valid for 1 hour
 
 		return Jwts.builder()
 			.setSubject(username)
 			.setIssuedAt(new Date())
 			.setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-			.signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+			.signWith(SignatureAlgorithm.HS512, secretKey)
 			.compact();
 	}
 
-	public static Claims validateToken(String token) {
+	public static Claims validateToken(final String token) {
 		return Jwts.parser()
-			.setSigningKey(SECRET_KEY)
+			.setSigningKey(secretKey)
 			.parseClaimsJws(token)
 			.getBody();
 	}
 
-	public static String getUsernameFromToken(String token) {
+	public static String getUsernameFromToken(final String token) {
 		return validateToken(token).getSubject();
 	}
 }

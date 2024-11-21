@@ -3,26 +3,24 @@ package com.web.matcha.domain.dao;
 import com.web.matcha.DatabaseConfig;
 import com.web.matcha.domain.model.UserModel;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Optional;
 
 @Slf4j
 public class UserDAO {
 
-	public Optional<UserModel> getUserById(Long id) {
-		String sql = "SELECT * FROM users where id = ?";
+	public Optional<UserModel> getUserById(final Long id) {
+		final String sql = "SELECT * FROM users where id = ?";
 
-		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setLong(1, id);
-			ResultSet rs = stmt.executeQuery();
+			final ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				return Optional.of(new UserModel(
 						rs.getInt("id"),
@@ -42,14 +40,14 @@ public class UserDAO {
 		return Optional.empty();
 	}
 
-	public Optional<UserModel> getUserByEmail(String email) {
+	public Optional<UserModel> getUserByEmail(final String email) {
 		String sql = "SELECT * FROM users WHERE email = ?";
 
-		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setString(1, email);
-			ResultSet rs = stmt.executeQuery();
+			final ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				return Optional.of(new UserModel(
 						rs.getInt("id"),
@@ -71,10 +69,10 @@ public class UserDAO {
 
 
 	public Optional<UserModel> insertUser(UserModel userModel) {
-		String sql = "INSERT INTO users (username, email, password, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
+		final String sql = "INSERT INTO users (username, email, password, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
 
-		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
-		     PreparedStatement stmt = conn.prepareStatement(sql)) {
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setString(1, userModel.getUsername());
 			stmt.setString(2, userModel.getEmail());
@@ -83,7 +81,7 @@ public class UserDAO {
 			stmt.setString(5, userModel.getLastName());
 			stmt.executeUpdate();
 
-			try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+			try (final ResultSet generatedKeys = stmt.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
 					userModel.setId(generatedKeys.getInt(1));
 				}
