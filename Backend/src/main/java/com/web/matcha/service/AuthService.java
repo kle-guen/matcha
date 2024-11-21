@@ -3,6 +3,7 @@ package com.web.matcha.service;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.domain.utils.JwtUtils;
+import io.javalin.http.UnauthorizedResponse;
 
 public class AuthService {
 
@@ -13,12 +14,10 @@ public class AuthService {
 	}
 
 	public String authenticate(String email, String password) {
-		UserModel user = userDAO.getUserByEmail(email);
-		// todo check if password is correct
-		if (user != null) {
-			return JwtUtils.generateToken(user.getEmail());
-		}
-		return null;
+		final UserModel user = userDAO.getUserByEmail(email)
+				.orElseThrow(() -> new UnauthorizedResponse("Invalid email or password"));
+
+		return JwtUtils.generateToken(user.getEmail());
 	}
 
 	public String validateToken(String token) {

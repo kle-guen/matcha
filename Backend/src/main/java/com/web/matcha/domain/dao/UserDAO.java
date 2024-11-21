@@ -35,13 +35,12 @@ public class UserDAO {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace(); // Gère les erreurs ici ou utilise un logger
+			log.error("Error while getting user by id", e);
 		}
-		return null;
+		return Optional.empty();
 	}
 
-	// Retrieves a user by their email
-	public UserModel getUserByEmail(String email) {
+	public Optional<UserModel> getUserByEmail(String email) {
 		String sql = "SELECT * FROM users WHERE email = ?";
 
 		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
@@ -50,7 +49,7 @@ public class UserDAO {
 			stmt.setString(1, email);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				return new UserModel(
+				return Optional.of(new UserModel(
 						rs.getInt("id"),
 						rs.getString("username"),
 						rs.getString("email"),
@@ -59,13 +58,13 @@ public class UserDAO {
 						rs.getString("last_name"),
 						rs.getBoolean("is_verified"),
 						rs.getTimestamp("last_login_at")
-				);
+				));
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("Error while getting user by email", e);
 		}
-		return null;
+		return Optional.empty();
 	}
 
 

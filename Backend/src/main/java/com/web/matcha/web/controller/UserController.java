@@ -5,7 +5,6 @@ import com.web.matcha.service.UserService;
 import com.web.matcha.web.dto.UserDto;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import io.javalin.http.HttpResponseException;
 
 public class UserController {
 
@@ -23,18 +22,12 @@ public class UserController {
 	private void getUserById(final Context ctx) {
 		final Long id = Long.parseLong(ctx.pathParam("id"));
 		final UserModel userModel = userService.getUserById(id);
-		ctx.json(userModel);
+		ctx.status(200).json(userModel);
 	}
 
 	private void createUser(final Context ctx) {
-		try {
-			UserDto userDto = ctx.bodyAsClass(UserDto.class);
-			userService.addUser(userDto);
-			ctx.status(201).json(userDto);
-		} catch (IllegalArgumentException e) {
-			ctx.status(400).json("Invalid user data.");
-		} catch (Exception e) {
-			ctx.status(500).json("Internal server error.");
-		}
+		UserDto userDto = ctx.bodyAsClass(UserDto.class);
+		userService.addUser(userDto);
+		ctx.status(201).json(userDto);
 	}
 }
