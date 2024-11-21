@@ -19,17 +19,17 @@ public class AuthController {
 			String password = ctx.formParam("password");
 
 			if (email == null || password == null) {
-				ctx.status(400).result("Username and password are required");
+				ctx.status(400).result("Email and password are required");
 				return;
 			}
 
 			String token = authService.authenticate(email, password);
 			if (token != null) {
 				ctx.status(200)
-						.contentType("application/json")
-						.json(Collections.singletonMap("token", token));
+					.contentType("application/json")
+					.json(Collections.singletonMap("token", token));
 			} else {
-				ctx.status(401).result("Invalid username or password");
+				ctx.status(401).result("Invalid email or password");
 			}
 		});
 	}

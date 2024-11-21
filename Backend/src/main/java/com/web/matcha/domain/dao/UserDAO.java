@@ -7,8 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserDAO {
 
@@ -76,10 +74,10 @@ public class UserDAO {
 
 			stmt.setString(1, userModel.getUsername());
 			stmt.setString(2, userModel.getEmail());
-			stmt.setString(3, userModel.getPassword_hash());
-			stmt.setString(4, userModel.getFirst_name());
-			stmt.setString(5, userModel.getLast_name());
-			stmt.setTimestamp(6, userModel.getLast_login_at());
+			stmt.setString(3, userModel.getPassword());
+			stmt.setString(4, userModel.getFirstName());
+			stmt.setString(5, userModel.getLastName());
+			stmt.setTimestamp(6, userModel.getLastLoginAt());
 			stmt.executeUpdate();
 
 		} catch (SQLException e) {

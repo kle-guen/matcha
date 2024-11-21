@@ -1,22 +1,22 @@
 package com.web.matcha.config;
 
 import com.web.matcha.domain.dao.UserDAO;
+import com.web.matcha.mapper.UserMapper;
 import com.web.matcha.service.AuthService;
 import com.web.matcha.service.UserService;
 import com.web.matcha.web.controller.AuthController;
 import io.javalin.Javalin;
 import com.web.matcha.web.controller.UserController;
-import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 
-@Slf4j
 public class RoutesConfig {
 
 	public static void configure(final Javalin app) {
 		final UserDAO userDAO = new UserDAO();
-		final UserService userService = new UserService(userDAO);
+		final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+		final UserService userService = new UserService(userDAO, userMapper);
 		final UserController userController = new UserController(userService);
 
-		log.error("test");
 		AuthService authService = new AuthService(userDAO);
 		AuthController authController = new AuthController(authService);
 
