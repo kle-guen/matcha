@@ -3,11 +3,13 @@ package com.web.matcha.domain.dao;
 import com.web.matcha.DatabaseConfig;
 import com.web.matcha.domain.model.UserModel;
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.util.PSQLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Optional;
 
 @Slf4j
@@ -69,7 +71,7 @@ public class UserDAO {
 
 
 	public Optional<UserModel> insertUser(UserModel userModel) {
-		String sql = "INSERT INTO users (username, email, password, first_name, last_name, last_login_at) VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO users (username, email, password, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
 
 		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -79,7 +81,6 @@ public class UserDAO {
 			stmt.setString(3, userModel.getPassword());
 			stmt.setString(4, userModel.getFirstName());
 			stmt.setString(5, userModel.getLastName());
-			stmt.setTimestamp(6, userModel.getLastLoginAt());
 			stmt.executeUpdate();
 
 			try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
