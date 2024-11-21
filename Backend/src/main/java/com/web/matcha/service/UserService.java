@@ -4,6 +4,7 @@ import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.mapper.UserMapper;
 import com.web.matcha.web.dto.UserDto;
+import io.javalin.http.BadRequestResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -14,10 +15,12 @@ public class UserService {
 	final private UserMapper userMapper;
 
 	public UserModel getUserById(Long id) {
-		return userDAO.getUserById(id);
+		return userDAO.getUserById(id)
+				.orElseThrow(() -> new BadRequestResponse("User not found"));
 	}
 
 	public void addUser(UserDto userDto) {
-		userDAO.insertUser(userMapper.toModel(userDto));
+		userDAO.insertUser(userMapper.toModel(userDto))
+				.orElseThrow(() -> new BadRequestResponse("Error while adding user"));
 	}
 }

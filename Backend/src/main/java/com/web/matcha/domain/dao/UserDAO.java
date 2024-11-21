@@ -2,15 +2,18 @@ package com.web.matcha.domain.dao;
 
 import com.web.matcha.DatabaseConfig;
 import com.web.matcha.domain.model.UserModel;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
+@Slf4j
 public class UserDAO {
 
-	public UserModel getUserById(Long id) {
+	public Optional<UserModel> getUserById(Long id) {
 		String sql = "SELECT * FROM users where id = ?";
 
 		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
@@ -19,7 +22,7 @@ public class UserDAO {
 			stmt.setLong(1, id);
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				return new UserModel(
+				return Optional.of(new UserModel(
 						rs.getInt("id"),
 						rs.getString("username"),
 						rs.getString("email"),
@@ -28,7 +31,7 @@ public class UserDAO {
 						rs.getString("last_name"),
 						rs.getBoolean("is_verified"),
 						rs.getTimestamp("last_login_at")
-				);
+				));
 			}
 
 		} catch (SQLException e) {
@@ -66,8 +69,8 @@ public class UserDAO {
 	}
 
 
-	public void insertUser(UserModel userModel) {
-		String sql = "INSERT INTO users (username, email) VALUES (?, ?, ?, ?, ?, ?)";
+	public Optional<UserModel> insertUser(UserModel userModel) {
+		String sql = "INSERT INTO users (username, email, password, first_name, last_name, last_login_at) VALUES (?, ?, ?, ?, ?, ?)";
 
 		try (Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -80,8 +83,17 @@ public class UserDAO {
 			stmt.setTimestamp(6, userModel.getLastLoginAt());
 			stmt.executeUpdate();
 
+			try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+				if (generatedKeys.next()) {
+					userModel.setId(generatedKeys.getInt(1));
+				}
+			}
+
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("Error while inserting user", e);
+			return Optional.empty();
 		}
+
+		return Optional.of(userModel);
 	}
 }

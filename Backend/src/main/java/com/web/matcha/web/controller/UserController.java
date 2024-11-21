@@ -5,6 +5,7 @@ import com.web.matcha.service.UserService;
 import com.web.matcha.web.dto.UserDto;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.javalin.http.HttpResponseException;
 
 public class UserController {
 
@@ -20,13 +21,9 @@ public class UserController {
 	}
 
 	private void getUserById(final Context ctx) {
-		Long id = Long.parseLong(ctx.pathParam("id"));
-		UserModel userModel = userService.getUserById(id);
-		if (userModel != null) {
-			ctx.json(userModel);
-		} else {
-			ctx.status(404).result("User not found");
-		}
+		final Long id = Long.parseLong(ctx.pathParam("id"));
+		final UserModel userModel = userService.getUserById(id);
+		ctx.json(userModel);
 	}
 
 	private void createUser(final Context ctx) {
