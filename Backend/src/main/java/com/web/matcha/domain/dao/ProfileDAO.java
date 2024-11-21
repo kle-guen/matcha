@@ -1,4 +1,4 @@
 package com.web.matcha.domain.dao;
 
-public class BlockDao {
+public class ProfileDAO {
 }

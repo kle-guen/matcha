@@ -1,4 +1,4 @@
 package com.web.matcha.domain.dao;
 
-public class NotificationDao {
+public class PictureDAO {
 }

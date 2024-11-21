@@ -43,7 +43,7 @@ CREATE TABLE pictures
 (
     id                 SERIAL PRIMARY KEY,
     user_id            INT          NOT NULL,
-    picture_path        VARCHAR(255) NOT NULL,
+    picture_path       VARCHAR(255) NOT NULL,
     is_profile_picture BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );

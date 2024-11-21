@@ -1,20 +1,23 @@
 package com.web.matcha;
 
+import com.web.matcha.config.Env;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import javax.sql.DataSource;
 
 public class DatabaseConfig {
 
-	private static HikariDataSource dataSource;
+	private static final HikariDataSource dataSource;
 
 	static {
+		Dotenv env = Env.getDotenv();
 		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl("jdbc:postgresql://localhost:5432/matcha");
-		config.setDriverClassName("org.postgresql.Driver");
-		config.setUsername("matcha");
-		config.setPassword("matcha");
+		config.setJdbcUrl(env.get("DB_URL"));
+		config.setDriverClassName(env.get("DB_DRIVER"));
+		config.setUsername(env.get("DB_USERNAME"));
+		config.setPassword(env.get("DB_PASSWORD"));
 		config.setMaximumPoolSize(10);
 		config.setMinimumIdle(2);
 		config.setIdleTimeout(60000);

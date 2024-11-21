@@ -6,7 +6,9 @@ import com.web.matcha.service.UserService;
 import com.web.matcha.web.controller.AuthController;
 import io.javalin.Javalin;
 import com.web.matcha.web.controller.UserController;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RoutesConfig {
 
 	public static void configure(final Javalin app) {
@@ -14,6 +16,7 @@ public class RoutesConfig {
 		final UserService userService = new UserService(userDAO);
 		final UserController userController = new UserController(userService);
 
+		log.error("test");
 		AuthService authService = new AuthService(userDAO);
 		AuthController authController = new AuthController(authService);
 

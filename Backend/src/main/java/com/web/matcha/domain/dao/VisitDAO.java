@@ -1,4 +1,4 @@
 package com.web.matcha.domain.dao;
 
-public class MessageDao {
+public class VisitDAO {
 }
