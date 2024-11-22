@@ -14,13 +14,20 @@ export class MembersHttpService {
 	 * The http client.
 	 * @private
 	 */
-	private readonly http = inject(HttpClient)
+	private readonly http = inject(HttpClient);
+
+	/**
+	 * The members URL.
+	 * @private
+	 */
+	private readonly API_MEMBERS_URL = '/api/users';
 
 	/**
 	 * Research members.
 	 * @param researchMembers
 	 */
 	researchMembers(researchMembers: ResearchMembersDto): Observable<MemberDto[]> {
+		const url = `${this.API_MEMBERS_URL}/research`;
 		return of([
 			{
 				id: 1,
@@ -62,6 +69,8 @@ export class MembersHttpService {
 	 * @param id
 	 */
 	getMemberById(id: number): Observable<MemberCompleteDto> {
+		const url = `${this.API_MEMBERS_URL}/${id}`;
+		this.http.get(url).subscribe((data: any) => {});
 		return of({
 			id: 1,
 			name: 'John Doe',

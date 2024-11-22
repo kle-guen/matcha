@@ -11,7 +11,7 @@ export class ProfileHttpService {
 	/**
 	 * The http client.
 	 */
-	private readonly http = inject(HttpClient)
+	private readonly http = inject(HttpClient);
 
 	getProfile(): Observable<ProfileDto> {
 		return of(
