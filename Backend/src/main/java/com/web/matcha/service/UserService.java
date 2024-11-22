@@ -14,7 +14,7 @@ public class UserService {
 
 	final private UserMapper userMapper;
 
-	public UserModel getUserById(Long id) {
+	public UserModel getUserById(int id) {
 		return userDAO.getUserById(id)
 				.orElseThrow(() -> new BadRequestResponse("User not found"));
 	}
@@ -22,5 +22,9 @@ public class UserService {
 	public void addUser(UserDto userDto) {
 		userDAO.insertUser(userMapper.toModel(userDto))
 				.orElseThrow(() -> new BadRequestResponse("Error while adding user"));
+	}
+
+	public void verifyUserEmail(int userId) {
+		userDAO.verifyUserEmail(userId);
 	}
 }

@@ -13,13 +13,13 @@ import java.util.Optional;
 @Slf4j
 public class UserDAO {
 
-	public Optional<UserModel> getUserById(final Long id) {
+	public Optional<UserModel> getUserById(final int id) {
 		final String sql = "SELECT * FROM users where id = ?";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-			stmt.setLong(1, id);
+			stmt.setInt(1, id);
 			final ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				return Optional.of(new UserModel(
@@ -93,5 +93,19 @@ public class UserDAO {
 		}
 
 		return Optional.of(userModel);
+	}
+
+	public void verifyUserEmail(int userId) {
+		final String sql = "UPDATE users SET is_verified = true WHERE id = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, userId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			log.error("Error while verifying user email", e);
+		}
 	}
 }

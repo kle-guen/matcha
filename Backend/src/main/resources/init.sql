@@ -98,6 +98,13 @@ CREATE TABLE notifications
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
+CREATE TABLE email_verification_tokens (
+    user_id INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
 INSERT INTO interests (code, label)
 VALUES ('SPORTS', 'Sports'),
        ('MUSIC', 'Music'),
