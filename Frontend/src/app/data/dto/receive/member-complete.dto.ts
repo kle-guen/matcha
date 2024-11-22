@@ -1,4 +1,4 @@
-import {ReferentielDto} from "./referentiel.dto";
+import {InterestDto} from "./interest.dto";
 import {MemberDto} from "./member.dto";
 
 /**
@@ -10,6 +10,6 @@ export class MemberCompleteDto extends MemberDto {
 
 	sexuality!: string;
 
-	interests!: ReferentielDto[];
+	interests!: InterestDto[];
 
 }

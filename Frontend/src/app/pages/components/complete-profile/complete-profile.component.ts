@@ -13,6 +13,7 @@ import {GoogleMapsModule} from "@angular/google-maps";
 import {ButtonComponent} from "../../../ui/components/button/button.component";
 import {AddressPickerComponent} from "../../../ui/components/address-picker/address-picker.component";
 import {GeocodingHttpService} from "../../../data/http/geocoding-http.service";
+import {InterestDto} from "../../../data/dto/receive/interest.dto";
 
 @Component({
 	selector: 'app-complete-profile',
@@ -81,20 +82,10 @@ export class CompleteProfileComponent implements OnInit {
 	/**
 	 * The list of interests.
 	 */
-	public interests: { value: any, label: string }[] = [];
+	public interests: InterestDto[] = [];
 
 	ngOnInit() {
-		this.interests = [
-			{value: 'sports', label: 'Sports'},
-			{value: 'music', label: 'Music'},
-			{value: 'movies', label: 'Movies'},
-			{value: 'gaming', label: 'Gaming'},
-			{value: 'cooking', label: 'Cooking'},
-			{value: 'reading', label: 'Reading'},
-			{value: 'traveling', label: 'Traveling'},
-			{value: 'photography', label: 'Photography'},
-			{value: 'fashion', label: 'Fashion'}
-		]
+		this.interests = this.activatedRoute.snapshot.data['interests'];
 		this.getCurrentPosition();
 	}
 

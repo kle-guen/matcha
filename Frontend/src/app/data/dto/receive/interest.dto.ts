@@ -1,12 +1,12 @@
 /**
  * Data transfer object for referentiels.
  */
-export class ReferentielDto {
+export class InterestDto {
 
 	/**
 	 * The value of the referentiel.
 	 */
-	value!: string;
+	code!: string;
 
 	/**
 	 * The label of the referentiel.

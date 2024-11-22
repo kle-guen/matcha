@@ -10,6 +10,7 @@ import {ChatComponent} from "./pages/components/chat/chat.component";
 import {UpdateProfileComponent} from "./pages/components/update-profile/update-profile.component";
 import {updateProfileResolver} from "./data/resolvers/update-profile.resolver";
 import {ipInfoResolver} from "./data/resolvers/ip-info.resolver";
+import {InterestsResolver} from "./data/resolvers/interests.resolver";
 
 export const routes: Routes = [
 	{
@@ -23,7 +24,8 @@ export const routes: Routes = [
 	{
 		path: 'complete-profile',
 		resolve: {
-			ipInfo: ipInfoResolver
+			ipInfo: ipInfoResolver,
+			interests: InterestsResolver
 		},
 		component: CompleteProfileComponent,
 	},
@@ -39,7 +41,8 @@ export const routes: Routes = [
 					{
 						path: '',
 						resolve: {
-							users: ResearchMembersResolver
+							members: ResearchMembersResolver,
+							interests: InterestsResolver
 						},
 						component: ResearchMembersComponent
 					},
@@ -60,7 +63,8 @@ export const routes: Routes = [
 			{
 				path: 'update-profile',
 				resolve: {
-					profile: updateProfileResolver
+					profile: updateProfileResolver,
+					interests: InterestsResolver
 				},
 				component: UpdateProfileComponent
 			}

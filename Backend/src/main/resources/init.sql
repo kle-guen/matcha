@@ -25,18 +25,17 @@ CREATE TABLE profiles
 
 CREATE TABLE interests
 (
-    id         VARCHAR(255) PRIMARY KEY,
-    name       VARCHAR(50) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    code  VARCHAR(255) PRIMARY KEY,
+    label VARCHAR(50) UNIQUE NOT NULL
 );
 
 CREATE TABLE user_interests
 (
-    user_id     INT          NOT NULL,
-    interest_id VARCHAR(255) NOT NULL,
-    PRIMARY KEY (user_id, interest_id),
+    user_id       INT          NOT NULL,
+    interest_code VARCHAR(255) NOT NULL,
+    PRIMARY KEY (user_id, interest_code),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    FOREIGN KEY (interest_id) REFERENCES interests (id) ON DELETE CASCADE
+    FOREIGN KEY (interest_code) REFERENCES interests (code) ON DELETE CASCADE
 );
 
 CREATE TABLE pictures
@@ -98,3 +97,25 @@ CREATE TABLE notifications
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+INSERT INTO interests (code, label)
+VALUES ('SPORTS', 'Sports'),
+       ('MUSIC', 'Music'),
+       ('TRAVEL', 'Traveling'),
+       ('MOVIES', 'Watching Movies'),
+       ('COOKING', 'Cooking'),
+       ('READING', 'Reading Books'),
+       ('HIKING', 'Hiking'),
+       ('GAMING', 'Video Games'),
+       ('FITNESS', 'Fitness and Gym'),
+       ('YOGA', 'Yoga'),
+       ('PHOTOGRAPHY', 'Photography'),
+       ('ART', 'Art and Drawing'),
+       ('ANIMALS', 'Animals and Pets'),
+       ('GARDENING', 'Gardening'),
+       ('DANCING', 'Dancing'),
+       ('TECHNOLOGY', 'Technology'),
+       ('FASHION', 'Fashion'),
+       ('BOARD_GAMES', 'Board Games'),
+       ('VOLUNTEERING', 'Volunteering'),
+       ('WRITING', 'Writing and Blogging');

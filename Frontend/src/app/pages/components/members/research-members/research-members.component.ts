@@ -14,7 +14,7 @@ import {createNgDestroySubject} from "../../../../shared/utils/create-ng-destroy
 import {MembersHttpService} from "../../../../data/http/members-http.service";
 import {ActivatedRoute} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
-import {ReferentielDto} from "../../../../data/dto/receive/referentiel.dto";
+import {InterestDto} from "../../../../data/dto/receive/interest.dto";
 
 @Component({
 	selector: 'app-research-members',
@@ -77,29 +77,19 @@ export class ResearchMembersComponent implements OnInit {
 	/**
 	 * The interests.
 	 */
-	interests: ReferentielDto[] = [];
+	interests: InterestDto[] = [];
 
 	/**
 	 * The users.
 	 */
-	users: MemberDto[] = [];
+	members: MemberDto[] = [];
 
 	/**
 	 * The on init.
 	 */
 	ngOnInit() {
-		this.interests = [
-			{value: 'sports', label: 'Sports'},
-			{value: 'music', label: 'Music'},
-			{value: 'movies', label: 'Movies'},
-			{value: 'gaming', label: 'Gaming'},
-			{value: 'cooking', label: 'Cooking'},
-			{value: 'reading', label: 'Reading'},
-			{value: 'traveling', label: 'Traveling'},
-			{value: 'photography', label: 'Photography'},
-			{value: 'fashion', label: 'Fashion'}
-		]
-		this.users = this.activatedRoute.snapshot.data['users'];
+		this.interests = this.activatedRoute.snapshot.data['interests'];
+		this.members = this.activatedRoute.snapshot.data['members'];
 	}
 
 	/**
@@ -123,6 +113,6 @@ export class ResearchMembersComponent implements OnInit {
 	researchUsers(researchUsers: ResearchMembersDto) {
 		this.usersHttpService.researchMembers(researchUsers).pipe(
 			takeUntil(this.ngDestroy$)
-		).subscribe(res => this.users = res);
+		).subscribe(res => this.members = res);
 	}
 }

@@ -4,6 +4,7 @@ import {MatInputModule} from "@angular/material/input";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
+import {InterestDto} from "../../../data/dto/receive/interest.dto";
 
 @Component({
 	selector: 'app-form-field',
@@ -32,7 +33,7 @@ export class FormFieldComponent {
 	/**
 	 * The options for the select
 	 */
-	@Input() options: { value: any, label: string }[] = []; //fixme: defining the object for value/label
+	@Input() options: InterestDto[] = []; //fixme: defining the object for value/label
 
 	/**
 	 * Whether multiple selection is allowed

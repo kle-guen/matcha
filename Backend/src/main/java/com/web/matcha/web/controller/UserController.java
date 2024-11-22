@@ -6,7 +6,7 @@ import com.web.matcha.web.dto.UserDto;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
-public class UserController {
+public class UserController extends AbstractController {
 
 	private final UserService userService;
 
@@ -14,6 +14,7 @@ public class UserController {
 		this.userService = userService;
 	}
 
+	@Override
 	public void registerRoutes(final Javalin app) {
 		app.get("/users/{id}", this::getUserById);
 		app.post("/users", this::createUser);

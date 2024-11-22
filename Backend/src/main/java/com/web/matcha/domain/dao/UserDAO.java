@@ -26,7 +26,7 @@ public class UserDAO {
 						rs.getInt("id"),
 						rs.getString("username"),
 						rs.getString("email"),
-						rs.getString("password_hash"),
+						rs.getString("password"),
 						rs.getString("first_name"),
 						rs.getString("last_name"),
 						rs.getBoolean("is_verified"),

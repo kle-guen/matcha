@@ -15,6 +15,7 @@ import {MatFormField} from "@angular/material/form-field";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {provideNativeDateAdapter} from "@angular/material/core";
 import {ProfileDto} from "../../../data/dto/receive/profile.dto";
+import {InterestDto} from "../../../data/dto/receive/interest.dto";
 
 @Component({
   selector: 'app-update-profile',
@@ -82,20 +83,10 @@ export class UpdateProfileComponent implements OnInit{
 	/**
 	 * The list of interests.
 	 */
-	public interests: { value: any, label: string }[] = [];
+	public interests: InterestDto[] = [];
 
 	ngOnInit() {
-		this.interests = [
-			{value: 'sports', label: 'Sports'},
-			{value: 'music', label: 'Music'},
-			{value: 'movies', label: 'Movies'},
-			{value: 'gaming', label: 'Gaming'},
-			{value: 'cooking', label: 'Cooking'},
-			{value: 'reading', label: 'Reading'},
-			{value: 'traveling', label: 'Traveling'},
-			{value: 'photography', label: 'Photography'},
-			{value: 'fashion', label: 'Fashion'}
-		]
+		this.interests = this.activatedRoute.snapshot.data['interests'];
 		this.profile = this.activatedRoute.snapshot.data['profile'];
 
 		this.updateProfileForm.patchValue({
