@@ -11,6 +11,7 @@ import {UpdateProfileComponent} from "./pages/components/update-profile/update-p
 import {updateProfileResolver} from "./data/resolvers/update-profile.resolver";
 import {ipInfoResolver} from "./data/resolvers/ip-info.resolver";
 import {InterestsResolver} from "./data/resolvers/interests.resolver";
+import {AuthGuard} from "./guards/auth.guard";
 
 export const routes: Routes = [
 	{
@@ -23,17 +24,22 @@ export const routes: Routes = [
 	},
 	{
 		path: 'complete-profile',
+		canActivate: [AuthGuard],
 		resolve: {
 			ipInfo: ipInfoResolver,
 			interests: InterestsResolver
 		},
 		component: CompleteProfileComponent,
 	},
-
+	{
+		path: '',
+		redirectTo: '/login',
+		pathMatch: 'full',
+	},
 	{
 		path: '',
 		component: PageLayoutComponent,
-		// canActivate: [AuthGuard],
+		canActivate: [AuthGuard],
 		children: [
 			{
 				path: 'users',
@@ -70,4 +76,5 @@ export const routes: Routes = [
 			}
 		]
 	},
+	{ path: '**', redirectTo: '/login'}
 ];

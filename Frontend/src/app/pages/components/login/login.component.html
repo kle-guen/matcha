@@ -39,6 +39,12 @@
 						[disabled]="logInForm.invalid"
 						(clicked)="logIn()"
 				/>
+				@if (error) {
+					<div mat-error class="mat-mdc-form-field-error">
+						{{ error }}
+					</div>
+				}
+
 			</form>
 		</mat-card-content>
 	</mat-card>

@@ -3,18 +3,21 @@ package com.web.matcha.config;
 import com.web.matcha.domain.dao.EmailTokenDAO;
 import com.web.matcha.domain.dao.InterestDAO;
 import com.web.matcha.domain.dao.UserDAO;
-import com.web.matcha.domain.model.InterestModel;
+import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.mapper.InterestMapper;
+import com.web.matcha.mapper.PictureMapper;
+import com.web.matcha.mapper.ProfileMapper;
 import com.web.matcha.mapper.UserMapper;
 import com.web.matcha.service.AuthService;
 import com.web.matcha.service.EmailService;
 import com.web.matcha.service.InterestsService;
+import com.web.matcha.service.ProfileService;
 import com.web.matcha.service.UserService;
 import com.web.matcha.web.controller.AbstractController;
 import com.web.matcha.web.controller.AuthController;
 import com.web.matcha.web.controller.EmailTokenController;
 import com.web.matcha.web.controller.InterestsController;
-import com.web.matcha.web.dto.InterestDto;
+import com.web.matcha.web.controller.ProfileController;
 import io.javalin.Javalin;
 import com.web.matcha.web.controller.UserController;
 import org.mapstruct.factory.Mappers;
@@ -28,23 +31,28 @@ public class RoutesConfig {
 		final UserDAO userDAO = new UserDAO();
 		final InterestDAO interestDAO = new InterestDAO();
 		final EmailTokenDAO emailTokenDAO = new EmailTokenDAO();
+		final ProfileDAO profileDAO = new ProfileDAO();
 
 		// Mappers
 		final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 		final InterestMapper interestMapper = Mappers.getMapper(InterestMapper.class);
+		final ProfileMapper profileMapper = Mappers.getMapper(ProfileMapper.class);
+		final PictureMapper pictureMapper = Mappers.getMapper(PictureMapper.class);
 
 		// Services
 		final UserService userService = new UserService(userDAO, userMapper);
 		final InterestsService interestsService = new InterestsService(interestDAO, interestMapper);
 		final AuthService authService = new AuthService(userDAO);
 		final EmailService emailService = new EmailService(emailTokenDAO);
+		final ProfileService profileService = new ProfileService(profileDAO, profileMapper);
 
 		// Controllers
 		final List<AbstractController> controllers = List.of(
 				new UserController(userService, emailService),
 				new InterestsController(interestsService),
 				new EmailTokenController(emailService, userService),
-				new AuthController(authService));
+				new AuthController(authService),
+				new ProfileController(profileService));
 
 		controllers.forEach(controller -> controller.registerRoutes(app));
 	}

@@ -17,14 +17,6 @@ public class AuthService {
 		final UserModel user = userDAO.getUserByEmail(email)
 				.orElseThrow(() -> new UnauthorizedResponse("Invalid email or password"));
 
-		return JwtUtils.generateToken(user.getEmail());
-	}
-
-	public String validateToken(String token) {
-		try {
-			return JwtUtils.getUsernameFromToken(token);
-		} catch (Exception e) {
-			return null;
-		}
+		return JwtUtils.generateToken(1); //todo get id via holder
 	}
 }

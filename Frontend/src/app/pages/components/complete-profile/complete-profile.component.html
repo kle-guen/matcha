@@ -9,7 +9,7 @@
 		</div>
 	</div>
 </div>
-<div class="page-wrapper">
+<div class="page-wrapper" (click)="log()">
 	<form [formGroup]="completeProfileForm">
 		<div class="complete-profile-container">
 			<mat-card class="flex-grow flex gap-10 max-w-xl items-center">
@@ -25,7 +25,7 @@
 					<span class="material-icons text-iconXl text-gray-300">
 						account_circle
 					</span>
-					<app-image-uploader class="flex flex-grow justify-center w-full"/>
+					<app-image-uploader ngDefaultControl [isProfilePicture]="true" [formControl]="completeProfileForm.controls.profilePicture" class="flex flex-grow justify-center w-full"/>
 				</mat-card-content>
 			</mat-card>
 		</div>
@@ -45,25 +45,25 @@
 							<span class="material-icons text-gray-300 text-iconXl">
 								add_photo_alternate
 							</span>
-							<app-image-uploader class="flex"/>
+							<app-image-uploader ngDefaultControl [isProfilePicture]="false" [formControl]="completeProfileForm.controls.firstAdditionalPicture" class="flex"/>
 						</div>
 						<div class="upload-image flex flex-col">
 							<span class="material-icons text-gray-300 text-iconXl">
 								add_photo_alternate
 							</span>
-							<app-image-uploader class="flex"/>
+							<app-image-uploader ngDefaultControl [isProfilePicture]="false" [formControl]="completeProfileForm.controls.secondAdditionalPicture" class="flex"/>
 						</div>
 						<div class="upload-image flex flex-col">
 							<span class="material-icons text-gray-300 text-iconXl">
 								add_photo_alternate
 							</span>
-							<app-image-uploader class="flex"/>
+							<app-image-uploader ngDefaultControl [isProfilePicture]="false" [formControl]="completeProfileForm.controls.thirdAdditionalPicture" class="flex"/>
 						</div>
 						<div class="upload-image flex flex-col">
 							<span class="material-icons text-gray-300 text-iconXl">
 								add_photo_alternate
 							</span>
-							<app-image-uploader class="flex"/>
+							<app-image-uploader ngDefaultControl [isProfilePicture]="false" [formControl]="completeProfileForm.controls.fourthAdditionalPicture" class="flex"/>
 						</div>
 					</div>
 				</mat-card-content>
@@ -80,7 +80,7 @@
 					</mat-card-title>
 				</mat-card-header>
 				<mat-card-content class="flex w-full text-center ">
-					<app-date-picker [control]="completeProfileForm.controls.interests"/>
+					<app-date-picker [control]="completeProfileForm.controls.birthdate"/>
 				</mat-card-content>
 			</mat-card>
 		</div>
@@ -101,17 +101,17 @@
 					<div class="flex flex-col mb-5">
 						<span class="text-left text-sm">Select your gender: </span>
 						<mat-radio-group [formControl]="completeProfileForm.controls.gender" class="flex justify-center" aria-label="Select an option">
-							<mat-radio-button value="1">Male</mat-radio-button>
-							<mat-radio-button value="2">Female</mat-radio-button>
+							<mat-radio-button value="{{genderEnum.MALE}}">Male</mat-radio-button>
+							<mat-radio-button value="{{genderEnum.FEMALE}}">Female</mat-radio-button>
 						</mat-radio-group>
 					</div>
 
 					<div class="flex flex-wrap flex-col">
 						<span class="text-left text-sm">Select your sexual orientation: </span>
-						<mat-radio-group [formControl]="completeProfileForm.controls.sexualOrientation" class="flex flex-wrap justify-center" aria-label="Select an option">
-							<mat-radio-button value="1">Straight</mat-radio-button>
-							<mat-radio-button value="2">Homosexual</mat-radio-button>
-							<mat-radio-button value="2">Bisexual</mat-radio-button>
+						<mat-radio-group [formControl]="completeProfileForm.controls.sexualPreference" class="flex flex-wrap justify-center" aria-label="Select an option">
+							<mat-radio-button value="{{sexualPreferenceEnum.HETEROSEXUAL}}">Heterosexual</mat-radio-button>
+							<mat-radio-button value="{{sexualPreferenceEnum.HOMOSEXUAL}}">Homosexual</mat-radio-button>
+							<mat-radio-button value="{{sexualPreferenceEnum.BISEXUAL}}">Bisexual</mat-radio-button>
 						</mat-radio-group>
 					</div>
 
@@ -179,6 +179,7 @@
 					class="w-full"
 					[disabled]="completeProfileForm.invalid"
 					label="Complete profile"
+					(click)="completeProfileForm.valid && completeProfile()"
 			>
 			</app-button>
 		</div>

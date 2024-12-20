@@ -22,6 +22,7 @@ export class IpInfoHttpService {
 	getIpAddress(): Observable<any> {
 		return new Observable<any>(observer => {
 			this.http.get(this.apiUrl).subscribe((data: any) => {
+				console.log(data);
 				observer.next(data);
 				observer.complete();
 			});

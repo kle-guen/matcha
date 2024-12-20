@@ -1,0 +1,5 @@
+export enum SexualPreferenceEnum {
+	HETEROSEXUAL = 'HETEROSEXUAL',
+	HOMOSEXUAL = 'HOMOSEXUAL',
+	BISEXUAL = 'BISEXUAL',
+}

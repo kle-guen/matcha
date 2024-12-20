@@ -2,27 +2,33 @@ package com.web.matcha.domain.model;
 
 import com.web.matcha.domain.enums.GenderEnum;
 import com.web.matcha.domain.enums.SexualPreferenceEnum;
+import com.web.matcha.web.dto.PictureDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class ProfileModel {
-	int user_id;
+	private Integer user_id;
 
-	GenderEnum gender;
+	private GenderEnum gender;
 
-	SexualPreferenceEnum sexualPreference;
+	private SexualPreferenceEnum sexualPreference;
 
-	String biography;
+	private String description;
 
-	Float latitude;
+	private Float latitude;
 
-	Float longitude;
+	private Float longitude;
 
-	String city;
+	private String city;
 
-	Float fameRating;
+	private Float fameRating;
+
+	private Timestamp birthdate;
 }

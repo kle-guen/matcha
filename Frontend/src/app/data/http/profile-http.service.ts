@@ -1,6 +1,6 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Observable, of} from "rxjs";
+import {map, Observable, of, take} from "rxjs";
 import {ProfileDto} from "../dto/receive/profile.dto";
 
 @Injectable({
@@ -9,11 +9,30 @@ import {ProfileDto} from "../dto/receive/profile.dto";
 export class ProfileHttpService {
 
 	/**
+	 * The login URL.
+	 */
+	private readonly API_PROFILE_URL = '/api/profiles';
+
+	/**
 	 * The http client.
 	 */
 	private readonly http = inject(HttpClient);
 
-	getProfile(): Observable<ProfileDto> {
+	/**
+	 * The comlete profile URL.
+	 */
+	public completedProfile(formData: FormData): Observable<ProfileDto> {
+		const url = this.API_PROFILE_URL;
+
+		return this.http.post<ProfileDto>(url, formData).pipe(
+			take(1),
+			map(response => {
+				return response;
+			}),
+		)
+	}
+
+	getProfile(): Observable<any> {
 		return of(
 			{
 				name: 'John Doe',
@@ -32,8 +51,8 @@ export class ProfileHttpService {
 					'sports'
 				],
 				description: 'I am a cool guy',
-				localisation: 'Paris'
-			} as ProfileDto
+				location: 'Paris'
+			}
 		);
 	}
 }

@@ -12,19 +12,19 @@
 		</mat-card-header>
 		<mat-card-content>
 			<form [formGroup]="registerForm" class="flex items-center flex-col gap-3">
-
-				<app-form-field class="flex flex-grow w-full" label="Name" [control]="registerForm.controls.name">
-					<ng-container errors>
-						@if (registerForm.controls.name.hasError('required')) {
-							<span>Name is required</span>
-						}
-					</ng-container>
-				</app-form-field>
 				<app-form-field class="flex flex-grow w-full" label="Firstname"
 								[control]="registerForm.controls.firstName">
 					<ng-container errors>
 						@if (registerForm.controls.firstName.hasError('required')) {
 							<span>Firstname is required</span>
+						}
+					</ng-container>
+				</app-form-field>
+
+				<app-form-field class="flex flex-grow w-full" label="LastName" [control]="registerForm.controls.lastName">
+					<ng-container errors>
+						@if (registerForm.controls.lastName.hasError('required')) {
+							<span>LastName is required</span>
 						}
 					</ng-container>
 				</app-form-field>
@@ -78,6 +78,11 @@
 						(clicked)="register()"
 
 				/>
+				@if (error) {
+					<div mat-error class="mat-mdc-form-field-error">
+						{{ error }}
+					</div>
+				}
 			</form>
 		</mat-card-content>
 	</mat-card>

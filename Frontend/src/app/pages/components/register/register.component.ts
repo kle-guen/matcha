@@ -3,8 +3,13 @@ import {LoginHeaderComponent} from "../login/login-header/login-header.component
 import {ButtonComponent} from "../../../ui/components/button/button.component";
 import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
-import {AbstractControl, FormBuilder, ReactiveFormsModule, ValidatorFn, Validators} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
+import {passwordMatchValidator} from "../../../shared/validators/passwordMatch.validator";
+import {UserDto} from "../../../data/dto/send/user-dto";
+import {MatError} from "@angular/material/form-field";
+import {UsersHttpsService} from "../../../data/http/users-https.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
 	selector: 'app-register',
@@ -19,12 +24,28 @@ import {Router, RouterLink} from "@angular/router";
 		MatCardSubtitle,
 		MatCardTitle,
 		ReactiveFormsModule,
-		RouterLink
+		RouterLink,
+		MatError
 	],
 	templateUrl: './register.component.html',
 	styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
+
+	/**
+	 * The error message.
+	 */
+	public error: string | null = null;
+
+	/**
+	 * The auth http service.
+	 */
+	private readonly usersHttpService = inject(UsersHttpsService);
+
+	/**
+	 * The snack bar.
+	 */
+	private readonly snackBar = inject(MatSnackBar);
 
 	/**
 	 * The form builder.
@@ -40,8 +61,8 @@ export class RegisterComponent {
 	 * The register form.
 	 */
 	protected registerForm = this.formBuilder.group({
-			name: [null as string | null, Validators.required],
 			firstName: [null as string | null, Validators.required],
+			lastName: [null as string | null, Validators.required],
 			username: [null as string | null, Validators.required],
 			email: [null as string | null, [Validators.required, Validators.email]],
 			password: [null as string | null, [Validators.required, Validators.minLength(8)]],
@@ -53,24 +74,20 @@ export class RegisterComponent {
 	 * Registers the user.
 	 */
 	public register(): void {
-		console.log('Registering...');
-		this._router.navigate(['/complete-profile']);
+		const payload: UserDto = {
+			firstName: this.registerForm.get('firstName')?.value as string,
+			lastName: this.registerForm.get('lastName')?.value as string,
+			username: this.registerForm.get('username')?.value as string,
+			email: this.registerForm.get('email')?.value as string,
+			password: this.registerForm.get('password')?.value as string
+		};
+		this.usersHttpService.createUser(payload).subscribe(success => {
+			if (success) {
+				this.snackBar.open('User created successfully.', 'Close', {duration: 3000});
+				this._router.navigate(['/login']);
+			} else {
+				this.error = 'Email or username already in use.';
+			}
+		});
 	}
-}
-
-/**
- * A password match validator.
- */
-export function passwordMatchValidator(): ValidatorFn { //TODO: a bouger dans un fichier (dans shared/validators)
-	return (control: AbstractControl) => {
-		const password = control.get('password')?.value;
-		const confirmPassword = control.get('confirmPassword')?.value;
-
-		if (password === confirmPassword) {
-			return null;
-		} else {
-			control.get('confirmPassword')?.setErrors({mismatch: true});
-			return {mismatch: true};
-		}
-	};
 }

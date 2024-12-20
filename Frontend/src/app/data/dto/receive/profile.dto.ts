@@ -1,27 +1,18 @@
-import { UserCompleteDto } from '../send/user-complete.dto';
+import {profileInfoInterface} from "../../../shared/interfaces/profile-info.interface";
+import {PictureDto} from "../send/picture.dto";
 
 /**
  * The profile data transfer object received by the client.
  */
-export class ProfileDto extends UserCompleteDto {
+export class ProfileDto {
 
 	/**
-	 * The name of the user.
+	 * The profile picture of the user.
 	 */
-	name!: string;
+	profileInfo: profileInfoInterface | null = null;
 
 	/**
-	 * The first name of the user.
+	 * The pictures of the user.
 	 */
-	firstName!: string;
-
-	/**
-	 * The username of the user.
-	 */
-	username!: string;
-
-	/**
-	 * The email of the user.
-	 */
-	email!: string;
+	pictures: PictureDto[] = [];
 }

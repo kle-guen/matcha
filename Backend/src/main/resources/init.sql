@@ -20,6 +20,7 @@ CREATE TABLE profiles
     longitude         FLOAT,
     city              VARCHAR(100),
     fame_rating       FLOAT DEFAULT 0,
+    birthdate         TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 

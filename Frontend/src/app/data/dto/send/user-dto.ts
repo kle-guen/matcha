@@ -4,14 +4,14 @@
 export class UserDto {
 
 	/**
-	 * The name of the user.
-	 */
-	name!: string;
-
-	/**
 	 * The first name of the user.
 	 */
 	firstName!: string;
+
+	/**
+	 * The last name of the user.
+	 */
+	lastName!: string;
 
 	/**
 	 * The username of the user.

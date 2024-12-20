@@ -77,7 +77,7 @@ export class UpdateProfileComponent implements OnInit{
 		sexualOrientation: [null as string | null],
 		description: [null as string | null],
 		interests: [[] as string[]],
-		localisation: [null as string | null],
+		location: [null as string | null],
 	});
 
 	/**
@@ -88,7 +88,7 @@ export class UpdateProfileComponent implements OnInit{
 	ngOnInit() {
 		this.interests = this.activatedRoute.snapshot.data['interests'];
 		this.profile = this.activatedRoute.snapshot.data['profile'];
-
+/**
 		this.updateProfileForm.patchValue({
 			name: this.profile.name,
 			firstName: this.profile.firstName,
@@ -104,7 +104,7 @@ export class UpdateProfileComponent implements OnInit{
 			sexualOrientation: this.profile.sexualOrientation,
 			description: this.profile.description,
 			interests: [...this.profile.interests],
-			localisation: this.profile.localisation,
-		});
+			location: this.profile.location,
+		});**/
 	}
 }

@@ -1,7 +1,8 @@
-import {Component, Input} from '@angular/core';
-import {RouterLink} from "@angular/router";
+import {Component, inject, Input} from '@angular/core';
+import {Router, RouterLink} from "@angular/router";
 import {MatIcon, MatIconModule} from "@angular/material/icon";
 import {MatBadgeModule} from "@angular/material/badge";
+import {AuthHttpService} from "../../data/http/auth-http.service";
 
 @Component({
 	selector: 'app-main-header',
@@ -17,6 +18,11 @@ import {MatBadgeModule} from "@angular/material/badge";
 export class HeaderComponent {
 
 	/**
+	 * The auth http service.
+	 */
+	private readonly authHttpService = inject(AuthHttpService);
+
+	/**
 	 * The number of notifications.
 	 */
 	@Input() public notifications: number = 2;
@@ -25,4 +31,11 @@ export class HeaderComponent {
 	 * The number of messages.
 	 */
 	@Input() public messages: number = 1;
+
+	/**
+	 * Logs the user out.
+	 */
+	public logOut(): void {
+		this.authHttpService.logOut();
+	}
 }
