@@ -183,7 +183,7 @@ export class CompleteProfileComponent implements OnInit {
 		pictureFields.forEach(field => {
 			const picture: PictureDto = this.completeProfileForm.get(field)?.value;
 			if (picture.file) {
-				formData.append(`pictures[isProfilePicture=${picture.isProfilePicture}]`, picture.file);
+				formData.append('pictures', picture.file);
 			}
 		});
 

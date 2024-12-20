@@ -45,6 +45,6 @@ public class JwtUtils {
 		if (claims.getExpiration().before(new Date())) {
 			throw new Exception("Token expired");
 		}
-		return claims.get("userId", Integer.class);
+		return claims.get("sub", Integer.class);
 	}
 }

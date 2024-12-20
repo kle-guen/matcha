@@ -21,7 +21,7 @@ public class AuthMiddleware implements Handler {
 
 		try {
 			// Validate token and set userId in UserHolder
-			Integer userId = JwtUtils.validateTokenAndGetUserId(token);
+			final Integer userId = JwtUtils.validateTokenAndGetUserId(token);
 			UserHolder.setUserId(userId);
 			log.info("User ID: " + userId);
 		} catch (Exception e) {

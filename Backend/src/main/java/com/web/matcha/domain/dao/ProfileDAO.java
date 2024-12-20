@@ -82,10 +82,9 @@ public class ProfileDAO {
 			try (PreparedStatement pictureStmt = conn.prepareStatement(pictureSql)) {
 				for (UploadedFile picture : pictures) {
 					String filePath = FileUtils.saveUploadedFile(picture);
-
 					pictureStmt.setInt(1, userId);
 					pictureStmt.setString(2, filePath);
-					pictureStmt.setBoolean(3, false);
+					pictureStmt.setBoolean(3, pictures.indexOf(picture) == 0);
 					pictureStmt.executeUpdate();
 				}
 			}
