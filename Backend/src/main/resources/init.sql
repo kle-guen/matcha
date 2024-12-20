@@ -20,7 +20,7 @@ CREATE TABLE profiles
     longitude         FLOAT,
     city              VARCHAR(100),
     fame_rating       FLOAT DEFAULT 0,
-    birthdate         TIMESTAMP,
+    birthdate         TIMESTAMP   NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
@@ -127,3 +127,34 @@ VALUES ('SPORTS', 'Sports'),
        ('BOARD_GAMES', 'Board Games'),
        ('VOLUNTEERING', 'Volunteering'),
        ('WRITING', 'Writing and Blogging');
+
+CREATE OR REPLACE FUNCTION calculate_distance(lat1 DOUBLE PRECISION, lon1 DOUBLE PRECISION, lat2 DOUBLE PRECISION, lon2 DOUBLE PRECISION)
+    RETURNS DOUBLE PRECISION AS $$
+DECLARE
+    earth_radius CONSTANT DOUBLE PRECISION := 6371; -- Rayon de la Terre en km
+    dLat DOUBLE PRECISION;
+    dLon DOUBLE PRECISION;
+    a DOUBLE PRECISION;
+    c DOUBLE PRECISION;
+BEGIN
+    -- Convertir les différences en radians
+    dLat := RADIANS(lat2 - lat1);
+    dLon := RADIANS(lon2 - lon1);
+
+    -- Formule de Haversine
+    a := POWER(SIN(dLat / 2), 2) +
+         COS(RADIANS(lat1)) * COS(RADIANS(lat2)) * POWER(SIN(dLon / 2), 2);
+
+    c := 2 * ATAN2(SQRT(a), SQRT(1 - a));
+
+    -- Retourner la distance
+    RETURN earth_radius * c;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION get_date_minus_years(years INT)
+    RETURNS TIMESTAMP AS $$
+BEGIN
+    RETURN NOW() - (years || ' years')::INTERVAL;
+END;
+$$ LANGUAGE plpgsql;

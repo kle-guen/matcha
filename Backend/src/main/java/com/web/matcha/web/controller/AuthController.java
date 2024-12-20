@@ -28,7 +28,7 @@ public class AuthController extends AbstractController {
 		}
 
 		final String token = authService.authenticate(email, password);
-		ctx.status(200)
+		ctx.status(HttpStatus.ACCEPTED)
 				.contentType("application/json")
 				.json(Collections.singletonMap("token", token));
 	}

@@ -2,8 +2,10 @@ package com.web.matcha.config;
 
 import com.web.matcha.domain.dao.EmailTokenDAO;
 import com.web.matcha.domain.dao.InterestDAO;
+import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
+import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.mapper.InterestMapper;
 import com.web.matcha.mapper.PictureMapper;
 import com.web.matcha.mapper.ProfileMapper;
@@ -26,12 +28,15 @@ import java.util.List;
 
 public class RoutesConfig {
 
+	private RoutesConfig() {
+	}
+
 	public static void configure(final Javalin app) {
 		// DAOs
-		final UserDAO userDAO = new UserDAO();
+		final ProfileDAO profileDAO = new ProfileDAO();
+		final UserDAO userDAO = new UserDAO(profileDAO);
 		final InterestDAO interestDAO = new InterestDAO();
 		final EmailTokenDAO emailTokenDAO = new EmailTokenDAO();
-		final ProfileDAO profileDAO = new ProfileDAO();
 
 		// Mappers
 		final UserMapper userMapper = Mappers.getMapper(UserMapper.class);

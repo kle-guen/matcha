@@ -3,22 +3,16 @@ package com.web.matcha.domain.dao;
 import com.web.matcha.DatabaseConfig;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.enums.GenderEnum;
-import com.web.matcha.domain.enums.SexualPreferenceEnum;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.utils.FileUtils;
-import com.web.matcha.web.dto.PictureDto;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import io.javalin.http.UploadedFile;
 
@@ -29,30 +23,21 @@ public class ProfileDAO {
 	 * Get profile by id
 	 * @param id
 	 */
-	public Optional<ProfileModel> getProfileById(final int id) {
-		final String sql = "SELECT * FROM profiles where user_id = ?";
+	Optional<ProfileModel> getProfileById(Integer id) {
+		final String sql = "SELECT public.profiles.*, array_agg(public.interests.*) AS interests_list "
+				+ "FROM public.profiles "
+				+ "LEFT JOIN public.user_interests ON public.profiles.user_id = public.user_interests.user_id "
+				+ "LEFT JOIN public.interests ON public.user_interests.interest_code = public.interests.code "
+				+ "WHERE public.profiles.user_id = ?";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, id);
-			final ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
-				ProfileModel profile = ProfileModel.builder()
-						.userId(rs.getInt("user_id"))
-						.gender(GenderEnum.valueOf(rs.getString("gender")))
-						.sexualPreference(SexualPreferenceEnum.valueOf(rs.getString("sexual_preference")))
-						.description(rs.getString("biography"))
-						.latitude(rs.getFloat("latitude"))
-						.longitude(rs.getFloat("longitude"))
-						.city(rs.getString("city"))
-						.fameRating(rs.getFloat("fame_rating"))
-						.birthdate(rs.getTimestamp("birthdate"))
-						.build();
-				return Optional.of(profile);
-			}
+			return Optional.of(extractProfil(stmt.executeQuery()));
+
 		} catch (SQLException e) {
-			log.error("Error while getting profile by id", e);
+			log.error("Error while getting user by id", e);
 		}
 		return Optional.empty();
 	}
@@ -95,5 +80,25 @@ public class ProfileDAO {
 		}
 
 		return Optional.of(profileModel);
+	}
+
+	public static ProfileModel extractProfil(final ResultSet rs) throws SQLException {
+		if (rs == null) {
+			return null;
+		}
+
+		if (rs.next()) {
+			return ProfileModel.builder()
+					.userId(rs.getInt("user_id"))
+					.gender(rs.getObject("gender", GenderEnum.class))
+					.description(rs.getString("biography"))
+					.latitude(rs.getFloat("latitude"))
+					.longitude(rs.getFloat("longitude"))
+					.city(rs.getString("city"))
+					.fameRating(rs.getFloat("fame_rating"))
+					.interest(InterestDAO.extractInterests(Optional.ofNullable(rs.getArray("interests_list")).orElse(null).getResultSet()))
+					.build();
+		}
+		return null;
 	}
 }
