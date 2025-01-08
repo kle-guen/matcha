@@ -23,7 +23,7 @@ public class ProfileDAO {
 	 * Get profile by id
 	 * @param id
 	 */
-	Optional<ProfileModel> getProfileById(Integer id) {
+	public Optional<ProfileModel> getProfileById(Integer id) {
 		final String sql = "SELECT public.profiles.*, array_agg(public.interests.*) AS interests_list "
 				+ "FROM public.profiles "
 				+ "LEFT JOIN public.user_interests ON public.profiles.user_id = public.user_interests.user_id "

@@ -5,6 +5,7 @@ import com.web.matcha.web.dto.UserDto;
 import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
