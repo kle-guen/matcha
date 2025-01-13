@@ -1,6 +1,7 @@
 package com.web.matcha.domain.dao;
 
 import com.web.matcha.DatabaseConfig;
+import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.model.UserModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,7 +84,9 @@ public class UserDAO {
 
 			try (final ResultSet generatedKeys = stmt.getGeneratedKeys()) {
 				if (generatedKeys.next()) {
-					userModel.setId(generatedKeys.getInt(1));
+					int userId = generatedKeys.getInt(1);
+					userModel.setId(userId);
+					UserHolder.setUserId(userId);
 				}
 			}
 

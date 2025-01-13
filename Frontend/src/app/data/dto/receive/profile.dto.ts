@@ -1,5 +1,6 @@
-import {profileInfoInterface} from "../../../shared/interfaces/profile-info.interface";
 import {PictureDto} from "../send/picture.dto";
+import {GenderEnum} from "../../../shared/enums/gender.enum";
+import {SexualPreferenceEnum} from "../../../shared/enums/SexualPreference.enum";
 
 /**
  * The profile data transfer object received by the client.
@@ -7,9 +8,69 @@ import {PictureDto} from "../send/picture.dto";
 export class ProfileDto {
 
 	/**
-	 * The profile picture of the user.
+	 * The user first name.
 	 */
-	profileInfo: profileInfoInterface | null = null;
+	firstName!: string;
+
+	/**
+	 * The user last name.
+	 */
+	lastName!: string;
+
+	/**
+	 * The username of the user.
+	 */
+	username!: string;
+
+	/**
+	 * The email of the user.
+	 */
+	email!: string;
+
+	/**
+	 * The user id.
+	 */
+	userId!: number;
+
+	/**
+	 * The gender
+	 */
+	gender!: GenderEnum;
+
+	/**
+	 * The sexual orientation of the user.
+	 */
+	sexualPreference!: SexualPreferenceEnum;
+
+	/**
+	 * The description of the user
+	 */
+	description!: string;
+
+	/**
+	 * The latitude
+	 */
+	latitude!: number;
+
+	/**
+	 * The longitude
+	 */
+	longitude!: number;
+
+	/**
+	 * The city
+	 */
+	city!: string;
+
+	/**
+	 * The fame rating
+	 */
+	fameRating!: number;
+
+	/**
+	 * The date of birth of the user.
+	 */
+	birthdate!: Date;
 
 	/**
 	 * The pictures of the user.

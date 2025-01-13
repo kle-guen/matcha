@@ -9,5 +9,5 @@ import {ProfileDto} from "../dto/receive/profile.dto";
 export const updateProfileResolver: ResolveFn<ProfileDto> = (route, state) => {
   const profileHttpService = inject(ProfileHttpService);
 
-  return profileHttpService.getProfile();
+  return profileHttpService.getMyProfile();
 };

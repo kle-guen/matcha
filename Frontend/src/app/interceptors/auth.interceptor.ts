@@ -5,7 +5,14 @@ import {catchError} from 'rxjs/operators';
 import {AuthHttpService} from "../data/http/auth-http.service";
 
 export function AuthInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
-	const authHttpService = inject(AuthHttpService); // Inject the service
+	/**
+	 * The auth http service.
+	 */
+	const authHttpService = inject(AuthHttpService);
+
+	/**
+	 * The jwt token.
+	 */
 	const token = localStorage.getItem('matcha-token');
 
 	// Add Authorization header if token exists

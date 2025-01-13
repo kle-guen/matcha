@@ -22,8 +22,14 @@ public class ProfileController extends AbstractController {
 
 	@Override
 	public void registerRoutes(final Javalin app) {
+		app.get("/profiles/me", this::getMyProfile);
 		app.get("/profiles/{id}", this::getProfileById);
 		app.post("/profiles", this::createProfile);
+	}
+
+	private void getMyProfile(final Context ctx) {
+		final ProfileModel profileModel = profileService.getMyProfile();
+		ctx.status(200).json(profileModel);
 	}
 
 	/**

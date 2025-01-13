@@ -25,6 +25,13 @@ public class ProfileService {
 	 */
 	final private ProfileMapper profileMapper;
 
+	public ProfileModel getMyProfile() {
+		final int userId = UserHolder.getUserId();
+
+		return profileDAO.getProfileById(userId)
+				.orElseThrow(() -> new BadRequestResponse("Profile not found"));
+	}
+
 	/**
 	 * Get profile by id
 	 * @param id

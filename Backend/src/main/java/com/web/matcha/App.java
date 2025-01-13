@@ -13,7 +13,14 @@ public final class App {
 		System.setProperty("org.slf4j.simpleLogger.logFile", "System.out");
 		final int port = Integer.parseInt(Objects.requireNonNull(Env.getDotenv().get("API_PORT")));
 		final Javalin app = Javalin.create(config -> config.showJavalinBanner = false).start(port);
-		app.before(ctx -> new AuthMiddleware().handle(ctx));
+		app.before(ctx -> {
+			String path = ctx.path();
+			String method = String.valueOf(ctx.method());
+			if (path.equals("/auth/token") || (path.equals("/users")) && method.equals("POST")) {
+				return;
+			}
+			new AuthMiddleware().handle(ctx);
+		});
 		RoutesConfig.configure(app);
 	}
 }

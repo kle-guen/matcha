@@ -21,7 +21,7 @@ public class JwtUtils {
 		final long expirationTime = 1000 * 60 * 60; // Token valid for 1 hour
 
 		return Jwts.builder()
-			.setSubject(String.valueOf(userId))
+			.claim("userId", userId)
 			.setIssuedAt(new Date())
 			.setExpiration(new Date(System.currentTimeMillis() + expirationTime))
 			.signWith(SignatureAlgorithm.HS512, secretKey)
@@ -45,6 +45,6 @@ public class JwtUtils {
 		if (claims.getExpiration().before(new Date())) {
 			throw new Exception("Token expired");
 		}
-		return claims.get("sub", Integer.class);
+		return claims.get("userId", Integer.class);
 	}
 }

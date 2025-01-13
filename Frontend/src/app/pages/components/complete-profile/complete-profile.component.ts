@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {CompleteProfileHeaderComponent} from "./complete-profile-header/complete-profile-header.component";
 import {ImageUploaderComponent} from "../../../ui/components/image-uploader/image-uploader.component";
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
-import {ActivatedRoute, RouterLink} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {DatePickerComponent} from "../../../ui/components/date-picker/date-picker.component";
 import {provideNativeDateAdapter} from "@angular/material/core";
 import {MatRadioModule} from "@angular/material/radio";
@@ -62,6 +62,11 @@ export class CompleteProfileComponent implements OnInit {
 	 * The profile http service.
 	 */
 	private readonly profileHttpService = inject(ProfileHttpService);
+
+	/**
+	 * The router.
+	 */
+	private readonly router = inject(Router);
 
 	/**
 	 * The client ip.
@@ -187,9 +192,9 @@ export class CompleteProfileComponent implements OnInit {
 			}
 		});
 
-		this.profileHttpService.completedProfile(formData).subscribe(
+		this.profileHttpService.completeProfile(formData).subscribe(
 			(response) => {
-				console.log(response);
+				this.router.navigate(['/users']);
 			},
 			(err) => {
 				console.error(err);

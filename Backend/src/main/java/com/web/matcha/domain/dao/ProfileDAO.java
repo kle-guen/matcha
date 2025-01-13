@@ -30,7 +30,7 @@ public class ProfileDAO {
 	 * @param id
 	 */
 	public Optional<ProfileModel> getProfileById(final int id) {
-		final String sql = "SELECT * FROM profiles where id = ?";
+		final String sql = "SELECT * FROM profiles where user_id = ?";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -38,17 +38,18 @@ public class ProfileDAO {
 			stmt.setInt(1, id);
 			final ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
-				return Optional.of(new ProfileModel(
-						rs.getInt("user_id"),
-						rs.getObject("gender", GenderEnum.class),
-						rs.getObject("sexual_preference", SexualPreferenceEnum.class),
-						rs.getString("biography"),
-						rs.getFloat("latitude"),
-						rs.getFloat("longitude"),
-						rs.getString("city"),
-						rs.getFloat("fame_rating"),
-						rs.getTimestamp("birthdate")
-				));
+				ProfileModel profile = ProfileModel.builder()
+						.userId(rs.getInt("user_id"))
+						.gender(GenderEnum.valueOf(rs.getString("gender")))
+						.sexualPreference(SexualPreferenceEnum.valueOf(rs.getString("sexual_preference")))
+						.description(rs.getString("biography"))
+						.latitude(rs.getFloat("latitude"))
+						.longitude(rs.getFloat("longitude"))
+						.city(rs.getString("city"))
+						.fameRating(rs.getFloat("fame_rating"))
+						.birthdate(rs.getTimestamp("birthdate"))
+						.build();
+				return Optional.of(profile);
 			}
 		} catch (SQLException e) {
 			log.error("Error while getting profile by id", e);

@@ -19,9 +19,9 @@ export class ProfileHttpService {
 	private readonly http = inject(HttpClient);
 
 	/**
-	 * The comlete profile URL.
+	 * The complete profile method.
 	 */
-	public completedProfile(formData: FormData): Observable<ProfileDto> {
+	public completeProfile(formData: FormData): Observable<ProfileDto> {
 		const url = this.API_PROFILE_URL;
 
 		return this.http.post<ProfileDto>(url, formData).pipe(
@@ -29,30 +29,34 @@ export class ProfileHttpService {
 			map(response => {
 				return response;
 			}),
-		)
+		);
 	}
 
-	getProfile(): Observable<any> {
-		return of(
-			{
-				name: 'John Doe',
-				firstName: 'John',
-				username: 'johndoe',
-				email: 'johndoe@gmail.com',
-				birthDate: new Date('1996-01-01'),
-				profilePicture: 'https://www.google.com',
-				firstAdditionalPicture: 'https://www.google.com',
-				secondAdditionalPicture: 'https://www.google.com',
-				thirdAdditionalPicture: 'https://www.google.com',
-				fourthAdditionalPicture: 'https://www.google.com',
-				sexualOrientation: 'Straight',
-				gender: 'Male',
-				interests: [
-					'sports'
-				],
-				description: 'I am a cool guy',
-				location: 'Paris'
-			}
+	/**
+	 * The get profile method.
+	 */
+	public getMyProfile(): Observable<ProfileDto> {
+		const url = this.API_PROFILE_URL + '/me';
+
+		return this.http.get<ProfileDto>(url).pipe(
+			take(1),
+			map(response => {
+				return response;
+			}),
+		);
+	}
+
+	/**
+	 * The get profile by id method.
+	 */
+	public getProfileById(id: number): Observable<ProfileDto> {
+		const url = `${this.API_PROFILE_URL}/${id}`;
+
+		return this.http.get<ProfileDto>(url).pipe(
+			take(1),
+			map(response => {
+				return response;
+			}),
 		);
 	}
 }

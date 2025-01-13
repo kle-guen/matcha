@@ -15,14 +15,14 @@
 				<mat-card-content class="flex flex-col text-center ">
 					<app-form-field
 							class="w-full"
-							[control]="updateProfileForm.controls.name"
-							label="Name"
+							[control]="updateProfileForm.controls.firstName"
+							label="FirstName"
 							value="John Doe"
 					/>
 					<app-form-field
 							class="w-full"
-							[control]="updateProfileForm.controls.firstName"
-							label="First name"
+							[control]="updateProfileForm.controls.lastName"
+							label="LastName"
 					/>
 					<app-form-field
 							class="w-full"
@@ -112,7 +112,7 @@
 					</mat-card-title>
 				</mat-card-header>
 				<mat-card-content class="flex w-full text-center ">
-					<app-date-picker [control]="updateProfileForm.controls.birthDate"/>
+					<app-date-picker [control]="updateProfileForm.controls.birthdate"/>
 				</mat-card-content>
 			</mat-card>
 		</div>
@@ -140,7 +140,7 @@
 
 					<div class="flex flex-wrap flex-col">
 						<span class="text-left text-sm">Select your sexual orientation: </span>
-						<mat-radio-group [formControl]="updateProfileForm.controls.sexualOrientation" class="flex flex-wrap justify-center" aria-label="Select an option">
+						<mat-radio-group [formControl]="updateProfileForm.controls.sexualPreference" class="flex flex-wrap justify-center" aria-label="Select an option">
 							<mat-radio-button value="Straight">Straight</mat-radio-button>
 							<mat-radio-button value="Homosexual">Homosexual</mat-radio-button>
 							<mat-radio-button value="Bisexual">Bisexual</mat-radio-button>
