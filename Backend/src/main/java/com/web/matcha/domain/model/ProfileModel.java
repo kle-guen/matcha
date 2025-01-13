@@ -10,7 +10,6 @@ import lombok.Setter;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Builder
 @Getter
 @Setter
 @Builder

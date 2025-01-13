@@ -3,6 +3,7 @@ package com.web.matcha.domain.dao;
 import com.web.matcha.DatabaseConfig;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.enums.GenderEnum;
+import com.web.matcha.domain.enums.SexualPreferenceEnum;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,8 @@ public class ProfileDAO {
 				+ "FROM public.profiles "
 				+ "LEFT JOIN public.user_interests ON public.profiles.user_id = public.user_interests.user_id "
 				+ "LEFT JOIN public.interests ON public.user_interests.interest_code = public.interests.code "
-				+ "WHERE public.profiles.user_id = ?";
+				+ "WHERE public.profiles.user_id = ? "
+				+ "GROUP BY public.profiles.user_id";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -90,7 +92,8 @@ public class ProfileDAO {
 		if (rs.next()) {
 			return ProfileModel.builder()
 					.userId(rs.getInt("user_id"))
-					.gender(rs.getObject("gender", GenderEnum.class))
+					.gender(GenderEnum.valueOf(rs.getString("gender")))
+					.sexualPreference(SexualPreferenceEnum.valueOf(rs.getString("sexual_preference")))
 					.description(rs.getString("biography"))
 					.latitude(rs.getFloat("latitude"))
 					.longitude(rs.getFloat("longitude"))
