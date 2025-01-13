@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public class InterestDAO {
@@ -19,20 +20,29 @@ public class InterestDAO {
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
-			final List<InterestModel> interests = new ArrayList<>();
 
-			final ResultSet rs = stmt.executeQuery();
-			while (rs.next()) {
-				interests.add(new InterestModel(
-						rs.getString("code"),
-						rs.getString("label")
-				));
-			}
-			return interests;
+			return extractInterests(stmt.executeQuery());
 		} catch (SQLException e) {
 			log.error("Error while getting interests", e);
 			return List.of();
 		}
+	}
+
+	public static List<InterestModel> extractInterests(final ResultSet rs) throws SQLException {
+		if (rs == null) {
+			return List.of();
+		}
+		List<InterestModel> interests = new ArrayList<>();
+
+		while (rs.next()) {
+			Optional.of(InterestModel.builder()
+							.code(rs.getString("code"))
+							.label(rs.getString("label"))
+							.build())
+					.ifPresent(interests::add);
+		}
+
+		return interests;
 	}
 
 }

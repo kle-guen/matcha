@@ -2,7 +2,6 @@ package com.web.matcha.domain.model;
 
 import com.web.matcha.domain.enums.GenderEnum;
 import com.web.matcha.domain.enums.SexualPreferenceEnum;
-import com.web.matcha.web.dto.PictureDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +13,7 @@ import java.util.List;
 @Builder
 @Getter
 @Setter
-@AllArgsConstructor
+@Builder
 public class ProfileModel {
 	private Integer userId;
 
@@ -33,4 +32,6 @@ public class ProfileModel {
 	private Float fameRating;
 
 	private Timestamp birthdate;
+
+	List<InterestModel> interest;
 }

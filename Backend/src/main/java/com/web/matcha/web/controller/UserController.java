@@ -6,6 +6,7 @@ import com.web.matcha.service.UserService;
 import com.web.matcha.web.dto.UserDto;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -16,7 +17,10 @@ public class UserController extends AbstractController {
 
 	@Override
 	public void registerRoutes(final Javalin app) {
+		//GET
 		app.get("/users/{id}", this::getUserById);
+
+		//POST
 		app.post("/users", this::createUser);
 	}
 
@@ -29,13 +33,13 @@ public class UserController extends AbstractController {
 				return;
 		}
 		final UserModel userModel = userService.getUserById(id);
-		ctx.status(200).json(userModel);
+		ctx.status(HttpStatus.ACCEPTED.getCode()).json(userModel);
 	}
 
 	private void createUser(final Context ctx) {
 		UserDto userDto = ctx.bodyAsClass(UserDto.class);
 		userService.addUser(userDto);
 		//emailService.sendVerificationEmail(userDto.getEmail());
-		ctx.status(201).json(userDto);
+		ctx.status(HttpStatus.CREATED.getCode()).json(userDto);
 	}
 }

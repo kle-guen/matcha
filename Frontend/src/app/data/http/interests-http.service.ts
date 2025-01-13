@@ -1,5 +1,5 @@
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {catchError, Observable, of, take} from "rxjs";
 import {inject, Injectable} from "@angular/core";
 import {InterestDto} from "../dto/receive/interest.dto";
 
@@ -26,7 +26,10 @@ export class InterestsHttpService {
 	 */
 	getInterests(): Observable<InterestDto[]> {
 		const url = `${this.API_URL}/interests`;
-		return this.http.get<InterestDto[]>(url);
+		return this.http.get<InterestDto[]>(url).pipe(
+			catchError(() => of([])),
+			take(1)
+		);
 	}
 
 	/**

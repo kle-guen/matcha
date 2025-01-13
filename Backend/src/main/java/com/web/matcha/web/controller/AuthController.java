@@ -5,6 +5,7 @@ import com.web.matcha.web.dto.UserDto;
 import io.javalin.Javalin;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Collections;
@@ -28,7 +29,7 @@ public class AuthController extends AbstractController {
 		}
 
 		final String token = authService.authenticate(email, password);
-		ctx.status(200)
+		ctx.status(HttpStatus.ACCEPTED)
 				.contentType("application/json")
 				.json(Collections.singletonMap("token", token));
 	}
