@@ -174,6 +174,20 @@ public class UserDAO {
 		return null;
 	}
 
+	public void verifyUserEmail(int userId) {
+		final String sql = "UPDATE users SET is_verified = true WHERE id = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, userId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			log.error("Error while verifying user email", e);
+		}
+	}
+
 	public static UserModel extractUserWithProfile(final ResultSet rs) throws SQLException {
 		if (rs == null) {
 			return null;
@@ -192,19 +206,5 @@ public class UserDAO {
 					.build();
 		}
 		return null;
-	}
-
-	public void verifyUserEmail(int userId) {
-		final String sql = "UPDATE users SET is_verified = true WHERE id = ?";
-
-		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
-		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-			stmt.setInt(1, userId);
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			log.error("Error while verifying user email", e);
-		}
 	}
 }
