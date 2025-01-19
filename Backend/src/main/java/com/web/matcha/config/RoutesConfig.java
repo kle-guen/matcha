@@ -7,18 +7,21 @@ import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.mapper.InterestMapper;
+import com.web.matcha.mapper.MemberMapper;
 import com.web.matcha.mapper.PictureMapper;
 import com.web.matcha.mapper.ProfileMapper;
 import com.web.matcha.mapper.UserMapper;
 import com.web.matcha.service.AuthService;
 import com.web.matcha.service.EmailService;
 import com.web.matcha.service.InterestsService;
+import com.web.matcha.service.MemberService;
 import com.web.matcha.service.ProfileService;
 import com.web.matcha.service.UserService;
 import com.web.matcha.web.controller.AbstractController;
 import com.web.matcha.web.controller.AuthController;
 import com.web.matcha.web.controller.EmailTokenController;
 import com.web.matcha.web.controller.InterestsController;
+import com.web.matcha.web.controller.MemberController;
 import com.web.matcha.web.controller.ProfileController;
 import io.javalin.Javalin;
 import com.web.matcha.web.controller.UserController;
@@ -40,12 +43,14 @@ public class RoutesConfig {
 
 		// Mappers
 		final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+		final MemberMapper memberMapper = Mappers.getMapper(MemberMapper.class);
 		final InterestMapper interestMapper = Mappers.getMapper(InterestMapper.class);
 		final ProfileMapper profileMapper = Mappers.getMapper(ProfileMapper.class);
 		final PictureMapper pictureMapper = Mappers.getMapper(PictureMapper.class);
 
 		// Services
 		final UserService userService = new UserService(userDAO, userMapper);
+		final MemberService memberService = new MemberService(memberMapper, userDAO);
 		final InterestsService interestsService = new InterestsService(interestDAO, interestMapper);
 		final AuthService authService = new AuthService(userDAO);
 		final EmailService emailService = new EmailService(emailTokenDAO);
@@ -54,11 +59,15 @@ public class RoutesConfig {
 		// Controllers
 		final List<AbstractController> controllers = List.of(
 				new UserController(userService, emailService),
+				new MemberController(memberService),
 				new InterestsController(interestsService),
 				new EmailTokenController(emailService, userService),
 				new AuthController(authService),
 				new ProfileController(profileService));
 
 		controllers.forEach(controller -> controller.registerRoutes(app));
+
+		WebSocketConfig webSocketConfig = new WebSocketConfig();
+		webSocketConfig.configure(app);
 	}
 }

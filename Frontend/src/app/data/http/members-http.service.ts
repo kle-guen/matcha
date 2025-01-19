@@ -20,7 +20,7 @@ export class MembersHttpService {
 	 * The members URL.
 	 * @private
 	 */
-	private readonly API_MEMBERS_URL = '/api/users';
+	private readonly API_MEMBERS_URL = '/api/members';
 
 	/**
 	 * Research members.

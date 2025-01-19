@@ -22,7 +22,7 @@ import {MemberCompleteDto} from "../../../../data/dto/receive/member-complete.dt
 	templateUrl: './member-page.component.html',
 	styleUrl: './member-page.component.scss'
 })
-export class UserPage implements OnInit {
+export class MemberPage implements OnInit {
 
 	/**
 	 * The ng destroy subject.

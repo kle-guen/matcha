@@ -1,6 +1,8 @@
 package com.web.matcha.config;
 
 import com.web.matcha.domain.utils.JwtUtils;
+import com.web.matcha.web.ws.dto.WsDataConnection;
+import com.web.matcha.web.ws.dto.WsDto;
 import io.javalin.Javalin;
 import io.javalin.websocket.WsCloseContext;
 import io.javalin.websocket.WsConfig;
@@ -10,6 +12,7 @@ import io.javalin.websocket.WsErrorContext;
 import io.javalin.websocket.WsMessageContext;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,12 +52,16 @@ public class WebSocketConfig {
 		Optional.ofNullable(sessionToUser.get(clientId))
 				.ifPresentOrElse(sessionsUser -> sessionsUser.add(ctx.sessionId()),
 						() -> {
-							sessionToUser.put(clientId, List.of(ctx.sessionId()));
+							sessionToUser.put(clientId, new ArrayList<>(List.of(ctx.sessionId())));
 							//TODO notifier les users l'user clientId s'est connecté
 						});
 		clientConnections.put(ctx.sessionId(), ctx);
 		log.info("Client {} a ouvert une session WebSocket", clientId);
-		ctx.send("Connexion WebSocket établie pour le client : " + clientId);
+		ctx.send(WsDto.builder()
+				.data(WsDataConnection.builder()
+						.message("Connexion WebSocket établie")
+						.build())
+				.build());
 	}
 
 	void onMessage(final WsMessageContext ctx) {

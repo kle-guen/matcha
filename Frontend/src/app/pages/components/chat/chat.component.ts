@@ -1,12 +1,10 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
-import {SocketService} from "../../../shared/services/socket.service";
-import {MessageDto} from "../../../data/dto/receive/message.dto";
 import {ActivatedRoute} from "@angular/router";
 import {MessagesService} from "../../../shared/services/messages.service";
 import {FormControl} from "@angular/forms";
 import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
-import {takeUntil} from "rxjs";
+import {SocketService} from "../../../shared/services/socket.service";
 
 @Component({
 	selector: 'app-chat',
@@ -32,11 +30,11 @@ export class ChatComponent implements OnInit {
 	 */
 	private readonly activatedRoute = inject(ActivatedRoute)
 
-	// /**
-	//  * The socket service.
-	//  * @private
-	//  */
-	// private readonly socketService = inject(SocketService);
+	/**
+	 * The socket service.
+	 * @private
+	 */
+	private readonly socketService = inject(SocketService);
 
 	/**
 	 * The messages service.
@@ -53,6 +51,8 @@ export class ChatComponent implements OnInit {
 	 * The on init.
 	 */
 	ngOnInit() {
+		this.socketService.connect('ws://localhost:7000/ws');
+		this.socketService.sendMessage('message');
 		// this.activatedRoute.snapshot.data['messages']?.forEach((message: MessageDto) => this.messagesService.add(message.user, message));
 		//
 		// this.socketService.listen('message').pipe(

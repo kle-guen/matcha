@@ -1,12 +1,12 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subject, Observable, timer } from 'rxjs';
-import { switchMap, retryWhen, delay, tap } from 'rxjs/operators';
+import {Injectable, OnDestroy} from '@angular/core';
+import {Observable, Subject, timer} from 'rxjs';
+import {switchMap, tap} from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root',
 })
-export class WebSocketService implements OnDestroy {
-	private socket!: WebSocket;
+export class SocketService implements OnDestroy {
+	private socket: WebSocket | null = null;
 	private messageSubject = new Subject<any>();
 	private reconnectAttempts = 0;
 	private readonly maxReconnectAttempts = 5;
@@ -14,11 +14,13 @@ export class WebSocketService implements OnDestroy {
 	private isConnected = false;
 
 	connect(url: string): void {
-		this.initializeWebSocket(url);
+		if (!this.socket) {
+			this.initializeWebSocket(url);
+		}
 	}
 
 	private initializeWebSocket(url: string): void {
-		this.socket = new WebSocket(url);
+		this.socket = new WebSocket(url + `?token=${localStorage.getItem('matcha-token')}`);
 
 		// Gérer les messages reçus
 		this.socket.onmessage = (event) => {
