@@ -45,18 +45,30 @@ export class AddressPickerComponent implements OnInit {
   public longitude: number | undefined;
 
   /**
+   * The city of the marker
+   */
+  public city: string = '';
+
+  /**
    * @inheritDoc
    */
   public ngOnInit(): void {
+    this.setLocation();
     this.initMap();
   }
 
+  private setLocation() {
+    if (this.control.value) {
+      this.latitude = this.control.value.latitude;
+      this.longitude = this.control.value.longitude;
+    }
+  }
   /**
    * Initialize the map and marker
    */
   private initMap() {
     const mapOptions = {
-      center: { lat: 43.295, lng: 5.372 },
+      center: { lat: this.latitude ?? 43.295, lng: this.longitude ?? 5.372},
       zoom: 10,
       fullscreenControl: true,
       mapTypeControl: false,
@@ -94,6 +106,12 @@ export class AddressPickerComponent implements OnInit {
 
       this.fillInAddress(place);
       this.updateLatLng(this.marker.getPosition()!);
+      this.control.setValue({
+        latitude: this.latitude,
+        longitude: this.longitude,
+        city: this.city,
+      });
+      console.log(this.control.value);
     });
   }
 
@@ -104,10 +122,10 @@ export class AddressPickerComponent implements OnInit {
   private fillInAddress(place: google.maps.places.PlaceResult): void {
     const addressComponents = place.address_components || [];
     let localityValue = '';
-
-    addressComponents.forEach(component => {
+    addressComponents.some(component => {
       if (component.types.includes('locality')) {
         localityValue = component.long_name;
+        this.city = localityValue;
       }
     });
 
@@ -125,6 +143,10 @@ export class AddressPickerComponent implements OnInit {
     console.log(this.marker.getPosition().toJSON());
   }
 
+  /**
+   * Update the latitude and longitude
+   * @param location
+   */
   public updateLatLng(location: google.maps.LatLng): void {
     this.latitude = location.lat();
     this.longitude = location.lng();
@@ -134,7 +156,7 @@ export class AddressPickerComponent implements OnInit {
    * Geocode the address and update the map and marker
    * @param address
    */
-  geocodeAddress(address: string) {
+  public geocodeAddress(address: string) {
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({ address }, (results, status) => {
       if (results == null) return ;
@@ -148,13 +170,21 @@ export class AddressPickerComponent implements OnInit {
     });
   }
 
-  getCurrentPosition(): void {
+  /**
+   * Get the current position from the browser
+   */
+  public getCurrentPosition(): void {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           this.map.setCenter({ lat: position.coords.latitude, lng: position.coords.longitude });
           this.marker.setPosition({ lat: position.coords.latitude, lng: position.coords.longitude });
           this.updateLatLng(this.marker.getPosition()!);
+          this.control.setValue({
+            latitude: this.latitude,
+            longitude: this.longitude,
+            city: this.city,
+          });
         });
     }
   }

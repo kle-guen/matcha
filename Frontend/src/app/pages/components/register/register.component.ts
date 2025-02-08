@@ -6,7 +6,7 @@ import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} f
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
 import {passwordMatchValidator} from "../../../shared/validators/passwordMatch.validator";
-import {UserDto} from "../../../data/dto/send/user-dto";
+import {RegisterDto} from "../../../data/dto/send/register-dto";
 import {MatError} from "@angular/material/form-field";
 import {UsersHttpsService} from "../../../data/http/users-https.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
@@ -74,7 +74,7 @@ export class RegisterComponent {
 	 * Registers the user.
 	 */
 	public register(): void {
-		const payload: UserDto = {
+		const payload: RegisterDto = {
 			firstName: this.registerForm.get('firstName')?.value as string,
 			lastName: this.registerForm.get('lastName')?.value as string,
 			username: this.registerForm.get('username')?.value as string,

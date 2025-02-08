@@ -7,6 +7,7 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.service.ProfileService;
+import io.javalin.http.HttpStatus;
 import io.javalin.http.UploadedFile;
 import lombok.RequiredArgsConstructor;
 
@@ -27,9 +28,13 @@ public class ProfileController extends AbstractController {
 		app.post("/profiles", this::createProfile);
 	}
 
+	/**
+	 * Get my profile
+	 * @param ctx
+	 */
 	private void getMyProfile(final Context ctx) {
 		final ProfileModel profileModel = profileService.getMyProfile();
-		ctx.status(200).json(profileModel);
+		ctx.status(HttpStatus.ACCEPTED).json(profileModel);
 	}
 
 	/**

@@ -2,7 +2,7 @@
 	<div>
 		<span class="sb-title">Select your address</span>
 	</div>
-	<input type="text" placeholder="Address" id="location-input" [formControl]="control"/>
+	<input type="text" placeholder="Address" id="location-input"/>
 </div>
 <div class="panel">
 	<div>
@@ -12,8 +12,3 @@
 </div>
 
 <div id="map" style="height: 500px; width: 100%;"></div>
-<div class="flex flex-col panel mt-5 p-5 text-center">
-	<span>latitude : {{latitude}}</span>
-	<span>longitude : {{longitude}}</span>
-	<app-button label="Confirm marker position" (click)="checkout()"></app-button>
-</div>

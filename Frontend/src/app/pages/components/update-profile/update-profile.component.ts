@@ -19,11 +19,12 @@ import {PictureDto} from "../../../data/dto/send/picture.dto";
 import {GenderEnum} from "../../../shared/enums/gender.enum";
 import {SexualPreferenceEnum} from "../../../shared/enums/SexualPreference.enum";
 import {locationInterface} from "../../../shared/interfaces/location.interface";
-import {ProfileDto} from "../../../data/dto/send/profile.dto";
+import {ProfileDto} from "../../../data/dto/receive/profile.dto";
+import {UserDto} from "../../../data/dto/receive/user.dto";
 
 @Component({
-  selector: 'app-update-profile',
-  standalone: true,
+	selector: 'app-update-profile',
+	standalone: true,
 	providers: [provideNativeDateAdapter()],
 	imports: [
 		CompleteProfileHeaderComponent,
@@ -43,10 +44,10 @@ import {ProfileDto} from "../../../data/dto/send/profile.dto";
 		ButtonComponent,
 		AddressPickerComponent
 	],
-  templateUrl: './update-profile.component.html',
-  styleUrl: './update-profile.component.scss'
+	templateUrl: './update-profile.component.html',
+	styleUrl: './update-profile.component.scss'
 })
-export class UpdateProfileComponent implements OnInit{
+export class UpdateProfileComponent implements OnInit {
 
 	/**
 	 * The activated route.
@@ -54,10 +55,10 @@ export class UpdateProfileComponent implements OnInit{
 	private readonly activatedRoute = inject(ActivatedRoute);
 
 	/**
-	 * The user profile.
+	 * The user
 	 */
-	private profile: ProfileDto = {} as ProfileDto;
-	
+	public user: UserDto | null = null;
+
 	/**
 	 * The update profile form.
 	 */
@@ -85,26 +86,30 @@ export class UpdateProfileComponent implements OnInit{
 	public interests: InterestDto[] = [];
 
 	ngOnInit() {
-		this.interests = this.activatedRoute.snapshot.data['interests'];
-		this.profile = this.activatedRoute.snapshot.data['profile'];
 
-		if (this.profile.profileInfo == null || this.profile.userInfo == null || this.profile.pictures.length != 5) return ;
+		this.interests = this.activatedRoute.snapshot.data['interests'];
+		this.user = this.activatedRoute.snapshot.data['user'];
+
+		console.log(this.user);
+
+		if (this.user == null) return;
 		this.updateProfileForm.patchValue({
-			firstName: this.profile.userInfo.firstName,
-			lastName: this.profile.userInfo.lastName,
-			username: this.profile.userInfo.username,
-			email: this.profile.userInfo.email,
-			profilePicture: this.profile.pictures[0],
-			firstAdditionalPicture: this.profile.pictures[1],
-			secondAdditionalPicture: this.profile.pictures[2],
-			thirdAdditionalPicture: this.profile.pictures[3],
-			fourthAdditionalPicture: this.profile.pictures[4],
-			birthdate: this.profile.profileInfo.birthdate,
-			gender: this.profile.profileInfo.gender,
-			sexualPreference: this.profile.profileInfo.sexualPreference,
-			description: this.profile.profileInfo.description,
-			interests: [...this.profile.profileInfo.interests],
-			location: this.profile.profileInfo.location,
-		});
+				firstName: this.user.firstName,
+				lastName: this.user.lastName,
+				username: this.user.username,
+				email: this.user.email,
+				birthdate: new Date(this.user.profile.birthdate),
+				gender: this.user.profile.gender,
+				sexualPreference: this.user.profile.sexualPreference,
+				description: this.user.profile.description,
+				interests: this.user.profile.interests,
+				location: {latitude: this.user.profile.latitude, longitude: this.user.profile.longitude, city: this.user.profile.city}
+			},
+		);
+		console.log(this.updateProfileForm.value);
 	}
+
+
+	protected readonly GenderEnum = GenderEnum;
+	protected readonly SexualPreferenceEnum = SexualPreferenceEnum;
 }

@@ -1,31 +1,12 @@
 import {PictureDto} from "../send/picture.dto";
 import {GenderEnum} from "../../../shared/enums/gender.enum";
 import {SexualPreferenceEnum} from "../../../shared/enums/SexualPreference.enum";
+import {InterestDto} from "./interest.dto";
 
 /**
  * The profile data transfer object received by the client.
  */
 export class ProfileDto {
-
-	/**
-	 * The user first name.
-	 */
-	firstName!: string;
-
-	/**
-	 * The user last name.
-	 */
-	lastName!: string;
-
-	/**
-	 * The username of the user.
-	 */
-	username!: string;
-
-	/**
-	 * The email of the user.
-	 */
-	email!: string;
 
 	/**
 	 * The user id.
@@ -41,6 +22,11 @@ export class ProfileDto {
 	 * The sexual orientation of the user.
 	 */
 	sexualPreference!: SexualPreferenceEnum;
+
+	/**
+	 * The user interests.
+	 */
+	interests!: InterestDto[];
 
 	/**
 	 * The description of the user

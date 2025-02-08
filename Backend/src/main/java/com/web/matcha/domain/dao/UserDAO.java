@@ -188,7 +188,7 @@ public class UserDAO {
 					.lastName(rs.getString("last_name"))
 					.verified(rs.getBoolean("is_verified"))
 					.lastLoginAt(rs.getTimestamp("last_login_at"))
-					.profile(ProfileDAO.extractProfil(rs))
+					.profile(ProfileDAO.extractProfil(rs, true))
 					.build();
 		}
 		return null;

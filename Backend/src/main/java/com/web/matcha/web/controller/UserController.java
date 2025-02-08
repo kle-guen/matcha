@@ -1,5 +1,6 @@
 package com.web.matcha.web.controller;
 
+import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.service.EmailService;
 import com.web.matcha.service.UserService;
@@ -18,10 +19,18 @@ public class UserController extends AbstractController {
 	@Override
 	public void registerRoutes(final Javalin app) {
 		//GET
+		app.get("/users/me", this::getMyUser);
 		app.get("/users/{id}", this::getUserById);
 
 		//POST
 		app.post("/users", this::createUser);
+	}
+
+	private void getMyUser(final Context ctx) {
+		final int id = UserHolder.getUserId();
+
+		final UserModel userModel = userService.getUserById(id);
+		ctx.status(HttpStatus.ACCEPTED.getCode()).json(userModel);
 	}
 
 	private void getUserById(final Context ctx) {

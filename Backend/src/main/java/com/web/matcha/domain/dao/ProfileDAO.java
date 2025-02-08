@@ -36,7 +36,7 @@ public class ProfileDAO {
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, id);
-			return Optional.of(extractProfil(stmt.executeQuery()));
+			return Optional.of(extractProfil(stmt.executeQuery(), false));
 
 		} catch (SQLException e) {
 			log.error("Error while getting user by id", e);
@@ -84,14 +84,15 @@ public class ProfileDAO {
 		return Optional.of(profileModel);
 	}
 
-	public static ProfileModel extractProfil(final ResultSet rs) throws SQLException {
+	public static ProfileModel extractProfil(final ResultSet rs, final boolean next) throws SQLException {
 		if (rs == null) {
 			return null;
 		}
 
-		if (rs.next()) {
+		if (next || rs.next()) {
 			return ProfileModel.builder()
 					.userId(rs.getInt("user_id"))
+					.birthdate(rs.getTimestamp("birthdate"))
 					.gender(GenderEnum.valueOf(rs.getString("gender")))
 					.sexualPreference(SexualPreferenceEnum.valueOf(rs.getString("sexual_preference")))
 					.description(rs.getString("biography"))
@@ -99,7 +100,7 @@ public class ProfileDAO {
 					.longitude(rs.getFloat("longitude"))
 					.city(rs.getString("city"))
 					.fameRating(rs.getFloat("fame_rating"))
-					.interest(InterestDAO.extractInterests(Optional.ofNullable(rs.getArray("interests_list")).orElse(null).getResultSet()))
+					.interests(InterestDAO.extractInterests2(rs.getArray("interests_list")))
 					.build();
 		}
 		return null;

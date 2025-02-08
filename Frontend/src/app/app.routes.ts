@@ -69,10 +69,11 @@ export const routes: Routes = [
 			{
 				path: 'update-profile',
 				resolve: {
-					profile: updateProfileResolver,
+					user: updateProfileResolver,
 					interests: InterestsResolver
 				},
-				component: UpdateProfileComponent
+				component: UpdateProfileComponent,
+				runGuardsAndResolvers: 'always'
 			}
 		]
 	},

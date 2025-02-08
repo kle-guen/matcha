@@ -1,7 +1,7 @@
 /**
  * The user data transfer object.
  */
-export class UserDto {
+export class RegisterDto {
 
 	/**
 	 * The first name of the user.

@@ -1,13 +1,14 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {MatInputModule} from "@angular/material/input";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
+import {MatNativeDateModule} from "@angular/material/core";
 
 @Component({
 	selector: 'app-date-picker',
 	standalone: true,
-	imports: [MatFormFieldModule, MatInputModule, MatDatepickerModule, ReactiveFormsModule],
+	imports: [MatFormFieldModule, MatNativeDateModule, MatInputModule, MatDatepickerModule, ReactiveFormsModule],
 	templateUrl: './date-picker.component.html',
 	styleUrl: './date-picker.component.scss'
 })

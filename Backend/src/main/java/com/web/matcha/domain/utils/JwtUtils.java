@@ -5,7 +5,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.javalin.http.Context;
-import java.lang.Class;
 
 import java.util.Date;
 
@@ -18,14 +17,14 @@ public class JwtUtils {
 	}
 
 	public static String generateToken(final int userId) {
-		final long expirationTime = 1000 * 60 * 60; // Token valid for 1 hour
+		final long expirationTime = 1000 * 60 * 60 * 24; // Token valid for 1 day
 
 		return Jwts.builder()
-			.claim("userId", userId)
-			.setIssuedAt(new Date())
-			.setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-			.signWith(SignatureAlgorithm.HS512, secretKey)
-			.compact();
+				.claim("userId", userId)
+				.setIssuedAt(new Date())
+				.setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+				.signWith(SignatureAlgorithm.HS512, secretKey)
+				.compact();
 	}
 
 	public static String extractToken(Context ctx) {
@@ -38,9 +37,9 @@ public class JwtUtils {
 
 	public static int validateTokenAndGetUserId(final String token) throws Exception {
 		Claims claims = Jwts.parser()
-			.setSigningKey(secretKey)
-			.parseClaimsJws(token)
-			.getBody();
+				.setSigningKey(secretKey)
+				.parseClaimsJws(token)
+				.getBody();
 
 		if (claims.getExpiration().before(new Date())) {
 			throw new Exception("Token expired");

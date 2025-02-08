@@ -15,6 +15,8 @@ import {InterestDto} from "../../../data/dto/receive/interest.dto";
 })
 export class FormFieldComponent {
 
+
+	public selected = "HIKING";
 	/**
 	 * The label for the form field
 	 */
@@ -44,4 +46,11 @@ export class FormFieldComponent {
 	 * The value of the input
 	 */
 	@Input() value: string | null = null;
+
+	/**
+	 * Function to compare the interests for the select
+	 */
+	public compareInterests(option: InterestDto, value: InterestDto): boolean {
+		return option && value ? option.code === value.code : option === value;
+	}
 }

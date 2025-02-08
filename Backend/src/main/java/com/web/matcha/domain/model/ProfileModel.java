@@ -32,5 +32,5 @@ public class ProfileModel {
 
 	private Timestamp birthdate;
 
-	List<InterestModel> interest;
+	List<InterestModel> interests;
 }

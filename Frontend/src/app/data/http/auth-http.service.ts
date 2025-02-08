@@ -2,7 +2,7 @@ import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {catchError, map, Observable, of, take} from "rxjs";
 import {Router} from "@angular/router";
-import {UserDto} from "../dto/send/user-dto";
+import {RegisterDto} from "../dto/send/register-dto";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Injectable({
@@ -67,10 +67,10 @@ export class AuthHttpService {
 	 * Registers the user.
 	 * @param payload
 	 */
-	public register(payload: UserDto): Observable<boolean> {
+	public register(payload: RegisterDto): Observable<boolean> {
 		const url = this.API_AUTH_URL;
 
-		return this.http.post<UserDto>(url, payload).pipe(
+		return this.http.post<RegisterDto>(url, payload).pipe(
 			take(1),
 			map(response => {
 				return !!response;

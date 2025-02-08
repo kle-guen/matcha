@@ -1,6 +1,6 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {map, Observable, of, take} from "rxjs";
+import {map, Observable, take} from "rxjs";
 import {ProfileDto} from "../dto/receive/profile.dto";
 
 @Injectable({
@@ -37,7 +37,6 @@ export class ProfileHttpService {
 	 */
 	public getMyProfile(): Observable<ProfileDto> {
 		const url = this.API_PROFILE_URL + '/me';
-
 		return this.http.get<ProfileDto>(url).pipe(
 			take(1),
 			map(response => {

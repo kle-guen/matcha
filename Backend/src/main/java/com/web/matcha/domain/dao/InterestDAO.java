@@ -4,6 +4,7 @@ import com.web.matcha.DatabaseConfig;
 import com.web.matcha.domain.model.InterestModel;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,7 +28,6 @@ public class InterestDAO {
 			return List.of();
 		}
 	}
-
 	public static List<InterestModel> extractInterests(final ResultSet rs) throws SQLException {
 		if (rs == null) {
 			return List.of();
@@ -40,6 +40,27 @@ public class InterestDAO {
 							.label(rs.getString("label"))
 							.build())
 					.ifPresent(interests::add);
+		}
+
+		return interests;
+	}
+
+	public static List<InterestModel> extractInterests2(final Array interestsArray) throws SQLException {
+		if (interestsArray == null) {
+			return List.of();
+		}
+
+		List<InterestModel> interests = new ArrayList<>();
+
+		Object[] rows = (Object[]) interestsArray.getArray();
+		for (Object row : rows) {
+			String[] fields = row.toString().replace("(", "").replace(")", "").split(",");
+			if (fields.length >= 2) {
+				interests.add(InterestModel.builder()
+						.code(fields[0])
+						.label(fields[1])
+						.build());
+			}
 		}
 
 		return interests;
