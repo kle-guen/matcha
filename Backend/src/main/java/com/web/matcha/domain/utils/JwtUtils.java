@@ -1,6 +1,7 @@
 package com.web.matcha.domain.utils;
 
 import com.web.matcha.config.Env;
+import io.javalin.http.UnauthorizedResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -35,14 +36,14 @@ public class JwtUtils {
 		return null;
 	}
 
-	public static int validateTokenAndGetUserId(final String token) throws Exception {
+	public static int validateTokenAndGetUserId(final String token) {
 		Claims claims = Jwts.parser()
 				.setSigningKey(secretKey)
 				.parseClaimsJws(token)
 				.getBody();
 
 		if (claims.getExpiration().before(new Date())) {
-			throw new Exception("Token expired");
+			throw new UnauthorizedResponse("Token expired");
 		}
 		return claims.get("userId", Integer.class);
 	}

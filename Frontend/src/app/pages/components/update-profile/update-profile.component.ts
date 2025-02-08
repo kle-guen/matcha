@@ -9,7 +9,7 @@ import {FormFieldComponent} from "../../../ui/components/form-field/form-field.c
 import {ImageUploaderComponent} from "../../../ui/components/image-uploader/image-uploader.component";
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
 import {MatRadioModule} from "@angular/material/radio";
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {MatFormField} from "@angular/material/form-field";
 import {GoogleMapsModule} from "@angular/google-maps";
@@ -54,6 +54,8 @@ export class UpdateProfileComponent implements OnInit {
 	 */
 	private readonly activatedRoute = inject(ActivatedRoute);
 
+	private readonly formBuilder = inject(FormBuilder);
+
 	/**
 	 * The user
 	 */
@@ -62,22 +64,22 @@ export class UpdateProfileComponent implements OnInit {
 	/**
 	 * The update profile form.
 	 */
-	protected updateProfileForm = new FormGroup({
-		firstName: new FormControl<string | null>(null, Validators.required),
-		lastName: new FormControl<string | null>(null, Validators.required),
-		username: new FormControl<string | null>(null, Validators.required),
-		email: new FormControl<string | null>(null, Validators.required),
-		profilePicture: new FormControl<PictureDto | null>(null, Validators.required),
-		firstAdditionalPicture: new FormControl<PictureDto | null>(null, Validators.required),
-		secondAdditionalPicture: new FormControl<PictureDto | null>(null, Validators.required),
-		thirdAdditionalPicture: new FormControl<PictureDto | null>(null, Validators.required),
-		fourthAdditionalPicture: new FormControl<PictureDto | null>(null, Validators.required),
-		birthdate: new FormControl<Date | null>(null, Validators.required),
-		gender: new FormControl<GenderEnum | null>(null, Validators.required),
-		sexualPreference: new FormControl<SexualPreferenceEnum | null>(null, Validators.required),
-		description: new FormControl<string | null>(null, Validators.required),
-		interests: new FormControl<InterestDto[]>([], Validators.required),
-		location: new FormControl<locationInterface>({latitude: 0, longitude: 0, city: ''}, Validators.required),
+	protected updateProfileForm = this.formBuilder.group({
+		firstName: [null as string | null, Validators.required],
+		lastName: [null as string | null, Validators.required],
+		username: [null as string | null, Validators.required],
+		email: [null as string | null, Validators.required],
+		profilePicture: [null as PictureDto | null, Validators.required],
+		firstAdditionalPicture: [null as PictureDto | null, Validators.required],
+		secondAdditionalPicture: [null as PictureDto | null, Validators.required],
+		thirdAdditionalPicture: [null as PictureDto | null, Validators.required],
+		fourthAdditionalPicture: [null as PictureDto | null, Validators.required],
+		birthdate: [null as Date | null, Validators.required],
+		gender: [null as GenderEnum | null, Validators.required],
+		sexualPreference: [null as SexualPreferenceEnum | null, Validators.required],
+		description: [null as string | null, Validators.required],
+		interests: [[] as string[], Validators.required],
+		location: [{latitude: 0, longitude: 0, city: ''} as locationInterface, Validators.required],
 	});
 
 	/**

@@ -1,6 +1,7 @@
 package com.web.matcha.service;
 
 import com.web.matcha.config.UserHolder;
+import com.web.matcha.domain.dao.InterestDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.mapper.ProfileMapper;
 import com.web.matcha.domain.model.ProfileModel;
@@ -24,6 +25,8 @@ public class ProfileService {
 	 * Profile Mapper
 	 */
 	final private ProfileMapper profileMapper;
+
+	final private InterestDAO interestDAO;
 
 	public ProfileModel getMyProfile() {
 		final int userId = UserHolder.getUserId();
@@ -52,6 +55,7 @@ public class ProfileService {
 			ProfileDto profileDto = objectMapper.readValue(profileInfo, ProfileDto.class);
 			ProfileModel profileModel = profileMapper.toModel(profileDto);
 			profileModel.setFameRating(0.0f);
+			interestDAO.setInterestsForUsers(profileDto.getInterests());
 			return profileDAO.createProfile(profileModel, pictures)
 					.orElseThrow(() -> new BadRequestResponse("Error while creating profile"));
 		}

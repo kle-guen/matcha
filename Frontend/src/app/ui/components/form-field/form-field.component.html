@@ -3,7 +3,7 @@
 	@if (options.length > 0) {
 		<mat-select [formControl]="control" [multiple]="multipleSelection" [compareWith]="compareInterests">
 			@for (option of options; track option.code) {
-				<mat-option [value]="option">{{ option.label }}</mat-option>
+				<mat-option [value]="option.code">{{ option.label }}</mat-option>
 			}
 		</mat-select>
 	} @else if (type === 'textarea') {

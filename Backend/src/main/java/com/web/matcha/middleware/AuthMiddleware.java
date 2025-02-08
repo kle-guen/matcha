@@ -6,14 +6,15 @@ import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.javalin.http.HttpStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 public class AuthMiddleware implements Handler {
 
 	@Override
-	public void handle(Context ctx) throws Exception {
+	public void handle(@NotNull Context ctx) throws Exception {
 		String token = JwtUtils.extractToken(ctx);
-		log.info("Ctx: " + ctx);
+		log.info("Ctx: {}", ctx);
 		if (token == null) {
 			ctx.status(HttpStatus.UNAUTHORIZED).result("Authorization token is missing");
 			return;
@@ -22,7 +23,7 @@ public class AuthMiddleware implements Handler {
 		try {
 			final Integer userId = JwtUtils.validateTokenAndGetUserId(token);
 			UserHolder.setUserId(userId);
-			log.info("User ID: " + userId);
+			log.info("User ID: {}", userId);
 		} catch (Exception e) {
 			ctx.status(HttpStatus.UNAUTHORIZED).result("Token validation failed: " + e.getMessage());
 		}

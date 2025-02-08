@@ -4,7 +4,7 @@ import {ResearchMembersComponent} from "./pages/components/members/research-memb
 import {LoginComponent} from "./pages/components/login/login.component";
 import {CompleteProfileComponent} from "./pages/components/complete-profile/complete-profile.component";
 import {RegisterComponent} from "./pages/components/register/register.component";
-import {UserPage} from "./pages/components/members/member-page/member-page.component";
+import {MemberPage} from "./pages/components/members/member-page/member-page.component";
 import {ResearchMembersResolver} from "./data/resolvers/research-members.resolver";
 import {ChatComponent} from "./pages/components/chat/chat.component";
 import {UpdateProfileComponent} from "./pages/components/update-profile/update-profile.component";
@@ -42,7 +42,7 @@ export const routes: Routes = [
 		canActivate: [AuthGuard],
 		children: [
 			{
-				path: 'users',
+				path: 'members',
 				children: [
 					{
 						path: '',
@@ -54,7 +54,7 @@ export const routes: Routes = [
 					},
 					{
 						path: ':id',
-						component: UserPage
+						component: MemberPage
 					}
 				]
 			},

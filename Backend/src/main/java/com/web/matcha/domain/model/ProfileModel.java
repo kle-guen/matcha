@@ -33,4 +33,6 @@ public class ProfileModel {
 	private Timestamp birthdate;
 
 	List<InterestModel> interests;
+
+	List<PictureModel> pictureModels;
 }

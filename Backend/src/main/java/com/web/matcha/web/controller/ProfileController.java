@@ -50,7 +50,7 @@ public class ProfileController extends AbstractController {
 			return;
 		}
 		final ProfileModel profileModel = profileService.getProfileById(id);
-		ctx.status(200).json(profileModel);
+		ctx.status(HttpStatus.ACCEPTED).json(profileModel);
 	}
 
 	/**
@@ -62,6 +62,6 @@ public class ProfileController extends AbstractController {
 		List<UploadedFile> pictures = ctx.uploadedFiles("pictures");
 
 		final ProfileModel createdProfile = profileService.createProfile(profileInfo, pictures);
-		ctx.status(201).json(createdProfile);
+		ctx.status(HttpStatus.CREATED).json(createdProfile);
 	}
 }
