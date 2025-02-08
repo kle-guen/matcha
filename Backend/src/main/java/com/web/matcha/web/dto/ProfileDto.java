@@ -24,7 +24,7 @@ public class ProfileDto {
 
 	private LocationDto location;
 
-	private List<InterestDto> interests = new java.util.ArrayList<>();
+	private List<String> interests;
 
-	private List<PictureDto> pictures = new java.util.ArrayList<>();
+	private List<PictureDto> pictures;
 }

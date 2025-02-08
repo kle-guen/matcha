@@ -26,7 +26,7 @@ export class ProfileDto {
 	/**
 	 * The user interests.
 	 */
-	interests!: InterestDto[];
+	interests!: string[];
 
 	/**
 	 * The description of the user

@@ -54,7 +54,7 @@ public class RoutesConfig {
 		final InterestsService interestsService = new InterestsService(interestDAO, interestMapper);
 		final AuthService authService = new AuthService(userDAO);
 		final EmailService emailService = new EmailService(emailTokenDAO);
-		final ProfileService profileService = new ProfileService(profileDAO, profileMapper);
+		final ProfileService profileService = new ProfileService(profileDAO, profileMapper, interestDAO);
 
 		// Controllers
 		final List<AbstractController> controllers = List.of(

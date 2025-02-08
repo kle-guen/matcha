@@ -27,7 +27,7 @@ public class UserDAO {
 	final ProfileDAO profileDAO;
 
 	public List<UserModel> researchMembers(ResearchMembersDto researchMembersDto) {
-		final Integer userId = 1; //TODO : Utiliser le UserHolder pour recuperer l'id de l'utilisateur connecté
+		final Integer userId = UserHolder.getUserId();
 		final ProfileModel currentUserProfile = profileDAO.getProfileById(userId)
 				.orElseThrow(() -> new NotFoundResponse("Profile of current user not found"));
 

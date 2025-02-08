@@ -27,7 +27,7 @@ export interface profileInfoInterface {
 	/**
 	 * The interests of the user.
 	 */
-	interests: InterestDto[];
+	interests: string[];
 
 	/**
 	 * The location of the user

@@ -106,7 +106,7 @@ export class CompleteProfileComponent implements OnInit {
 		gender: [null as GenderEnum | null, Validators.required],
 		sexualPreference: [null as SexualPreferenceEnum | null, Validators.required],
 		description: [null as string | null, Validators.required],
-		interests: [[] as string[] | null, Validators.required],
+		interests: [[] as string[], Validators.required],
 		location: [{latitude: 0, longitude: 0, city: ''} as locationInterface, Validators.required],
 	});
 
@@ -173,11 +173,7 @@ export class CompleteProfileComponent implements OnInit {
 			sexualPreference: this.completeProfileForm.value.sexualPreference ?? null,
 			gender: this.completeProfileForm.value.gender ?? null,
 			description: this.completeProfileForm.value.description ?? '',
-			interests: this.completeProfileForm.value.interests?.map(
-				(interest: InterestDto) => {
-					return {code: interest.code, label: interest.label};
-				}) ?? []
-			,
+			interests: this.completeProfileForm.value.interests ?? [],
 			location: this.completeProfileForm.value.location ?? {latitude: 0, longitude: 0, city: ''},
 		};
 
