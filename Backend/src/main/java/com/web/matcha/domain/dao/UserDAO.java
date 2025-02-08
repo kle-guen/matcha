@@ -1,9 +1,9 @@
 package com.web.matcha.domain.dao;
 
 import com.web.matcha.DatabaseConfig;
+import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.enums.SexualPreferenceEnum;
 import com.web.matcha.domain.model.ProfileModel;
-import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.web.dto.ResearchMembersDto;
 import io.javalin.http.NotFoundResponse;
@@ -31,9 +31,11 @@ public class UserDAO {
 		final ProfileModel currentUserProfile = profileDAO.getProfileById(userId)
 				.orElseThrow(() -> new NotFoundResponse("Profile of current user not found"));
 
+		fillDefaultCriteres(researchMembersDto);
+
 		//Generate the gender condition
 		final List<String> searchedGender = SexualPreferenceEnum.searchedGender(currentUserProfile.getSexualPreference(), currentUserProfile.getGender()).stream()
-				.map(entry -> "gender = " + entry.getValue() + " ? AND sexual_preference = " + entry.getKey() + " ?")
+				.map(entry -> "(gender = '" + entry.getValue() + "' AND sexual_preference = '" + entry.getKey() + "')")
 				.toList();
 		final String genderCondition = "(" + StringUtils.join(searchedGender, " OR ") + ")";
 
@@ -42,13 +44,12 @@ public class UserDAO {
 
 		//Filters
 		final String filters = "WHERE " + StringUtils.join(List.of(
-						genderCondition,
-						!interestsCondition.isBlank() ? "public.interests.code IN ('" + interestsCondition + "') " : ""),
-				"id != " + userId,
-				researchMembersDto.getAgeMin() != null ? "birthdate > get_date_minus_years(?)" : "",
-				researchMembersDto.getAgeMax() != null ? "birthdate < get_date_minus_years(?)" : "",
-				researchMembersDto.getFameRatingMin() != null ? "fame_rating > ?" : "",
-				researchMembersDto.getDistanceMax() != null ? "calculate_distance(profiles.latitude, profiles.longitude, ?, ?) <= ?" : "",
+						genderCondition + (!interestsCondition.isBlank() ? " AND public.interests.code IN ('" + interestsCondition + "') " : ""),
+						"id != " + userId,
+						researchMembersDto.getAgeMin() != null ? "birthdate > get_date_minus_years(?)" : "",
+						researchMembersDto.getAgeMax() != null ? "birthdate < get_date_minus_years(?)" : "",
+						researchMembersDto.getFameRatingMin() != null ? "fame_rating > ?" : "",
+						researchMembersDto.getDistanceMax() != null ? "calculate_distance(profiles.latitude, profiles.longitude, ?, ?) <= ?" : ""),
 				" AND ");
 
 		//Query
@@ -73,7 +74,8 @@ public class UserDAO {
 			stmt.setInt(i++, researchMembersDto.getAgeMax());
 			stmt.setFloat(i++, researchMembersDto.getFameRatingMin());
 			stmt.setFloat(i++, currentUserProfile.getLatitude());
-			stmt.setFloat(i, currentUserProfile.getLongitude());
+			stmt.setFloat(i++, currentUserProfile.getLongitude());
+			stmt.setFloat(i, researchMembersDto.getDistanceMax());
 			final ResultSet rs = stmt.executeQuery();
 
 			//Get the users
@@ -87,6 +89,25 @@ public class UserDAO {
 			log.error("Error while getting user by id", e);
 		}
 		return List.of();
+	}
+
+	private void fillDefaultCriteres(ResearchMembersDto researchMembersDto) {
+		if (researchMembersDto.getAgeMin() == null) {
+			researchMembersDto.setAgeMin(18);
+		}
+		if (researchMembersDto.getAgeMax() == null) {
+			researchMembersDto.setAgeMax(99);
+		}
+		if (researchMembersDto.getFameRatingMin() == null) {
+			researchMembersDto.setFameRatingMin(0);
+		}
+		if (researchMembersDto.getDistanceMax() == null) {
+			researchMembersDto.setDistanceMax(50);
+		}
+		if (researchMembersDto.getInterests() == null) {
+			researchMembersDto.setInterests(new ArrayList<>());
+		}
+
 	}
 
 	public Optional<UserModel> getUserById(final Integer id) {

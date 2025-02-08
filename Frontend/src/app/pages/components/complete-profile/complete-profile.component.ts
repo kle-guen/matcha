@@ -8,7 +8,7 @@ import {provideNativeDateAdapter} from "@angular/material/core";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatFormField} from "@angular/material/form-field";
 import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {ButtonComponent} from "../../../ui/components/button/button.component";
 import {AddressPickerComponent} from "../../../ui/components/address-picker/address-picker.component";
@@ -68,6 +68,8 @@ export class CompleteProfileComponent implements OnInit {
 	 */
 	private readonly router = inject(Router);
 
+	private readonly formBuilder = inject(FormBuilder);
+
 	/**
 	 * The client ip.
 	 */
@@ -94,18 +96,18 @@ export class CompleteProfileComponent implements OnInit {
 	/**
 	 * The complete-profile form.
 	 */
-	public completeProfileForm = new FormGroup({
-		profilePicture: new FormControl<PictureDto | null>(null, Validators.required),
-		firstAdditionalPicture: new FormControl<PictureDto | null>(null, Validators.required),
-		secondAdditionalPicture: new FormControl<PictureDto | null>(null, Validators.required),
-		thirdAdditionalPicture: new FormControl<PictureDto | null>(null, Validators.required),
-		fourthAdditionalPicture: new FormControl<PictureDto | null>(null, Validators.required),
-		birthdate: new FormControl<Date | null>(null, Validators.required),
-		gender: new FormControl<GenderEnum | null>(null, Validators.required),
-		sexualPreference: new FormControl<SexualPreferenceEnum | null>(null, Validators.required),
-		description: new FormControl<string | null>(null, Validators.required),
-		interests: new FormControl<InterestDto[]>([], Validators.required),
-		location: new FormControl<locationInterface>({latitude: 0, longitude: 0, city: ''}, Validators.required),
+	public completeProfileForm = this.formBuilder.group({
+		profilePicture: [null as PictureDto | null, Validators.required],
+		firstAdditionalPicture: null as PictureDto | null,
+		secondAdditionalPicture: null as PictureDto | null,
+		thirdAdditionalPicture: null as PictureDto | null,
+		fourthAdditionalPicture: null as PictureDto | null,
+		birthdate: [null as Date | null, Validators.required],
+		gender: [null as GenderEnum | null, Validators.required],
+		sexualPreference: [null as SexualPreferenceEnum | null, Validators.required],
+		description: [null as string | null, Validators.required],
+		interests: [[] as string[] | null, Validators.required],
+		location: [{latitude: 0, longitude: 0, city: ''} as locationInterface, Validators.required],
 	});
 
 	/**

@@ -45,14 +45,14 @@ public class InterestDAO {
 		return interests;
 	}
 
-	public static List<InterestModel> extractInterests2(final Array interestsArray) throws SQLException {
+	public static List<InterestModel> extractInterests2(final Array interestsArray) {
 		if (interestsArray == null) {
 			return List.of();
 		}
 
 		List<InterestModel> interests = new ArrayList<>();
 
-		Object[] rows = (Object[]) interestsArray.getArray();
+		List<Object> rows = List.of(interestsArray);
 		for (Object row : rows) {
 			String[] fields = row.toString().replace("(", "").replace(")", "").split(",");
 			if (fields.length >= 2) {

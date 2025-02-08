@@ -6,6 +6,7 @@ import com.web.matcha.domain.enums.GenderEnum;
 import com.web.matcha.domain.enums.SexualPreferenceEnum;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.utils.FileUtils;
+import io.javalin.http.UploadedFile;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -15,13 +16,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import io.javalin.http.UploadedFile;
-
 @Slf4j
 public class ProfileDAO {
 
 	/**
 	 * Get profile by id
+	 *
 	 * @param id
 	 */
 	public Optional<ProfileModel> getProfileById(Integer id) {
@@ -36,7 +36,7 @@ public class ProfileDAO {
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, id);
-			return Optional.of(extractProfil(stmt.executeQuery(), false));
+			return Optional.ofNullable(extractProfil(stmt.executeQuery(), false));
 
 		} catch (SQLException e) {
 			log.error("Error while getting user by id", e);
@@ -46,6 +46,7 @@ public class ProfileDAO {
 
 	/**
 	 * Create profile
+	 *
 	 * @param profileModel
 	 */
 	public Optional<ProfileModel> createProfile(ProfileModel profileModel, List<UploadedFile> pictures) {
