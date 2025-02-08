@@ -40,6 +40,11 @@ export class ButtonComponent {
 	@Input() icon: string | null = null;
 
 	/**
+	 * The icon style of the button.
+	 */
+	@Input() iconStyle: string | null = "";
+
+	/**
 	 * Handles the click event of the button.
 	 */
 	public onClick() {

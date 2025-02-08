@@ -1,13 +1,15 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {MatCardImage} from "@angular/material/card";
-import {ActivatedRoute} from "@angular/router";
+import {MatCard, MatCardHeader, MatCardImage, MatCardModule} from "@angular/material/card";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MembersHttpService} from "../../../../data/http/members-http.service";
-import {NgOptimizedImage} from "@angular/common";
+import {NgClass, NgOptimizedImage} from "@angular/common";
 import {createNgDestroySubject} from "../../../../shared/utils/create-ng-destroy-subject.fn";
 import {takeUntil} from "rxjs";
 import {ButtonComponent} from "../../../../ui/components/button/button.component";
 import {MatChip, MatChipSet} from "@angular/material/chips";
 import {MemberCompleteDto} from "../../../../data/dto/receive/member-complete.dto";
+import {MatIcon} from "@angular/material/icon";
+import {GenderEnum} from "../../../../shared/enums/gender.enum";
 
 @Component({
 	selector: 'app-user-page',
@@ -17,7 +19,10 @@ import {MemberCompleteDto} from "../../../../data/dto/receive/member-complete.dt
 		NgOptimizedImage,
 		ButtonComponent,
 		MatChipSet,
-		MatChip
+		MatChip,
+		MatCardModule,
+		MatIcon,
+		NgClass
 	],
 	templateUrl: './member-page.component.html',
 	styleUrl: './member-page.component.scss'
@@ -28,7 +33,7 @@ export class MemberPage implements OnInit {
 	 * The ng destroy subject.
 	 * @private
 	 */
-	ngDestroy$ = createNgDestroySubject();
+	private readonly ngDestroy$ = createNgDestroySubject();
 
 	/**
 	 * The activated route.
@@ -37,22 +42,65 @@ export class MemberPage implements OnInit {
 	private readonly activatedRoute = inject(ActivatedRoute)
 
 	/**
+	 * The router.
+	 * @private
+	 */
+	private readonly route = inject(Router)
+
+	/**
 	 * The users http service.
 	 * @private
 	 */
-	private readonly usersHttpService = inject(MembersHttpService)
+	private readonly membersHttpService = inject(MembersHttpService)
+
+	/**
+	 * The gender enum.
+	 * @protected
+	 */
+	protected readonly GenderEnum = GenderEnum;
 
 	/**
 	 * The user.
 	 */
-	user!: MemberCompleteDto;
+	member!: MemberCompleteDto;
 
 	/**
 	 * The on init.
 	 */
 	ngOnInit() {
-		this.usersHttpService.getMemberById(this.activatedRoute.snapshot.params['id']).pipe(
+		this.membersHttpService.getMemberById(this.activatedRoute.snapshot.params['id']).pipe(
 			takeUntil(this.ngDestroy$)
-		).subscribe((res) => this.user = res)
+		).subscribe((res) => this.member = res)
+	}
+
+	/**
+	 * Send a like.
+	 */
+	sendLike() {
+		this.membersHttpService.likeMemberById(this.member.id).pipe(
+			takeUntil(this.ngDestroy$)
+		).subscribe({
+			next: () => this.member.liked = !this.member.liked
+		})
+	}
+
+	/**
+	 * Block a member.
+	 */
+	blockMember() {
+		this.membersHttpService.blockMemberById(this.member.id).pipe(
+			takeUntil(this.ngDestroy$)
+		).subscribe({
+			next: () => this.route.navigate(['members'])
+		})
+	}
+
+	/**
+	 * Report a member.
+	 */
+	reportMember() {
+		this.membersHttpService.reportMemberById(this.member.id).pipe(
+			takeUntil(this.ngDestroy$)
+		).subscribe();
 	}
 }

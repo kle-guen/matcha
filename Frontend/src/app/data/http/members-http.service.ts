@@ -32,40 +32,6 @@ export class MembersHttpService {
 			catchError(() => of([])),
 			take(1)
 		);
-		// return of([
-		// 	{
-		// 		id: 1,
-		// 		name: 'John Doe',
-		// 		age: '25',
-		// 		nickname: 'johndoe',
-		// 		description: 'Hello, I am John Doe.',
-		// 		sexe: 'H'
-		// 	},
-		// 	{
-		// 		id: 2,
-		// 		name: 'Jane Doe',
-		// 		age: '22',
-		// 		nickname: 'janedoe',
-		// 		description: 'Hello, I am Jane Doe.',
-		// 		sexe: 'F'
-		// 	},
-		// 	{
-		// 		id: 3,
-		// 		name: 'Alice',
-		// 		age: '21',
-		// 		nickname: 'alice',
-		// 		description: 'Hello, I am Alice.',
-		// 		sexe: 'F'
-		// 	},
-		// 	{
-		// 		id: 4,
-		// 		name: 'Bob',
-		// 		age: '24',
-		// 		nickname: 'bob',
-		// 		description: 'Hello, I am Bob.\nI like sports.\nI like music.\nI like movies.\nI like gaming.\nI like cooking.\nI like reading.\nI like traveling.\nI like photography.\nI like fashion.Hello, I am Bob.\nI like sports.\nI like music.\nI like movies.\nI like gaming.\nI like cooking.\nI like reading.\nI like traveling.\nI like photography.\nI like fashion.',
-		// 		sexe: 'H'
-		// 	}
-		// ]);
 	}
 
 	/**
@@ -74,17 +40,46 @@ export class MembersHttpService {
 	 */
 	getMemberById(id: number): Observable<MemberCompleteDto> {
 		const url = `${this.API_MEMBERS_URL}/${id}`;
-		this.http.get(url).subscribe((data: any) => {});
-		return of({
-			id: 1,
-			name: 'John Doe',
-			age: '25',
-			nickname: 'johndoe',
-			description: 'Hello, I am John Doe.',
-			sexe: 'H',
-			city: "",
-			interests: [],
-			sexuality: "",
-		});
+		return this.http.get<MemberCompleteDto>(url).pipe(
+			catchError(() => of()),
+			take(1)
+		);
 	}
+
+	/**
+	 * Get member by id.
+	 * @param id
+	 */
+	blockMemberById(id: number) {
+		const url = `${this.API_MEMBERS_URL}/${id}/block`;
+		return this.http.post(url, {}).pipe(
+			catchError(() => of()),
+			take(1)
+		);
+	}
+
+	/**
+	 * Get member by id.
+	 * @param id
+	 */
+	reportMemberById(id: number) {
+		const url = `${this.API_MEMBERS_URL}/${id}/report`;
+		return this.http.post(url, {}).pipe(
+			catchError(() => of()),
+			take(1)
+		);
+	}
+
+	/**
+	 * Get member by id.
+	 * @param id
+	 */
+	likeMemberById(id: number) {
+		const url = `${this.API_MEMBERS_URL}/${id}/like`;
+		return this.http.post(url, {}).pipe(
+			catchError(() => of()),
+			take(1)
+		);
+	}
+
 }

@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, ViewEncapsulation} from '@angular/core';
-import {UserCardComponent} from "../../../../ui/components/user-card/user-card.component";
+import {MemberCardComponent} from "../member-card/member-card.component";
 import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from "@angular/material/slider";
 import {FormFieldComponent} from "../../../../ui/components/form-field/form-field.component";
 import {FormBuilder, ReactiveFormsModule} from "@angular/forms";
@@ -20,7 +20,7 @@ import {InterestDto} from "../../../../data/dto/receive/interest.dto";
 	selector: 'app-research-members',
 	standalone: true,
 	imports: [
-		UserCardComponent,
+		MemberCardComponent,
 		MatSlider,
 		MatSliderRangeThumb,
 		MatSliderThumb,

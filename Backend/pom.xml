@@ -132,5 +132,10 @@
 			<artifactId>j2html</artifactId> <!-- For creating HTML form -->
 			<version>1.6.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.5.0-M2</version>
+		</dependency>
 	</dependencies>
 </project>

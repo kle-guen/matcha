@@ -26,8 +26,14 @@ public class ProfileService {
 	 */
 	final private ProfileMapper profileMapper;
 
+	/**
+	 * Interest DAO
+	 */
 	final private InterestDAO interestDAO;
 
+	/**
+	 * Get my profile
+	 */
 	public ProfileModel getMyProfile() {
 		final int userId = UserHolder.getUserId();
 
@@ -39,15 +45,6 @@ public class ProfileService {
 		final int userId = UserHolder.getUserId();
 
 		return profileDAO.getProfileById(userId).orElse(null);
-	}
-
-	/**
-	 * Get profile by id
-	 * @param id
-	 */
-	public ProfileModel getProfileById(int id) {
-		return profileDAO.getProfileById(id)
-				.orElseThrow(() -> new BadRequestResponse("Profile not found"));
 	}
 
 	/**

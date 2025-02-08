@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.web.matcha.domain.utils.PasswordUtils.hashPassword;
 
@@ -44,16 +45,19 @@ public class UserDAO {
 		final String genderCondition = "(" + StringUtils.join(searchedGender, " OR ") + ")";
 
 		//Generate the interests condition
-		final String interestsCondition = StringUtils.join(Collections.nCopies(researchMembersDto.getInterests().size(), "?"), "', '");
+		final String interestsCondition = StringUtils.join(Collections.nCopies(researchMembersDto.getInterests().size(), "?"), ",");
 
 		//Filters
-		final String filters = "WHERE " + StringUtils.join(List.of(
-						genderCondition + (!interestsCondition.isBlank() ? " AND public.interests.code IN ('" + interestsCondition + "') " : ""),
-						"id != " + userId,
-						researchMembersDto.getAgeMin() != null ? "birthdate > get_date_minus_years(?)" : "",
-						researchMembersDto.getAgeMax() != null ? "birthdate < get_date_minus_years(?)" : "",
-						researchMembersDto.getFameRatingMin() != null ? "fame_rating > ?" : "",
-						researchMembersDto.getDistanceMax() != null ? "calculate_distance(profiles.latitude, profiles.longitude, ?, ?) <= ?" : ""),
+		final String filters = "WHERE " + StringUtils.join(Stream.of(
+								"id != " + userId,
+								genderCondition,
+								StringUtils.isNotBlank(interestsCondition) ? "public.interests.code IN (" + interestsCondition + ") " : null,
+								researchMembersDto.getAgeMin() != null ? "birthdate < get_date_minus_years(?)" : null,
+								researchMembersDto.getAgeMax() != null ? "birthdate > get_date_minus_years(?)" : null,
+								researchMembersDto.getFameRatingMin() != null ? "fame_rating >= ?" : null,
+								researchMembersDto.getDistanceMax() != null ? "calculate_distance(latitude, longitude, ?, ?) <= ?" : null)
+						.filter(StringUtils::isNotBlank)
+						.toList(),
 				" AND ");
 
 		//Query
@@ -72,14 +76,19 @@ public class UserDAO {
 			//Set the parameters
 			int i = 1;
 			while (i <= researchMembersDto.getInterests().size()) {
-				stmt.setString(i++, researchMembersDto.getInterests().get(i));
+				stmt.setString(i, researchMembersDto.getInterests().get(i - 1));
+				i++;
 			}
 			stmt.setInt(i++, researchMembersDto.getAgeMin());
 			stmt.setInt(i++, researchMembersDto.getAgeMax());
-			stmt.setFloat(i++, researchMembersDto.getFameRatingMin());
-			stmt.setFloat(i++, currentUserProfile.getLatitude());
-			stmt.setFloat(i++, currentUserProfile.getLongitude());
-			stmt.setFloat(i, researchMembersDto.getDistanceMax());
+			if (researchMembersDto.getFameRatingMin() != null) {
+				stmt.setFloat(i++, researchMembersDto.getFameRatingMin());
+			}
+			if (researchMembersDto.getDistanceMax() != null) {
+				stmt.setFloat(i++, currentUserProfile.getLatitude());
+				stmt.setFloat(i++, currentUserProfile.getLongitude());
+				stmt.setFloat(i, researchMembersDto.getDistanceMax());
+			}
 			final ResultSet rs = stmt.executeQuery();
 
 			//Get the users
@@ -101,12 +110,6 @@ public class UserDAO {
 		}
 		if (researchMembersDto.getAgeMax() == null) {
 			researchMembersDto.setAgeMax(99);
-		}
-		if (researchMembersDto.getFameRatingMin() == null) {
-			researchMembersDto.setFameRatingMin(0);
-		}
-		if (researchMembersDto.getDistanceMax() == null) {
-			researchMembersDto.setDistanceMax(50);
 		}
 		if (researchMembersDto.getInterests() == null) {
 			researchMembersDto.setInterests(new ArrayList<>());

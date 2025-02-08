@@ -1,30 +1,74 @@
-<div class="page-wrapper" xmlns="http://www.w3.org/1999/html">
-	<div class="flex">
-		<img width='500'
-			 height='500'
-			 src="https://material.angular.io/assets/img/examples/shiba2.jpg"
-			 alt="Photo of a Shiba Inu">
-		<div>
-			<h2>{{ user.name + " " + user.age }}</h2>
-			<br/>
-			<mat-chip-set aria-label="">
-			@for (interest of user.interests; track interest.code) {
-				<mat-chip>{{interest.label}}</mat-chip>
-			}
-			</mat-chip-set>
-			<p>{{ user.description }}</p>
-			<app-button
-				label="Block"
-				icon="block"
-			/>
-			<app-button
-					label="Chat"
-					icon="chat"
-			/>
-			<app-button
-					label="Like"
-					icon="favorite"
-			/>
-		</div>
-	</div>
+<div class="page-wrapper flex p-4 gap-4" xmlns="http://www.w3.org/1999/html">
+	<mat-card class="w-full">
+		<mat-card-header>
+			<mat-card-title>
+				<div class="flex items-center">
+					<mat-icon [ngClass]="member.sexe == GenderEnum.MALE ? 'text-blue-600' : 'text-pink-600'">
+						{{ member.sexe == GenderEnum.MALE ? 'male' : 'female' }}
+					</mat-icon>
+					{{ member.name }}
+				</div>
+			</mat-card-title>
+			<mat-card-subtitle>{{ member.nickname }}</mat-card-subtitle>
+		</mat-card-header>
+		<mat-card-content>
+			<div class="flex flex-wrap justify-center gap-10 mobile:flex-col ">
+				<mat-card class="flex-grow mobile:w-full desktop:w-[350px] tablet:w-[350px] h-fit p-5 mt-4">
+					<img
+							class="w-full"
+							width='500'
+							height='500'
+							src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+							alt="Photo of a Shiba Inu">
+				</mat-card>
+				<div class="flex flex-col justify-between flex-grow p-4 desktop:w-[350px] tablet:w-[350px] mobile:w-full">
+					<div>
+						<ul>
+							<li><span class="font-bold">Age: </span>{{ member.age }}</li>
+							<li><span class="font-bold">Locality: </span>{{ member.city }}</li>
+							@if (member.lookingFor.length === 1) {
+								<li>
+									<span class="font-bold">Looking for: a {{ member.lookingFor[0] }}</span>
+								</li>
+							} @else if (member.lookingFor.length === 2) {
+								<li>
+									<span class="font-bold">Looking for:
+										a {{ member.lookingFor[0] + ' or a ' + member.lookingFor[1] }}</span>
+								</li>
+							}
+						</ul>
+						<span class="font-bold">Interests:</span>
+						<mat-chip-set aria-label="">
+							@for (interest of member.interests; track interest.label) {
+								<mat-chip>{{ interest.label }}</mat-chip>
+							}
+						</mat-chip-set>
+						<div class="font-bold">About me:</div>
+						<span class="break-words">
+							{{ member.description }}
+						</span>
+					</div>
+
+					<div class="flex mobile:flex-col mobile:items-center gap-5 pt-5">
+						<app-button
+								label="Like"
+								icon="favorite"
+								(clicked)="sendLike()"
+								[iconStyle]="member.liked ? 'text-red-600' : ''"
+						/>
+						<app-button
+								label="Block"
+								icon="block"
+								(clicked)="blockMember()"
+						/>
+						<app-button
+								label="Report"
+								icon="report"
+								(clicked)="reportMember()"
+						/>
+					</div>
+				</div>
+			</div>
+		</mat-card-content>
+	</mat-card>
 </div>

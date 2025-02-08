@@ -1,6 +1,8 @@
 package com.web.matcha.mapper;
 
 import com.web.matcha.domain.enums.GenderEnum;
+import com.web.matcha.domain.enums.SexualPreferenceEnum;
+import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.web.dto.CompleteMemberDto;
 import com.web.matcha.web.dto.MemberDto;
@@ -13,6 +15,8 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.AbstractMap;
+import java.util.List;
 
 @Mapper
 public interface MemberMapper {
@@ -26,6 +30,9 @@ public interface MemberMapper {
 	MemberDto toMember(UserModel userDto);
 
 	@InheritConfiguration
+	@Mapping(target = "city", source = "profile.city")
+	@Mapping(target = "lookingFor", expression = "java(mapLookingFor(userDto.getProfile()))")
+	@Mapping(target = "interests", source = "profile.interests")
 	CompleteMemberDto toCompleteMember(UserModel userDto);
 
 	@Named("mapAge")
@@ -47,4 +54,17 @@ public interface MemberMapper {
 		return gender.toString();
 	}
 
+	default List<String> mapLookingFor(final ProfileModel profile) {
+		final List<AbstractMap.SimpleEntry<SexualPreferenceEnum, GenderEnum>> sexualPreferences = SexualPreferenceEnum.searchedGender(profile.getSexualPreference(), profile.getGender());
+
+		return sexualPreferences.stream()
+				.map(entry -> {
+					if (entry.getValue() == GenderEnum.FEMALE) {
+						return "woman";
+					}
+					return "man";
+				})
+				.distinct()
+				.toList();
+	}
 }

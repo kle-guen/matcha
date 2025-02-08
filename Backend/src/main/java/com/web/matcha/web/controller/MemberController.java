@@ -1,5 +1,6 @@
 package com.web.matcha.web.controller;
 
+import com.web.matcha.domain.enums.SortResearchUsersEnum;
 import com.web.matcha.service.MemberService;
 import com.web.matcha.web.dto.ResearchMembersDto;
 import io.javalin.Javalin;
@@ -16,20 +17,68 @@ public class MemberController extends AbstractController {
 
 	@Override
 	public void registerRoutes(final Javalin app) {
-		app.post("/members/research", this::researchUsers);
-		app.post("/members/{id}", this::getCompleteMember);
+		app.post("/members/research", this::researchMembers);
+		app.get("/members/{id}", this::getCompleteMember);
+		app.post("/members/{id}/block", this::blockMember);
+		app.post("/members/{id}/report", this::reportMember);
+		app.post("/members/{id}/like", this::likeMember);
 	}
 
-	private void researchUsers(final Context ctx) {
+	/**
+	 * Research members
+	 *
+	 * @param ctx
+	 */
+	private void researchMembers(final Context ctx) {
 		ResearchMembersDto researchMembersDto = ctx.bodyAsClass(ResearchMembersDto.class);
+		SortResearchUsersEnum sortBy = SortResearchUsersEnum.getValue(ctx.queryParam("sortBy"));
+		Boolean isAscending = Boolean.parseBoolean(ctx.queryParam("isAscending"));
 		ctx.status(HttpStatus.ACCEPTED.getCode())
-				.json(memberService.researchMembers(researchMembersDto));
+				.json(memberService.researchMembers(researchMembersDto, sortBy, isAscending));
 	}
 
+	/**
+	 * Get complete member
+	 *
+	 * @param ctx
+	 */
 	private void getCompleteMember(final Context ctx) {
 		final Integer id = Integer.parseInt(ctx.pathParam("id"));
 		ctx.status(HttpStatus.ACCEPTED.getCode())
 				.json(memberService.getCompleteMember(id));
+	}
+
+	/**
+	 * Block a member
+	 *
+	 * @param ctx
+	 */
+	private void blockMember(final Context ctx) {
+		final Integer id = Integer.parseInt(ctx.pathParam("id"));
+		memberService.blockMember(id);
+		ctx.status(HttpStatus.ACCEPTED.getCode());
+	}
+
+	/**
+	 * Report a member
+	 *
+	 * @param ctx
+	 */
+	private void reportMember(final Context ctx) {
+		final Integer id = Integer.parseInt(ctx.pathParam("id"));
+		memberService.reportMember(id);
+		ctx.status(HttpStatus.ACCEPTED.getCode());
+	}
+
+	/**
+	 * Like a member
+	 *
+	 * @param ctx
+	 */
+	private void likeMember(final Context ctx) {
+		final Integer id = Integer.parseInt(ctx.pathParam("id"));
+		memberService.likeMember(id);
+		ctx.status(HttpStatus.ACCEPTED.getCode());
 	}
 
 

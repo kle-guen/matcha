@@ -85,6 +85,34 @@ public class ProfileDAO {
 		return Optional.of(profileModel);
 	}
 
+	public Integer getDistance(final Float latitude1, final Float longitude1, final Float latitude2, final Float longitude2) {
+		final String sql = "SELECT calculate_distance(?, ?, ?, ?)";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setFloat(1, latitude1);
+			stmt.setFloat(2, longitude1);
+			stmt.setFloat(3, latitude2);
+			stmt.setFloat(4, longitude2);
+			try (final ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					return rs.getInt(1);
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Error while getting distance", e);
+		}
+		return null;
+	}
+
+	/**
+	 * Extract profile
+	 * @param rs
+	 * @param next
+	 * @return ProfileModel
+	 * @throws SQLException
+	 */
 	public static ProfileModel extractProfil(final ResultSet rs, final boolean next) throws SQLException {
 		if (rs == null) {
 			return null;

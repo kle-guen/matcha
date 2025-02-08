@@ -1,7 +1,9 @@
 package com.web.matcha.config;
 
+import com.web.matcha.domain.dao.BlockDAO;
 import com.web.matcha.domain.dao.EmailTokenDAO;
 import com.web.matcha.domain.dao.InterestDAO;
+import com.web.matcha.domain.dao.LikeDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
@@ -40,6 +42,8 @@ public class RoutesConfig {
 		final UserDAO userDAO = new UserDAO(profileDAO);
 		final InterestDAO interestDAO = new InterestDAO();
 		final EmailTokenDAO emailTokenDAO = new EmailTokenDAO();
+		final BlockDAO blockDAO = new BlockDAO();
+		final LikeDAO likeDAO = new LikeDAO();
 
 		// Mappers
 		final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
@@ -50,7 +54,7 @@ public class RoutesConfig {
 
 		// Services
 		final UserService userService = new UserService(userDAO, userMapper);
-		final MemberService memberService = new MemberService(memberMapper, userDAO);
+		final MemberService memberService = new MemberService(memberMapper, userDAO, profileDAO, blockDAO, likeDAO);
 		final InterestsService interestsService = new InterestsService(interestDAO, interestMapper);
 		final AuthService authService = new AuthService(userDAO);
 		final EmailService emailService = new EmailService(emailTokenDAO);

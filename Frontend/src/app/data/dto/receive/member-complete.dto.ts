@@ -8,8 +8,10 @@ export class MemberCompleteDto extends MemberDto {
 
 	city!: string;
 
-	sexuality!: string;
+	lookingFor!: string[];
 
 	interests!: InterestDto[];
+
+	liked!: boolean;
 
 }

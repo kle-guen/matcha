@@ -26,7 +26,6 @@ public class ProfileController extends AbstractController {
 	public void registerRoutes(final Javalin app) {
 		app.get("/profiles/me", this::getMyProfile);
 		app.get("/profiles/is-complete", this::isProfileComplete);
-		app.get("/profiles/{id}", this::getProfileById);
 		app.post("/profiles", this::createProfile);
 	}
 
@@ -46,21 +45,6 @@ public class ProfileController extends AbstractController {
 	private void isProfileComplete(final Context ctx) {
 		final ProfileModel profileModel = profileService.getCompletedStatus();
 		ctx.status(HttpStatus.ACCEPTED).json(profileModel != null);
-	}
-
-	/**
-	 * Get profile by id
-	 * @param ctx
-	 */
-	private void getProfileById(final Context ctx) {
-		final int id;
-		try {
-			id = Integer.parseInt(ctx.pathParam("id"));
-		} catch (NumberFormatException e) {
-			throw new BadRequestResponse("Invalid id");
-		}
-		final ProfileModel profileModel = profileService.getProfileById(id);
-		ctx.status(HttpStatus.ACCEPTED).json(profileModel);
 	}
 
 	/**
