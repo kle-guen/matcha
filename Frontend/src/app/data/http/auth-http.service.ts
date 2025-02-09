@@ -47,9 +47,6 @@ export class AuthHttpService {
 				} else {
 					return false;
 				}
-			}),
-			catchError(() => {
-				return of(false);
 			})
 		);
 	}

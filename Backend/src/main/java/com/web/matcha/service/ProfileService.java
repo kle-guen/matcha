@@ -35,6 +35,12 @@ public class ProfileService {
 				.orElseThrow(() -> new BadRequestResponse("Profile not found"));
 	}
 
+	public ProfileModel getCompletedStatus() {
+		final int userId = UserHolder.getUserId();
+
+		return profileDAO.getProfileById(userId).orElse(null);
+	}
+
 	/**
 	 * Get profile by id
 	 * @param id

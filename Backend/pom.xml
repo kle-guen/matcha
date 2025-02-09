@@ -118,11 +118,6 @@
 			<version>5.2.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-			<version>1.6.2</version>
-		</dependency>
-		<dependency>
 			<groupId>io.javalin</groupId>
 			<artifactId>javalin-bundle</artifactId> <!-- For handling http-requests -->
 			<version>6.3.0</version>

@@ -9,8 +9,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @AllArgsConstructor
-public class EmailToken {
+public class EmailTokenModel {
 	int userId;
 	String token;
-	Timestamp createdAt;
 }

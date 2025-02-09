@@ -1,0 +1,54 @@
+<app-login-header/>
+<div class="page-wrapper flex justify-center flex-grow">
+	<mat-card class="flex-grow flex max-w-md gap-10 items-center">
+		<mat-card-header class="flex flex-grow justify-center text-center">
+			<mat-card-title>Email verification</mat-card-title>
+			<mat-card-subtitle>
+				@if (isVerified) {
+					Your email has been verified successfully.
+				} @else {
+					Your email has not been verified yet.
+				}
+			</mat-card-subtitle>
+		</mat-card-header>
+		<mat-card-content>
+			@if (isVerified) {
+				<svg id="svg" width="150" height="150" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+					<circle cx="100" cy="100" r="80" stroke="green" stroke-width="6" fill="none"
+							stroke-dasharray="502" stroke-dashoffset="502"
+							stroke-linecap="round">
+						<animate attributeName="stroke-dashoffset" from="502" to="0" dur=".7s" fill="freeze"/>
+					</circle>
+
+					<line x1="60" y1="100" x2="90" y2="130" stroke="green" stroke-width="6"
+						  stroke-dasharray="50" stroke-dashoffset="50" stroke-linecap="round">
+						<animate attributeName="stroke-dashoffset" from="50" to="0" dur="0.2s" fill="freeze" begin="0.2s"/>
+					</line>
+
+					<line x1="90" y1="130" x2="140" y2="70" stroke="green" stroke-width="6"
+						  stroke-dasharray="80" stroke-dashoffset="80" stroke-linecap="round">
+						<animate attributeName="stroke-dashoffset" from="80" to="0" dur="0.4s" fill="freeze" begin="0.4s"/>
+					</line>
+				</svg>
+
+			} @else {
+				<svg id="svg" width="150" height="150" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+					<circle cx="100" cy="100" r="80" stroke="red" stroke-width="6" fill="none"
+							stroke-dasharray="502" stroke-dashoffset="502"
+							stroke-linecap="round">
+						<animate attributeName="stroke-dashoffset" from="502" to="0" dur=".7s" fill="freeze"/>
+					</circle>
+					<line x1="50" y1="50" x2="150" y2="150" stroke="red" stroke-width="6"
+						  stroke-dasharray="142" stroke-dashoffset="142" stroke-linecap="round">
+						<animate attributeName="stroke-dashoffset" from="142" to="0" dur=".5s" fill="freeze" begin="0.2s"/>
+					</line>
+					<line x1="150" y1="50" x2="50" y2="150" stroke="red" stroke-width="6"
+						  stroke-dasharray="142" stroke-dashoffset="142" stroke-linecap="round">
+						<animate attributeName="stroke-dashoffset" from="142" to="0" dur=".5s" fill="freeze" begin=".5s"/>
+					</line>
+				</svg>
+			}
+		</mat-card-content>
+	</mat-card>
+</div>
+

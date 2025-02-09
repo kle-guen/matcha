@@ -111,7 +111,6 @@ export class AddressPickerComponent implements OnInit {
         longitude: this.longitude,
         city: this.city,
       });
-      console.log(this.control.value);
     });
   }
 
@@ -134,13 +133,6 @@ export class AddressPickerComponent implements OnInit {
     if (localityInputElement) {
       localityInputElement.value = localityValue;
     }
-  }
-
-  /**
-   * Check out the current location
-   */
-  public checkout() {
-    console.log(this.marker.getPosition().toJSON());
   }
 
   /**

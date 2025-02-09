@@ -1,19 +1,15 @@
 package com.web.matcha.service;
 
+import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.EmailTokenDAO;
-import com.web.matcha.domain.model.EmailToken;
+import com.web.matcha.domain.model.EmailTokenModel;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.SimpleEmail;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.sql.Timestamp;
-import java.util.Properties;
+import java.util.UUID;
+
 
 @RequiredArgsConstructor
 public class EmailService {
@@ -27,11 +23,12 @@ public class EmailService {
 	 * Add the email token
 	 *
 	 * @param userId
-	 * @param token
 	 */
-	public void addEmailToken(int userId, String token) {
-		final EmailToken emailToken = new EmailToken(userId, token, new Timestamp(System.currentTimeMillis()));
+	public String addEmailToken(Integer userId) {
+		final String token = UUID.randomUUID().toString();
+		final EmailTokenModel emailToken = new EmailTokenModel(userId, token);
 		emailTokenDAO.insertEmailToken(emailToken);
+		return emailToken.getToken();
 	}
 
 	/**
@@ -56,34 +53,25 @@ public class EmailService {
 	/**
 	 * Send the verification email
 	 *
-	 * @param email
+	 * @param receiving_email
 	 */
-	public void sendVerificationEmail(String email) {
+	public void sendVerificationEmail(String receiving_email) {
 		try {
-			// SMTP server configuration
-			Properties props = new Properties();
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.starttls.enable", "true");
-			props.put("mail.smtp.host", "smtp.gmail.com");
-			props.put("mail.smtp.port", "465");
-			props.put("mail.smtp.ssl.enable", "true");
+			final Integer userId = UserHolder.getUserId();
+			final String emailToken = addEmailToken(userId);
 
-			Session session = Session.getInstance(props, new Authenticator() {
-				@Override
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication("noreplymatcha42angouleme@gmail.com", "matcha42");
-				}
-			});
+			Email email = new SimpleEmail();
+			email.setHostName("smtp.mailgun.org");
+			email.setSmtpPort(587);
+			//Todo: Get username and password from environment variables
+			email.setAuthenticator(new DefaultAuthenticator("postmaster@sandbox9d270eb7a138450c9e31d299420fb76c.mailgun.org", "dc7fc93abc064e041916c4b74413709e-667818f5-5ffb519b"));
+			email.setFrom("noreplymatcha42angouleme@gmail.com");
+			email.setSubject("Matcha - Email Verification");
+			email.setMsg(("Please click the following link to verify your email: http://localhost:4200/verify-email?token=" + emailToken));
+			email.addTo("noreplymatcha42angouleme@gmail.com");
+			email.send();
 
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("noreplymatcha42angouleme@gmail.com"));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-			message.setSubject("test from matcha");
-			message.setText("test mailing matcha");
-
-			Transport.send(message);
-
-		} catch (MessagingException e) {
+		} catch (Exception e) {
 			throw new RuntimeException("Error sending email: " + e.getMessage(), e);
 		}
 	}

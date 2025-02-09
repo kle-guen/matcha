@@ -11,5 +11,6 @@ public interface ProfileMapper {
 	@Mapping(target = "latitude", source = "location.latitude")
 	@Mapping(target = "longitude", source = "location.longitude")
 	@Mapping(target = "city", source = "location.city")
+	@Mapping(target = "interests", ignore = true)
 	ProfileModel toModel(ProfileDto profileDto);
 }

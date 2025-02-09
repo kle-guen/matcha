@@ -92,8 +92,6 @@ export class UpdateProfileComponent implements OnInit {
 		this.interests = this.activatedRoute.snapshot.data['interests'];
 		this.user = this.activatedRoute.snapshot.data['user'];
 
-		console.log(this.user);
-
 		if (this.user == null) return;
 		this.updateProfileForm.patchValue({
 				firstName: this.user.firstName,
@@ -108,7 +106,6 @@ export class UpdateProfileComponent implements OnInit {
 				location: {latitude: this.user.profile.latitude, longitude: this.user.profile.longitude, city: this.user.profile.city}
 			},
 		);
-		console.log(this.updateProfileForm.value);
 	}
 
 

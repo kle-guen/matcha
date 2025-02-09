@@ -48,7 +48,7 @@ public class UserController extends AbstractController {
 	private void createUser(final Context ctx) {
 		UserDto userDto = ctx.bodyAsClass(UserDto.class);
 		userService.addUser(userDto);
-		//emailService.sendVerificationEmail(userDto.getEmail());
+		emailService.sendVerificationEmail(userDto.getEmail());
 		ctx.status(HttpStatus.CREATED.getCode()).json(userDto);
 	}
 }

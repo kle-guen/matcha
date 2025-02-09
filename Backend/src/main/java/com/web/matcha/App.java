@@ -16,7 +16,7 @@ public final class App {
 		app.before(ctx -> {
 			String path = ctx.path();
 			String method = String.valueOf(ctx.method());
-			if (path.equals("/auth/token") || (path.equals("/users")) && method.equals("POST")) {
+			if (path.equals("/auth/token") || (path.equals("/users")) && method.equals("POST") || path.equals("/verify-email")) {
 				return;
 			}
 			new AuthMiddleware().handle(ctx);

@@ -68,6 +68,9 @@ export class CompleteProfileComponent implements OnInit {
 	 */
 	private readonly router = inject(Router);
 
+	/**
+	 * The form builder.
+	 */
 	private readonly formBuilder = inject(FormBuilder);
 
 	/**
@@ -84,6 +87,11 @@ export class CompleteProfileComponent implements OnInit {
 	 * The sexual orientation enum.
 	 */
 	public sexualPreferenceEnum = SexualPreferenceEnum;
+
+	/**
+	 * the profile completion status
+	 */
+	private isProfileComplete: boolean = false;
 
 	/**
 	 * @inheritDoc
@@ -157,10 +165,6 @@ export class CompleteProfileComponent implements OnInit {
 		});
 	}
 
-	public log() {
-		console.log(this.completeProfileForm.value);
-	}
-
 	/**
 	 * Completes the profile by sending the form data to the server.
 	 */
@@ -192,7 +196,7 @@ export class CompleteProfileComponent implements OnInit {
 
 		this.profileHttpService.completeProfile(formData).subscribe(
 			(response) => {
-				this.router.navigate(['/users']);
+				this.router.navigate(['/members']);
 			},
 			(err) => {
 				console.error(err);

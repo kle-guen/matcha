@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.matcha.mapper.ProfileMapper;
 import com.web.matcha.web.dto.ProfileDto;
 import io.javalin.Javalin;
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.service.ProfileService;
@@ -24,6 +25,7 @@ public class ProfileController extends AbstractController {
 	@Override
 	public void registerRoutes(final Javalin app) {
 		app.get("/profiles/me", this::getMyProfile);
+		app.get("/profiles/is-complete", this::isProfileComplete);
 		app.get("/profiles/{id}", this::getProfileById);
 		app.post("/profiles", this::createProfile);
 	}
@@ -38,6 +40,15 @@ public class ProfileController extends AbstractController {
 	}
 
 	/**
+	 * Check if profile is complete
+	 * @param ctx
+	 */
+	private void isProfileComplete(final Context ctx) {
+		final ProfileModel profileModel = profileService.getCompletedStatus();
+		ctx.status(HttpStatus.ACCEPTED).json(profileModel != null);
+	}
+
+	/**
 	 * Get profile by id
 	 * @param ctx
 	 */
@@ -46,8 +57,7 @@ public class ProfileController extends AbstractController {
 		try {
 			id = Integer.parseInt(ctx.pathParam("id"));
 		} catch (NumberFormatException e) {
-			ctx.status(400).result("Invalid id");
-			return;
+			throw new BadRequestResponse("Invalid id");
 		}
 		final ProfileModel profileModel = profileService.getProfileById(id);
 		ctx.status(HttpStatus.ACCEPTED).json(profileModel);

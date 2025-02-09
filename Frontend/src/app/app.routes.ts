@@ -12,6 +12,8 @@ import {updateProfileResolver} from "./data/resolvers/update-profile.resolver";
 import {ipInfoResolver} from "./data/resolvers/ip-info.resolver";
 import {InterestsResolver} from "./data/resolvers/interests.resolver";
 import {AuthGuard} from "./guards/auth.guard";
+import {verifyEmailResolver} from "./data/resolvers/verify-email.resolver";
+import {VerifyEmailComponent} from "./pages/components/verify-email/verify-email.component";
 
 export const routes: Routes = [
 	{
@@ -21,6 +23,13 @@ export const routes: Routes = [
 	{
 		path: 'register',
 		component: RegisterComponent,
+	},
+	{
+		path: 'verify-email',
+		resolve: {
+			verified: verifyEmailResolver
+		},
+		component: VerifyEmailComponent,
 	},
 	{
 		path: 'complete-profile',

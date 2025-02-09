@@ -1,7 +1,7 @@
 package com.web.matcha.domain.dao;
 
 import com.web.matcha.DatabaseConfig;
-import com.web.matcha.domain.model.EmailToken;
+import com.web.matcha.domain.model.EmailTokenModel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -12,15 +12,14 @@ import java.util.Optional;
 
 @Slf4j
 public class EmailTokenDAO {
-	public Optional<EmailToken> insertEmailToken(final EmailToken emailToken) {
-		final String sql = "INSERT INTO email_verification_tokens (user_id, token, created_at) VALUES (?, ?, ?)";
+	public Optional<EmailTokenModel> insertEmailToken(final EmailTokenModel emailToken) {
+		final String sql = "INSERT INTO email_verification_tokens (user_id, token) VALUES (?, ?)";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
 			stmt.setLong(1, emailToken.getUserId());
 			stmt.setString(2, emailToken.getToken());
-			stmt.setTimestamp(3, emailToken.getCreatedAt());
 			stmt.executeUpdate();
 
 			try (final ResultSet generatedKeys = stmt.getGeneratedKeys()) {

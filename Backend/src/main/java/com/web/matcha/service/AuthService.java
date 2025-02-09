@@ -4,7 +4,9 @@ import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.domain.utils.JwtUtils;
+import io.javalin.http.NotFoundResponse;
 import io.javalin.http.UnauthorizedResponse;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class AuthService {
 
@@ -15,8 +17,15 @@ public class AuthService {
 	}
 
 	public String authenticate(String email, String password) {
-		final UserModel user = userDAO.getUserByEmail(email)
-				.orElseThrow(() -> new UnauthorizedResponse("Invalid email or password"));
+		final UserModel user = userDAO.getUserByEmail(email, password)
+				.orElseThrow(() -> new NotFoundResponse("Unknown email."));
+
+		if (!BCrypt.checkpw(password, user.getPassword())) {
+			throw new UnauthorizedResponse("Invalid password");
+		}
+		if (!user.getVerified()) {
+			throw new UnauthorizedResponse("Email not verified");
+		}
 
 		final int userId = user.getId();
 		return JwtUtils.generateToken(userId);

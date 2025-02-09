@@ -9,6 +9,8 @@ import {MatCardModule} from "@angular/material/card";
 import {Router, RouterModule} from "@angular/router";
 import {AuthHttpService} from "../../../data/http/auth-http.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {HttpErrorResponse} from "@angular/common/http";
+import {ProfileHttpService} from "../../../data/http/profile-http.service";
 
 @Component({
 	selector: 'app-login',
@@ -53,6 +55,8 @@ export class LoginComponent {
 	 */
 	private readonly authHttpService = inject(AuthHttpService);
 
+	private readonly profileHttpService = inject(ProfileHttpService);
+
 	/**
 	 * The login form.
 	 */
@@ -68,13 +72,30 @@ export class LoginComponent {
 		const email = this.logInForm.get('email')?.value;
 		const password = this.logInForm.get('password')?.value;
 		if (!email || !password) return;
-		this.authHttpService.logIn(email, password).subscribe((success) => {
-			if (success) {
-				this.snackBar.open('Logged in successfully', 'Close', {duration: 3000});
-				this.router.navigateByUrl('/complete-profile');
-			}
-			else {
-				this.error = 'Invalid email or password';
+		this.authHttpService.logIn(email, password).subscribe({
+			next: (success) => {
+				if (success) {
+					this.snackBar.open('Logged in successfully', 'Close', {duration: 3000});
+
+					this.profileHttpService.isProfileComplete().subscribe({
+						next: (isComplete) => {
+							if (isComplete) {
+								this.router.navigateByUrl('/members');
+							} else {
+								this.router.navigateByUrl('/complete-profile');
+							}
+						},
+						error: (error) => {
+							this.error = error.error.title;
+						}
+					});
+				} else {
+					this.error = 'Invalid email or password';
+				}
+			},
+			error: (error: HttpErrorResponse) => {
+				console.error(error);
+				this.error = error.error.title;
 			}
 		});
 	}

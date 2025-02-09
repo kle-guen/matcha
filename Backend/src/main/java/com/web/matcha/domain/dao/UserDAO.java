@@ -10,15 +10,19 @@ import io.javalin.http.NotFoundResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static com.web.matcha.domain.utils.PasswordUtils.hashPassword;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -131,7 +135,7 @@ public class UserDAO {
 		return Optional.empty();
 	}
 
-	public Optional<UserModel> getUserByEmail(final String email) {
+	public Optional<UserModel> getUserByEmail(final String email, final String password) {
 		String sql = "SELECT * FROM users WHERE email = ?";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
@@ -151,11 +155,11 @@ public class UserDAO {
 		final String sql = "INSERT INTO users (username, email, password, first_name, last_name) VALUES (?, ?, ?, ?, ?)";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
-		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+		     final PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 			stmt.setString(1, userModel.getUsername());
 			stmt.setString(2, userModel.getEmail());
-			stmt.setString(3, userModel.getPassword());
+			stmt.setString(3, hashPassword(userModel.getPassword()));
 			stmt.setString(4, userModel.getFirstName());
 			stmt.setString(5, userModel.getLastName());
 			stmt.executeUpdate();
@@ -190,6 +194,7 @@ public class UserDAO {
 					.lastName(rs.getString("last_name"))
 					.verified(rs.getBoolean("is_verified"))
 					.lastLoginAt(rs.getTimestamp("last_login_at"))
+					.password(rs.getString("password"))
 					.build();
 		}
 		return null;

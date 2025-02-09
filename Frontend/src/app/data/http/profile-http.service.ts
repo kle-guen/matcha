@@ -58,4 +58,18 @@ export class ProfileHttpService {
 			}),
 		);
 	}
+
+	/**
+	 * Check if profile is completed
+	 */
+	public isProfileComplete(): Observable<boolean> {
+		const url = this.API_PROFILE_URL + '/is-complete';
+
+		return this.http.get<boolean>(url).pipe(
+			take(1),
+			map(response => {
+				return response;
+			}),
+		);
+	}
 }
