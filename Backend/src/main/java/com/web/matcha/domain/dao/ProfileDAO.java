@@ -63,8 +63,8 @@ public class ProfileDAO {
 			stmt.setFloat(4, profileModel.getLatitude());
 			stmt.setFloat(5, profileModel.getLongitude());
 			stmt.setString(6, profileModel.getCity());
-			stmt.setTimestamp(8, profileModel.getBirthdate());
-			stmt.setInt(9, userId);
+			stmt.setTimestamp(7, profileModel.getBirthdate());
+			stmt.setInt(8, userId);
 			stmt.executeUpdate();
 
 			try (PreparedStatement pictureStmt = conn.prepareStatement(pictureSql)) {

@@ -1,6 +1,5 @@
 package com.web.matcha.service;
 
-import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.domain.utils.JwtUtils;
