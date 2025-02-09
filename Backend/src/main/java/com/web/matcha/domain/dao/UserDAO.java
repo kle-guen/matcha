@@ -54,7 +54,7 @@ public class UserDAO {
 								StringUtils.isNotBlank(interestsCondition) ? "public.interests.code IN (" + interestsCondition + ") " : null,
 								researchMembersDto.getAgeMin() != null ? "birthdate < get_date_minus_years(?)" : null,
 								researchMembersDto.getAgeMax() != null ? "birthdate > get_date_minus_years(?)" : null,
-								researchMembersDto.getFameRatingMin() != null ? "calculate_fame_rating(" + userId + ")>= ?" : null,
+								researchMembersDto.getFameRatingMin() != null ? "calculate_fame_rating(users.id) >= ?" : null,
 								researchMembersDto.getDistanceMax() != null ? "calculate_distance(latitude, longitude, ?, ?) <= ?" : null)
 						.filter(StringUtils::isNotBlank)
 						.toList(),

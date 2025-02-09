@@ -175,7 +175,7 @@ BEGIN
     SELECT COUNT(*)
     INTO likes_count
     FROM likes
-    WHERE liked_id = user_id;
+    WHERE liked_id = user_id AND disliked = FALSE;
 
     -- Si views_count est zéro, on retourne 0 pour éviter la division par zéro
     IF views_count = 0 THEN
