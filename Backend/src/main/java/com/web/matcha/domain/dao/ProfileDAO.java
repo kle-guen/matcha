@@ -50,11 +50,11 @@ public class ProfileDAO {
 	 * @param profileModel
 	 */
 	public Optional<ProfileModel> createProfile(ProfileModel profileModel, List<UploadedFile> pictures) {
-		final String sql = "INSERT INTO profiles (gender, sexual_preference, biography, latitude, longitude, city, fame_rating, birthdate, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		final String sql = "INSERT INTO profiles (gender, sexual_preference, biography, latitude, longitude, city, birthdate, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		final String pictureSql = "INSERT INTO pictures (user_id, picture_path, is_profile_picture) VALUES (?, ?, ?)";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
-		    final PreparedStatement stmt = conn.prepareStatement(sql)) {
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 			final int userId = UserHolder.getUserId();
 
 			stmt.setString(1, profileModel.getGender().toString());
@@ -63,7 +63,6 @@ public class ProfileDAO {
 			stmt.setFloat(4, profileModel.getLatitude());
 			stmt.setFloat(5, profileModel.getLongitude());
 			stmt.setString(6, profileModel.getCity());
-			stmt.setFloat(7, profileModel.getFameRating());
 			stmt.setTimestamp(8, profileModel.getBirthdate());
 			stmt.setInt(9, userId);
 			stmt.executeUpdate();
@@ -107,7 +106,31 @@ public class ProfileDAO {
 	}
 
 	/**
+	 * Get fame rating
+	 *
+	 * @param userId
+	 */
+	public static int getFameRating(final int userId) {
+		final String sql = "SELECT calculate_fame_rating(?)";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, userId);
+			try (final ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					return rs.getInt(1);
+				}
+			}
+		} catch (SQLException e) {
+			log.error("Error while getting distance", e);
+		}
+		return 0;
+	}
+
+	/**
 	 * Extract profile
+	 *
 	 * @param rs
 	 * @param next
 	 * @return ProfileModel
@@ -119,8 +142,10 @@ public class ProfileDAO {
 		}
 
 		if (next || rs.next()) {
+			int userId = rs.getInt("user_id");
+
 			return ProfileModel.builder()
-					.userId(rs.getInt("user_id"))
+					.userId(userId)
 					.birthdate(rs.getTimestamp("birthdate"))
 					.gender(GenderEnum.valueOf(rs.getString("gender")))
 					.sexualPreference(SexualPreferenceEnum.valueOf(rs.getString("sexual_preference")))
@@ -128,7 +153,7 @@ public class ProfileDAO {
 					.latitude(rs.getFloat("latitude"))
 					.longitude(rs.getFloat("longitude"))
 					.city(rs.getString("city"))
-					.fameRating(rs.getFloat("fame_rating"))
+					.fameRating(getFameRating(userId))
 					.interests(InterestDAO.extractInterests2(rs.getArray("interests_list")))
 					.build();
 		}

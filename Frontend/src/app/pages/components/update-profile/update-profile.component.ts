@@ -17,7 +17,7 @@ import {provideNativeDateAdapter} from "@angular/material/core";
 import {InterestDto} from "../../../data/dto/receive/interest.dto";
 import {PictureDto} from "../../../data/dto/send/picture.dto";
 import {GenderEnum} from "../../../shared/enums/gender.enum";
-import {SexualPreferenceEnum} from "../../../shared/enums/SexualPreference.enum";
+import {SexualPreferenceEnum} from "../../../shared/enums/sexual-preference.enum";
 import {locationInterface} from "../../../shared/interfaces/location.interface";
 import {ProfileDto} from "../../../data/dto/receive/profile.dto";
 import {UserDto} from "../../../data/dto/receive/user.dto";

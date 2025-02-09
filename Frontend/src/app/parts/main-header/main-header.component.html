@@ -3,12 +3,12 @@
 		<div class="flex justify-end items-center h-16 gap-10">
 			<!-- Logo -->
 			<div class="flex-grow">
-				<a href="/users" class="text-xl font-bold">Matcha</a>
+				<a [routerLink]="'/members'" class="text-xl font-bold">Matcha</a>
 			</div>
 
 			<!-- Navigation Links -->
 			<nav class="hidden tablet:flex space-x-4">
-				<a href="/chat" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+				<a [routerLink]="'/chat'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
 					@if (messages > 0) {
 						<mat-icon aria-hidden="false" [matBadge]="messages">question_answer</mat-icon>
 					} @else {
@@ -16,7 +16,7 @@
 					}
 					Chat
 				</a>
-				<a href="#" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+				<a [routerLink]="'#'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
 					@if (notifications > 0) {
 						<mat-icon aria-hidden="false" [matBadge]="notifications">notifications</mat-icon>
 					} @else {
@@ -24,11 +24,11 @@
 					}
 					Notifications
 				</a>
-				<a href="#" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+				<a [routerLink]="'/history'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
 					<span class="material-icons-outlined">history</span>
 					History
 				</a>
-				<a href="/update-profile" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+				<a [routerLink]="'/update-profile'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
 					<span class="material-icons-outlined">manage_accounts</span>
 					Profile
 				</a>

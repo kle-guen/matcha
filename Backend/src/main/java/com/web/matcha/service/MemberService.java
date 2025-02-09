@@ -5,6 +5,7 @@ import com.web.matcha.domain.dao.BlockDAO;
 import com.web.matcha.domain.dao.LikeDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.domain.dao.UserDAO;
+import com.web.matcha.domain.dao.VisitDAO;
 import com.web.matcha.domain.enums.SortResearchUsersEnum;
 import com.web.matcha.domain.model.InterestModel;
 import com.web.matcha.domain.model.ProfileModel;
@@ -35,6 +36,8 @@ public class MemberService {
 	private final BlockDAO blockDAO;
 
 	private final LikeDAO likeDAO;
+
+	private final VisitDAO visitDAO;
 
 	public List<MemberDto> researchMembers(final ResearchMembersDto researchMembersDto, final SortResearchUsersEnum sortBy, final Boolean isAscending) {
 		final List<UserModel> userModels = userDAO.researchMembers(researchMembersDto);
@@ -71,33 +74,18 @@ public class MemberService {
 				.toList();
 	}
 
-	private Integer getDistance(final Float latitude, final Float longitude) {
-		ProfileModel profileModel = profileDAO.getProfileById(UserHolder.getUserId())
-				.orElseThrow(() -> new NotFoundResponse("Profile not found"));
-
-		return profileDAO.getDistance(profileModel.getLatitude(), profileModel.getLongitude(), latitude, longitude);
-	}
-
-	private Integer countCommonInterests(final List<InterestModel> interests) {
-		List<String> userInterest = profileDAO.getProfileById(UserHolder.getUserId())
-				.orElseThrow(() -> new NotFoundResponse("Profile not found"))
-				.getInterests().stream()
-				.map(InterestModel::getCode)
-				.toList();
-
-		List<String> memberInterests = interests.stream()
-				.map(InterestModel::getCode)
-				.toList();
-
-		return CollectionUtils.intersection(userInterest, memberInterests).size();
-	}
-
 	public CompleteMemberDto getCompleteMember(final Integer memberId) {
+		if (isBlockedOrBlocker(memberId)) {
+			throw new ForbiddenResponse("You can't get this member");
+		}
 		final UserModel userModels = userDAO.getUserById(memberId)
 				.orElseThrow(() -> new NotFoundResponse("User not found"));
 		final CompleteMemberDto completeMemberDto = memberMapper.toCompleteMember(userModels);
-		completeMemberDto.setLiked(likeDAO.getLikesByUserId(UserHolder.getUserId()).stream()
+		completeMemberDto.setLiked(likeDAO.getLikesByLikerId(UserHolder.getUserId()).stream()
 				.anyMatch(likeModel -> Objects.equals(likeModel.getLikedId(), memberId)));
+
+		visitDAO.addVisit(UserHolder.getUserId(), memberId);
+
 		return completeMemberDto;
 	}
 
@@ -118,7 +106,7 @@ public class MemberService {
 		if (isBlockedOrBlocker(memberId)) {
 			throw new ForbiddenResponse("You can't like this member");
 		}
-		if (likeDAO.getLikesByUserId(UserHolder.getUserId()).stream()
+		if (likeDAO.getLikesByLikerId(UserHolder.getUserId()).stream()
 				.anyMatch(likeModel -> Objects.equals(likeModel.getLikedId(), memberId))) {
 			likeDAO.unlikeUser(UserHolder.getUserId(), memberId);
 		} else {
@@ -130,5 +118,26 @@ public class MemberService {
 		return blockDAO.getBlockedAndBlockerByUserId(UserHolder.getUserId()).stream()
 				.anyMatch(blockModel -> Objects.equals(blockModel.getBlockedId(), memberId)
 						|| Objects.equals(blockModel.getBlockerId(), memberId));
+	}
+
+	private Integer getDistance(final Float latitude, final Float longitude) {
+		ProfileModel profileModel = profileDAO.getProfileById(UserHolder.getUserId())
+				.orElseThrow(() -> new NotFoundResponse("Profile not found"));
+
+		return profileDAO.getDistance(profileModel.getLatitude(), profileModel.getLongitude(), latitude, longitude);
+	}
+
+	private Integer countCommonInterests(final List<InterestModel> interests) {
+		final List<String> userInterest = profileDAO.getProfileById(UserHolder.getUserId())
+				.orElseThrow(() -> new NotFoundResponse("Profile not found"))
+				.getInterests().stream()
+				.map(InterestModel::getCode)
+				.toList();
+
+		final List<String> memberInterests = interests.stream()
+				.map(InterestModel::getCode)
+				.toList();
+
+		return CollectionUtils.intersection(userInterest, memberInterests).size();
 	}
 }

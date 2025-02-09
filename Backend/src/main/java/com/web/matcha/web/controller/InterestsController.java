@@ -4,9 +4,9 @@ import com.web.matcha.service.InterestsService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class InterestsController extends AbstractController {
 
 	private final InterestsService interestsService;

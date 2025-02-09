@@ -36,7 +36,7 @@ public class UserDAO {
 		final ProfileModel currentUserProfile = profileDAO.getProfileById(userId)
 				.orElseThrow(() -> new NotFoundResponse("Profile of current user not found"));
 
-		fillDefaultCriteres(researchMembersDto);
+		fillDefaultCriteria(researchMembersDto);
 
 		//Generate the gender condition
 		final List<String> searchedGender = SexualPreferenceEnum.searchedGender(currentUserProfile.getSexualPreference(), currentUserProfile.getGender()).stream()
@@ -54,7 +54,7 @@ public class UserDAO {
 								StringUtils.isNotBlank(interestsCondition) ? "public.interests.code IN (" + interestsCondition + ") " : null,
 								researchMembersDto.getAgeMin() != null ? "birthdate < get_date_minus_years(?)" : null,
 								researchMembersDto.getAgeMax() != null ? "birthdate > get_date_minus_years(?)" : null,
-								researchMembersDto.getFameRatingMin() != null ? "fame_rating >= ?" : null,
+								researchMembersDto.getFameRatingMin() != null ? "calculate_fame_rating(" + userId + ")>= ?" : null,
 								researchMembersDto.getDistanceMax() != null ? "calculate_distance(latitude, longitude, ?, ?) <= ?" : null)
 						.filter(StringUtils::isNotBlank)
 						.toList(),
@@ -104,7 +104,7 @@ public class UserDAO {
 		return List.of();
 	}
 
-	private void fillDefaultCriteres(ResearchMembersDto researchMembersDto) {
+	private void fillDefaultCriteria(ResearchMembersDto researchMembersDto) {
 		if (researchMembersDto.getAgeMin() == null) {
 			researchMembersDto.setAgeMin(18);
 		}
@@ -235,5 +235,23 @@ public class UserDAO {
 					.build();
 		}
 		return null;
+	}
+
+	public Optional<String> getUsernameById(final Integer id) {
+		final String sql = "SELECT username FROM users WHERE id = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, id);
+			final ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return Optional.ofNullable(rs.getString("username"));
+			}
+
+		} catch (SQLException e) {
+			log.error("Error while getting nickname by id", e);
+		}
+		return Optional.empty();
 	}
 }

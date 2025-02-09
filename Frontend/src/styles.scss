@@ -8,6 +8,10 @@
   @apply w-full h-full max-w-7xl mx-auto px-4 tablet:px-6 desktop:px-8
 }
 
+.page-wrapper > h1 {
+    @apply text-xl font-semibold;
+}
+
 .sticky-top {
   @apply sticky top-0 z-10;
 }

@@ -19,7 +19,7 @@ import {locationInterface} from "../../../shared/interfaces/location.interface";
 import {profileInfoInterface} from "../../../shared/interfaces/profile-info.interface";
 import {ProfileHttpService} from "../../../data/http/profile-http.service";
 import {GenderEnum} from "../../../shared/enums/gender.enum";
-import {SexualPreferenceEnum} from "../../../shared/enums/SexualPreference.enum";
+import {SexualPreferenceEnum} from "../../../shared/enums/sexual-preference.enum";
 
 @Component({
 	selector: 'app-complete-profile',

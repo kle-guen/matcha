@@ -57,7 +57,6 @@ public class ProfileService {
 			ObjectMapper objectMapper = new ObjectMapper();
 			ProfileDto profileDto = objectMapper.readValue(profileInfo, ProfileDto.class);
 			ProfileModel profileModel = profileMapper.toModel(profileDto);
-			profileModel.setFameRating(0.0f);
 			interestDAO.setInterestsForUsers(profileDto.getInterests());
 			return profileDAO.createProfile(profileModel, pictures)
 					.orElseThrow(() -> new BadRequestResponse("Error while creating profile"));

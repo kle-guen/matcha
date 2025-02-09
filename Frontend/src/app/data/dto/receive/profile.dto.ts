@@ -1,6 +1,6 @@
 import {PictureDto} from "../send/picture.dto";
 import {GenderEnum} from "../../../shared/enums/gender.enum";
-import {SexualPreferenceEnum} from "../../../shared/enums/SexualPreference.enum";
+import {SexualPreferenceEnum} from "../../../shared/enums/sexual-preference.enum";
 import {InterestDto} from "./interest.dto";
 
 /**

@@ -1,7 +1,7 @@
 import {locationInterface} from "./location.interface";
 import {InterestDto} from "../../data/dto/receive/interest.dto";
 import {GenderEnum} from "../enums/gender.enum";
-import {SexualPreferenceEnum} from "../enums/SexualPreference.enum";
+import {SexualPreferenceEnum} from "../enums/sexual-preference.enum";
 
 export interface profileInfoInterface {
 	/**

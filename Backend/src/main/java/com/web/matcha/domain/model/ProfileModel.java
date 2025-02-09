@@ -28,7 +28,7 @@ public class ProfileModel {
 
 	private String city;
 
-	private Float fameRating;
+	private int fameRating;
 
 	private Timestamp birthdate;
 

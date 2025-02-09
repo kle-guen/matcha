@@ -6,14 +6,12 @@ import com.web.matcha.web.dto.ResearchMembersDto;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class MemberController extends AbstractController {
 
 	private final MemberService memberService;
-
-	public MemberController(final MemberService memberService) {
-		this.memberService = memberService;
-	}
 
 	@Override
 	public void registerRoutes(final Javalin app) {

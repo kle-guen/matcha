@@ -19,7 +19,6 @@ CREATE TABLE profiles
     latitude          FLOAT,
     longitude         FLOAT,
     city              VARCHAR(100),
-    fame_rating       FLOAT DEFAULT 0,
     birthdate         TIMESTAMP   NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
@@ -62,7 +61,8 @@ CREATE TABLE likes
 (
     liker_id   INT NOT NULL,
     liked_id   INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    liked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    disliked  BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (liker_id, liked_id),
     FOREIGN KEY (liker_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (liked_id) REFERENCES users (id) ON DELETE CASCADE
@@ -156,5 +156,33 @@ CREATE OR REPLACE FUNCTION get_date_minus_years(years INT)
     RETURNS TIMESTAMP AS $$
 BEGIN
     RETURN NOW() - (years || ' years')::INTERVAL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION calculate_fame_rating(user_id INT)
+    RETURNS INT AS $$
+DECLARE
+    views_count INT;
+    likes_count INT;
+BEGIN
+    -- Récupère le nombre de vues pour cet utilisateur
+    SELECT COUNT(*)
+    INTO views_count
+    FROM visits
+    WHERE visited_id = user_id;
+
+    -- Récupère le nombre de likes pour cet utilisateur
+    SELECT COUNT(*)
+    INTO likes_count
+    FROM likes
+    WHERE liked_id = user_id;
+
+    -- Si views_count est zéro, on retourne 0 pour éviter la division par zéro
+    IF views_count = 0 THEN
+        RETURN 0;
+    END IF;
+
+    -- Calcul de la fame rating
+    RETURN (likes_count * 10 / views_count);
 END;
 $$ LANGUAGE plpgsql;

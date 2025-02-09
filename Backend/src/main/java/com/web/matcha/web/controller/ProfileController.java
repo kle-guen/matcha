@@ -8,6 +8,8 @@ import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.service.ProfileService;
+import io.javalin.Javalin;
+import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.UploadedFile;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class ProfileController extends AbstractController {
 
 	/**
 	 * Get my profile
+	 *
 	 * @param ctx
 	 */
 	private void getMyProfile(final Context ctx) {
@@ -49,6 +52,7 @@ public class ProfileController extends AbstractController {
 
 	/**
 	 * Create profile
+	 *
 	 * @param ctx
 	 */
 	private void createProfile(final Context ctx) {
