@@ -1,6 +1,5 @@
-package com.web.matcha.middleware;
+package com.web.matcha.config;
 
-import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.utils.JwtUtils;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;

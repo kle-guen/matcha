@@ -1,6 +1,6 @@
 package com.web.matcha.domain.dao;
 
-import com.web.matcha.DatabaseConfig;
+import com.web.matcha.config.DatabaseConfig;
 import com.web.matcha.domain.model.VisitModel;
 import lombok.extern.slf4j.Slf4j;
 

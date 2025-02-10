@@ -20,7 +20,7 @@ public class MemberDto {
 	/**
 	 * The age of the member.
 	 */
-	private String age;
+	private Integer age;
 
 	/**
 	 * The nickname of the member.

@@ -1,6 +1,6 @@
 package com.web.matcha.domain.dao;
 
-import com.web.matcha.DatabaseConfig;
+import com.web.matcha.config.DatabaseConfig;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.enums.GenderEnum;
 import com.web.matcha.domain.enums.SexualPreferenceEnum;

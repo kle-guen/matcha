@@ -1,13 +1,16 @@
 package com.web.matcha.service;
 
+import com.web.matcha.config.Env;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.EmailTokenDAO;
 import com.web.matcha.domain.model.EmailTokenModel;
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
 
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -53,22 +56,23 @@ public class EmailService {
 	/**
 	 * Send the verification email
 	 *
-	 * @param receiving_email
+	 * @param receivingEmail
 	 */
-	public void sendVerificationEmail(String receiving_email) {
+	public void sendVerificationEmail(String receivingEmail) {
+		Dotenv env = Env.getDotenv();
+
 		try {
 			final Integer userId = UserHolder.getUserId();
 			final String emailToken = addEmailToken(userId);
 
 			Email email = new SimpleEmail();
-			email.setHostName("smtp.mailgun.org");
-			email.setSmtpPort(587);
-			//Todo: Get username and password from environment variables
-			email.setAuthenticator(new DefaultAuthenticator("postmaster@sandbox9d270eb7a138450c9e31d299420fb76c.mailgun.org", "dc7fc93abc064e041916c4b74413709e-667818f5-5ffb519b"));
+			email.setHostName(env.get("SMTP_HOSTNAME"));
+			email.setSmtpPort(Integer.parseInt(Objects.requireNonNull(env.get("SMTP_PORT"))));
+			email.setAuthenticator(new DefaultAuthenticator(env.get("SMTP_USERNAME"), env.get("SMTP_PASSWORD")));
 			email.setFrom("noreplymatcha42angouleme@gmail.com");
 			email.setSubject("Matcha - Email Verification");
-			email.setMsg(("Please click the following link to verify your email: http://localhost:4200/verify-email?token=" + emailToken));
-			email.addTo("noreplymatcha42angouleme@gmail.com");
+			email.setMsg("Please click the following link to verify your email: " + env.get("FRONT_URL") + "/verify-email?token=" + emailToken);
+			email.addTo(receivingEmail);
 			email.send();
 
 		} catch (Exception e) {

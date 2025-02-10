@@ -59,7 +59,8 @@
 	</mat-drawer>
 
 	<div class="page-wrapper">
-		<div class="my-4">
+		<h1 class="text-center pt-4">Research members</h1>
+		<div class="my-4 flex">
 			<app-button
 					label="Search"
 					[disabled]="researchFormGroup.invalid"
@@ -67,6 +68,12 @@
 					icon="tune"
 					type="tertiary"
 			/>
+			<mat-chip-listbox>
+				<mat-chip-option (click)="sortList(SortResearchMembersEnum.AGE)" [selected]="sortBy === SortResearchMembersEnum.AGE">Age</mat-chip-option>
+				<mat-chip-option (click)="sortList(SortResearchMembersEnum.DISTANCE)" [selected]="sortBy === SortResearchMembersEnum.DISTANCE">Distance</mat-chip-option>
+				<mat-chip-option (click)="sortList(SortResearchMembersEnum.FAME_RATING)" [selected]="sortBy === SortResearchMembersEnum.FAME_RATING">Fame Rating</mat-chip-option>
+				<mat-chip-option (click)="sortList(SortResearchMembersEnum.COMMON_INTERESTS)" [selected]="sortBy === SortResearchMembersEnum.COMMON_INTERESTS">Common tags</mat-chip-option>
+			</mat-chip-listbox>
 		</div>
 		<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-4">
 			@for (user of members; track user.id) {

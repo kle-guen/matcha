@@ -36,7 +36,7 @@ public interface MemberMapper {
 	CompleteMemberDto toCompleteMember(UserModel userDto);
 
 	@Named("mapAge")
-	default String mapAge(final Timestamp birthdate) {
+	default Integer mapAge(final Timestamp birthdate) {
 		// Convertir le Timestamp en LocalDate
 		LocalDate dateFromTimestamp = birthdate.toInstant()
 				.atZone(ZoneId.systemDefault())
@@ -46,7 +46,7 @@ public interface MemberMapper {
 		LocalDate today = LocalDate.now();
 
 		// Calculer la différence en années
-		return Long.toString(ChronoUnit.YEARS.between(dateFromTimestamp, today));
+		return Math.toIntExact(ChronoUnit.YEARS.between(dateFromTimestamp, today));
 	}
 
 	@Named("mapGender")

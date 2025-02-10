@@ -9,12 +9,14 @@ import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatButton} from "@angular/material/button";
 import {MemberDto} from "../../../../data/dto/receive/member.dto";
 import {ResearchMembersDto} from "../../../../data/dto/send/research-members.dto";
-import {takeUntil} from "rxjs";
+import {Observable, takeUntil} from "rxjs";
 import {createNgDestroySubject} from "../../../../shared/utils/create-ng-destroy-subject.fn";
 import {MembersHttpService} from "../../../../data/http/members-http.service";
 import {ActivatedRoute} from "@angular/router";
 import {MatIcon} from "@angular/material/icon";
 import {InterestDto} from "../../../../data/dto/receive/interest.dto";
+import {MatChipListbox, MatChipOption} from "@angular/material/chips";
+import {SortResearchMembersEnum} from "../../../../shared/enums/sort-research-members.enum";
 
 @Component({
 	selector: 'app-research-members',
@@ -32,6 +34,8 @@ import {InterestDto} from "../../../../data/dto/receive/interest.dto";
 		MatButton,
 		MatDrawer,
 		MatIcon,
+		MatChipOption,
+		MatChipListbox,
 	],
 	templateUrl: './research-members.component.html',
 	styleUrl: './research-members.component.scss',
@@ -85,6 +89,16 @@ export class ResearchMembersComponent implements OnInit {
 	members: MemberDto[] = [];
 
 	/**
+	 * The last research.
+	 */
+	lastResearch: ResearchMembersDto | null = null;
+
+	/**
+	 * The sort by.
+	 */
+	sortBy: SortResearchMembersEnum | null = null;
+
+	/**
 	 * The on init.
 	 */
 	ngOnInit() {
@@ -96,7 +110,8 @@ export class ResearchMembersComponent implements OnInit {
 	 * The submit method.
 	 */
 	submit() {
-		this.researchUsers(this.researchFormGroup.value as ResearchMembersDto);
+		this.lastResearch = this.researchFormGroup.value as ResearchMembersDto;
+		this.researchMembers();
 	}
 
 	/**
@@ -110,9 +125,27 @@ export class ResearchMembersComponent implements OnInit {
 	 * The research users method.
 	 * @param researchUsers
 	 */
-	researchUsers(researchUsers: ResearchMembersDto) {
-		this.usersHttpService.researchMembers(researchUsers).pipe(
+	researchMembers() {
+		let memberSubject: Observable<MemberDto[]>;
+		if (!this.lastResearch) {
+			memberSubject = this.usersHttpService.suggestMembers(this.sortBy);
+		} else {
+			memberSubject = this.usersHttpService.researchMembers(this.lastResearch, this.sortBy)
+		}
+		memberSubject.pipe(
 			takeUntil(this.ngDestroy$)
 		).subscribe(res => this.members = res);
 	}
+
+	sortList(sortBy: SortResearchMembersEnum) {
+		if (this.sortBy === sortBy) {
+			this.sortBy = null;
+		} else {
+			this.sortBy = sortBy;
+		}
+
+		this.researchMembers();
+	}
+
+	protected readonly SortResearchMembersEnum = SortResearchMembersEnum;
 }

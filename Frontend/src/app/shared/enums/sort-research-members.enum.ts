@@ -1,0 +1,6 @@
+export enum SortResearchMembersEnum{
+	AGE = "AGE",
+	DISTANCE = "DISTANCE",
+	FAME_RATING = "FAME_RATING",
+	COMMON_INTERESTS = "COMMON_INTERESTS"
+}

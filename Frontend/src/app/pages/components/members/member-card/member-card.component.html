@@ -1,22 +1,25 @@
-<mat-card appearance="outlined">
-	<mat-card-header>
+<mat-card class="h-full" appearance="outlined">
+	<mat-card-header class="mb-2">
 		<mat-icon mat-card-avatar [ngClass]="member.sexe == GenderEnum.MALE ? 'text-blue-600' : 'text-pink-600'">
 			{{ member.sexe == GenderEnum.MALE ? 'male' : 'female' }}
 		</mat-icon>
-		<mat-card-title>{{member.name + ' ' + member.age}}</mat-card-title>
-		<mat-card-subtitle>{{member.nickname}}</mat-card-subtitle>
+		<mat-card-title>{{ member.name + ' ' + member.age }}</mat-card-title>
+		<mat-card-subtitle>{{ member.nickname }}</mat-card-subtitle>
 	</mat-card-header>
 	<img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-	<mat-card-content>
-		<p class="line-clamp-3">
-			{{member.description}}
-		</p>
-	</mat-card-content>
-	<mat-card-actions>
-		<app-button
-				label="See more"
-				type="tertiary"
-				(clicked)="navigateToMemberPage(member)"
-		/>
-	</mat-card-actions>
+	<div class="h-full flex flex-col justify-between">
+
+		<mat-card-content>
+			<p class="line-clamp-3">
+				{{ member.description }}
+			</p>
+		</mat-card-content>
+		<mat-card-actions>
+			<app-button
+					label="See more"
+					type="tertiary"
+					(clicked)="navigateToMemberPage(member)"
+			/>
+		</mat-card-actions>
+	</div>
 </mat-card>

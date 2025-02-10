@@ -11,5 +11,5 @@ import {Observable} from "rxjs";
 export const ResearchMembersResolver: ResolveFn<MemberDto[]> = (): Observable<MemberDto[]> => {
 	const usersHttpService = inject(MembersHttpService);
 
-	return usersHttpService.researchMembers(new ResearchMembersDto());
+	return usersHttpService.suggestMembers(null);
 };
