@@ -56,9 +56,9 @@ public class EmailService {
 	/**
 	 * Send the verification email
 	 *
-	 * @param receiving_email
+	 * @param receivingEmail
 	 */
-	public void sendVerificationEmail(String receiving_email) {
+	public void sendVerificationEmail(String receivingEmail) {
 		Dotenv env = Env.getDotenv();
 
 		try {
@@ -72,7 +72,7 @@ public class EmailService {
 			email.setFrom("noreplymatcha42angouleme@gmail.com");
 			email.setSubject("Matcha - Email Verification");
 			email.setMsg("Please click the following link to verify your email: " + env.get("FRONT_URL") + "/verify-email?token=" + emailToken);
-			email.addTo("noreplymatcha42angouleme@gmail.com");
+			email.addTo(receivingEmail);
 			email.send();
 
 		} catch (Exception e) {

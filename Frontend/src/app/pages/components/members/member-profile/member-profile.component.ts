@@ -12,7 +12,7 @@ import {MatIcon} from "@angular/material/icon";
 import {GenderEnum} from "../../../../shared/enums/gender.enum";
 
 @Component({
-	selector: 'app-user-profile',
+	selector: 'app-member-profile',
 	standalone: true,
 	imports: [
 		MatCardImage,
