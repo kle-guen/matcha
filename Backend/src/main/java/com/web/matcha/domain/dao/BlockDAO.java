@@ -1,8 +1,7 @@
 package com.web.matcha.domain.dao;
 
-import com.web.matcha.DatabaseConfig;
+import com.web.matcha.config.DatabaseConfig;
 import com.web.matcha.domain.model.BlockModel;
-import com.web.matcha.domain.model.UserModel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -11,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 public class BlockDAO {

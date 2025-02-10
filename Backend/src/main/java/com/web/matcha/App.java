@@ -2,7 +2,7 @@ package com.web.matcha;
 
 import com.web.matcha.config.Env;
 import com.web.matcha.config.RoutesConfig;
-import com.web.matcha.middleware.AuthMiddleware;
+import com.web.matcha.config.AuthMiddleware;
 import io.javalin.Javalin;
 
 import java.util.Objects;

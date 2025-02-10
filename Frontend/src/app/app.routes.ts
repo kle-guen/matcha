@@ -4,7 +4,7 @@ import {ResearchMembersComponent} from "./pages/components/members/research-memb
 import {LoginComponent} from "./pages/components/login/login.component";
 import {CompleteProfileComponent} from "./pages/components/complete-profile/complete-profile.component";
 import {RegisterComponent} from "./pages/components/register/register.component";
-import {MemberPage} from "./pages/components/members/member-page/member-page.component";
+import {MemberProfile} from "./pages/components/members/member-profile/member-profile.component";
 import {ResearchMembersResolver} from "./data/resolvers/research-members.resolver";
 import {ChatComponent} from "./pages/components/chat/chat.component";
 import {UpdateProfileComponent} from "./pages/components/update-profile/update-profile.component";
@@ -65,7 +65,7 @@ export const routes: Routes = [
 					},
 					{
 						path: ':id',
-						component: MemberPage
+						component: MemberProfile
 					}
 				]
 			},

@@ -15,7 +15,7 @@ export class MemberDto {
 	/**
 	 * The age of the member.
 	 */
-	age!: string;
+	age!: number;
 
 	/**
 	 * The nickname of the member.

@@ -16,6 +16,7 @@ public class MemberController extends AbstractController {
 	@Override
 	public void registerRoutes(final Javalin app) {
 		app.post("/members/research", this::researchMembers);
+		app.get("/members/suggest", this::suggestMembers);
 		app.get("/members/{id}", this::getCompleteMember);
 		app.post("/members/{id}/block", this::blockMember);
 		app.post("/members/{id}/report", this::reportMember);
@@ -30,9 +31,19 @@ public class MemberController extends AbstractController {
 	private void researchMembers(final Context ctx) {
 		ResearchMembersDto researchMembersDto = ctx.bodyAsClass(ResearchMembersDto.class);
 		SortResearchUsersEnum sortBy = SortResearchUsersEnum.getValue(ctx.queryParam("sortBy"));
-		Boolean isAscending = Boolean.parseBoolean(ctx.queryParam("isAscending"));
 		ctx.status(HttpStatus.ACCEPTED.getCode())
-				.json(memberService.researchMembers(researchMembersDto, sortBy, isAscending));
+				.json(memberService.researchMembers(researchMembersDto, sortBy));
+	}
+
+	/**
+	 * Research members
+	 *
+	 * @param ctx
+	 */
+	private void suggestMembers(final Context ctx) {
+		SortResearchUsersEnum sortBy = SortResearchUsersEnum.getValue(ctx.queryParam("sortBy"));
+		ctx.status(HttpStatus.ACCEPTED.getCode())
+				.json(memberService.suggestMembers(sortBy));
 	}
 
 	/**

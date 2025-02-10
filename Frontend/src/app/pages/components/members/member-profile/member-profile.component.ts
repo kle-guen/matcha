@@ -12,7 +12,7 @@ import {MatIcon} from "@angular/material/icon";
 import {GenderEnum} from "../../../../shared/enums/gender.enum";
 
 @Component({
-	selector: 'app-user-page',
+	selector: 'app-user-profile',
 	standalone: true,
 	imports: [
 		MatCardImage,
@@ -24,10 +24,10 @@ import {GenderEnum} from "../../../../shared/enums/gender.enum";
 		MatIcon,
 		NgClass
 	],
-	templateUrl: './member-page.component.html',
-	styleUrl: './member-page.component.scss'
+	templateUrl: './member-profile.component.html',
+	styleUrl: './member-profile.component.scss'
 })
-export class MemberPage implements OnInit {
+export class MemberProfile implements OnInit {
 
 	/**
 	 * The ng destroy subject.

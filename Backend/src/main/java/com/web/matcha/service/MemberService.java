@@ -39,39 +39,41 @@ public class MemberService {
 
 	private final VisitDAO visitDAO;
 
-	public List<MemberDto> researchMembers(final ResearchMembersDto researchMembersDto, final SortResearchUsersEnum sortBy, final Boolean isAscending) {
-		final List<UserModel> userModels = userDAO.researchMembers(researchMembersDto);
+	public List<MemberDto> researchMembers(final ResearchMembersDto researchMembersDto, final SortResearchUsersEnum sortBy) {
+		final ProfileModel currentUserProfile = profileDAO.getProfileById(UserHolder.getUserId())
+				.orElseThrow(() -> new NotFoundResponse("Profile of current user not found"));
+		final List<UserModel> userModels = userDAO.researchMembers(researchMembersDto, currentUserProfile);
 
 		if (CollectionUtils.isEmpty(userModels)) {
 			return List.of();
 		}
-
-		//Remove if member is blocked by the user or has blocked the user
 		userModels.removeIf(userModel -> isBlockedOrBlocker(userModel.getId()));
 
-		if (sortBy != null) {
-			switch (sortBy) {
-				case AGE:
-					userModels.sort(Comparator.comparing(userModel -> userModel.getProfile().getBirthdate()));
-					break;
-				case FAME_RATING:
-					userModels.sort(Comparator.comparing(userModel -> userModel.getProfile().getFameRating()));
-					break;
-				case COMMON_INTERESTS:
-					userModels.sort(Comparator.comparing(userModel -> countCommonInterests(userModel.getProfile().getInterests())));
-					break;
-				case DISTANCE:
-					userModels.sort(Comparator.comparing(userModel -> getDistance(userModel.getProfile().getLatitude(), userModel.getProfile().getLongitude())));
-					break;
-			}
-			if (!isAscending) {
-				Collections.reverse(userModels);
-			}
-		}
+		return sortAndMapUsers(userModels, sortBy, currentUserProfile);
+	}
 
-		return userModels.stream()
-				.map(memberMapper::toMember)
-				.toList();
+	public List<MemberDto> suggestMembers(final SortResearchUsersEnum sortBy) {
+		final ProfileModel currentUserProfile = profileDAO.getProfileById(UserHolder.getUserId())
+				.orElseThrow(() -> new NotFoundResponse("Profile of current user not found"));
+		final List<UserModel> userModels = userDAO.researchMembers(new ResearchMembersDto(), currentUserProfile);
+
+		if (CollectionUtils.isEmpty(userModels)) {
+			return List.of();
+		}
+		userModels.removeIf(userModel -> isBlockedOrBlocker(userModel.getId()));
+
+		userModels.sort(Comparator.comparing(userModel -> calculateScore(userModel.getProfile(), currentUserProfile)));
+
+		return sortAndMapUsers(userModels.subList(0, Math.min(userModels.size(), 20)), sortBy, currentUserProfile);
+	}
+
+
+	private Integer calculateScore(final ProfileModel profile, final ProfileModel currentUserProfile) {
+		final Integer distanceScore = profileDAO.getDistance(profile.getLatitude(), profile.getLongitude(), currentUserProfile.getLatitude(), currentUserProfile.getLongitude());
+		final Integer ageScore = memberMapper.mapAge(profile.getBirthdate()) - memberMapper.mapAge(currentUserProfile.getBirthdate()) * 5;
+		final int interestScore = countCommonInterests(profile.getInterests(), currentUserProfile.getInterests()) * 5;
+
+		return distanceScore + ageScore - interestScore;
 	}
 
 	public CompleteMemberDto getCompleteMember(final Integer memberId) {
@@ -120,24 +122,41 @@ public class MemberService {
 						|| Objects.equals(blockModel.getBlockerId(), memberId));
 	}
 
-	private Integer getDistance(final Float latitude, final Float longitude) {
-		ProfileModel profileModel = profileDAO.getProfileById(UserHolder.getUserId())
-				.orElseThrow(() -> new NotFoundResponse("Profile not found"));
+	private Integer countCommonInterests(final List<InterestModel> interests1, final List<InterestModel> interests2) {
+		final List<String> codeInterests2 = interests2.stream()
+				.map(InterestModel::getCode)
+				.toList();
 
-		return profileDAO.getDistance(profileModel.getLatitude(), profileModel.getLongitude(), latitude, longitude);
+		final List<String> codeInterests1 = interests1.stream()
+				.map(InterestModel::getCode)
+				.toList();
+
+		return CollectionUtils.intersection(codeInterests1, codeInterests2).size();
 	}
 
-	private Integer countCommonInterests(final List<InterestModel> interests) {
-		final List<String> userInterest = profileDAO.getProfileById(UserHolder.getUserId())
-				.orElseThrow(() -> new NotFoundResponse("Profile not found"))
-				.getInterests().stream()
-				.map(InterestModel::getCode)
-				.toList();
+	private List<MemberDto> sortAndMapUsers(final List<UserModel> userModels, final SortResearchUsersEnum sortBy, final ProfileModel currentUserProfile) {
+		if (sortBy != null) {
+			switch (sortBy) {
+				case AGE:
+					userModels.sort(Comparator.comparing(userModel -> userModel.getProfile().getBirthdate()));
+					Collections.reverse(userModels);
+					break;
+				case FAME_RATING:
+					userModels.sort(Comparator.comparing(userModel -> userModel.getProfile().getFameRating()));
+					Collections.reverse(userModels);
+					break;
+				case COMMON_INTERESTS:
+					userModels.sort(Comparator.comparing(userModel -> countCommonInterests(userModel.getProfile().getInterests(), currentUserProfile.getInterests())));
+					Collections.reverse(userModels);
+					break;
+				case DISTANCE:
+					userModels.sort(Comparator.comparing(userModel -> profileDAO.getDistance(userModel.getProfile().getLatitude(), userModel.getProfile().getLongitude(), currentUserProfile.getLatitude(), currentUserProfile.getLongitude())));
+					break;
+			}
+		}
 
-		final List<String> memberInterests = interests.stream()
-				.map(InterestModel::getCode)
+		return userModels.stream()
+				.map(memberMapper::toMember)
 				.toList();
-
-		return CollectionUtils.intersection(userInterest, memberInterests).size();
 	}
 }

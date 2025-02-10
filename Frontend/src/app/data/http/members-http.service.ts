@@ -1,9 +1,10 @@
 import {ResearchMembersDto} from "../dto/send/research-members.dto";
 import {MemberDto} from "../dto/receive/member.dto";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {catchError, Observable, of, take} from "rxjs";
 import {inject, Injectable} from "@angular/core";
 import {MemberCompleteDto} from "../dto/receive/member-complete.dto";
+import {SortResearchMembersEnum} from "../../shared/enums/sort-research-members.enum";
 
 @Injectable({
 	providedIn: "root"
@@ -25,10 +26,35 @@ export class MembersHttpService {
 	/**
 	 * Research members.
 	 * @param researchMembers
+	 * @param sortBy
 	 */
-	researchMembers(researchMembers: ResearchMembersDto): Observable<MemberDto[]> {
+	researchMembers(researchMembers: ResearchMembersDto, sortBy: SortResearchMembersEnum | null): Observable<MemberDto[]> {
 		const url = `${this.API_MEMBERS_URL}/research`;
-		return this.http.post<MemberDto[]>(url, researchMembers).pipe(
+		let params: HttpParams = new HttpParams();
+
+		if (sortBy) {
+			params = params.set("sortBy", sortBy);
+		}
+
+		return this.http.post<MemberDto[]>(url, researchMembers, {params}).pipe(
+			catchError(() => of([])),
+			take(1)
+		);
+	}
+
+	/**
+	 * Suggest members.
+	 * @param sortBy
+	 */
+	suggestMembers(sortBy: SortResearchMembersEnum | null): Observable<MemberDto[]> {
+		const url = `${this.API_MEMBERS_URL}/suggest`;
+		let params: HttpParams = new HttpParams();
+
+		if (sortBy) {
+			params = params.set("sortBy", sortBy);
+		}
+
+		return this.http.get<MemberDto[]>(url, {params}).pipe(
 			catchError(() => of([])),
 			take(1)
 		);

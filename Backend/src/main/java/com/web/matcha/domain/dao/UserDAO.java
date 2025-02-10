@@ -1,16 +1,14 @@
 package com.web.matcha.domain.dao;
 
-import com.web.matcha.DatabaseConfig;
+import com.web.matcha.config.DatabaseConfig;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.enums.SexualPreferenceEnum;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.web.dto.ResearchMembersDto;
-import io.javalin.http.NotFoundResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,12 +29,8 @@ public class UserDAO {
 
 	final ProfileDAO profileDAO;
 
-	public List<UserModel> researchMembers(ResearchMembersDto researchMembersDto) {
-		final Integer userId = UserHolder.getUserId();
-		final ProfileModel currentUserProfile = profileDAO.getProfileById(userId)
-				.orElseThrow(() -> new NotFoundResponse("Profile of current user not found"));
-
-		fillDefaultCriteria(researchMembersDto);
+	public List<UserModel> researchMembers(final ResearchMembersDto researchMembersDto, final ProfileModel currentUserProfile) {
+		final List<UserModel> users = new ArrayList<>();
 
 		//Generate the gender condition
 		final List<String> searchedGender = SexualPreferenceEnum.searchedGender(currentUserProfile.getSexualPreference(), currentUserProfile.getGender()).stream()
@@ -44,12 +38,16 @@ public class UserDAO {
 				.toList();
 		final String genderCondition = "(" + StringUtils.join(searchedGender, " OR ") + ")";
 
+		if (researchMembersDto.getInterests() == null) {
+			researchMembersDto.setInterests(new ArrayList<>());
+		}
+
 		//Generate the interests condition
 		final String interestsCondition = StringUtils.join(Collections.nCopies(researchMembersDto.getInterests().size(), "?"), ",");
 
 		//Filters
 		final String filters = "WHERE " + StringUtils.join(Stream.of(
-								"id != " + userId,
+								"id != " + UserHolder.getUserId(),
 								genderCondition,
 								StringUtils.isNotBlank(interestsCondition) ? "public.interests.code IN (" + interestsCondition + ") " : null,
 								researchMembersDto.getAgeMin() != null ? "birthdate < get_date_minus_years(?)" : null,
@@ -79,8 +77,12 @@ public class UserDAO {
 				stmt.setString(i, researchMembersDto.getInterests().get(i - 1));
 				i++;
 			}
-			stmt.setInt(i++, researchMembersDto.getAgeMin());
-			stmt.setInt(i++, researchMembersDto.getAgeMax());
+			if (researchMembersDto.getAgeMin() != null) {
+				stmt.setInt(i++, researchMembersDto.getAgeMin());
+			}
+			if (researchMembersDto.getAgeMax() != null) {
+				stmt.setInt(i++, researchMembersDto.getAgeMax());
+			}
 			if (researchMembersDto.getFameRatingMin() != null) {
 				stmt.setFloat(i++, researchMembersDto.getFameRatingMin());
 			}
@@ -92,29 +94,14 @@ public class UserDAO {
 			final ResultSet rs = stmt.executeQuery();
 
 			//Get the users
-			final List<UserModel> users = new ArrayList<>();
 			for (UserModel user = extractUserWithProfile(rs); user != null; user = extractUserWithProfile(rs)) {
 				users.add(user);
 			}
 
-			return users;
 		} catch (SQLException e) {
 			log.error("Error while getting user by id", e);
 		}
-		return List.of();
-	}
-
-	private void fillDefaultCriteria(ResearchMembersDto researchMembersDto) {
-		if (researchMembersDto.getAgeMin() == null) {
-			researchMembersDto.setAgeMin(18);
-		}
-		if (researchMembersDto.getAgeMax() == null) {
-			researchMembersDto.setAgeMax(99);
-		}
-		if (researchMembersDto.getInterests() == null) {
-			researchMembersDto.setInterests(new ArrayList<>());
-		}
-
+		return users;
 	}
 
 	public Optional<UserModel> getUserById(final Integer id) {
@@ -130,7 +117,7 @@ public class UserDAO {
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setInt(1, id);
-			return Optional.of(extractUserWithProfile(stmt.executeQuery()));
+			return Optional.ofNullable(extractUserWithProfile(stmt.executeQuery()));
 
 		} catch (SQLException e) {
 			log.error("Error while getting user by id", e);
@@ -145,7 +132,7 @@ public class UserDAO {
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 			stmt.setString(1, email);
-			return Optional.of(extractUser(stmt.executeQuery()));
+			return Optional.ofNullable(extractUser(stmt.executeQuery()));
 
 		} catch (SQLException e) {
 			log.error("Error while getting user by email", e);

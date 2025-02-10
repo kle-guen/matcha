@@ -1,6 +1,5 @@
-package com.web.matcha;
+package com.web.matcha.config;
 
-import com.web.matcha.config.Env;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.github.cdimascio.dotenv.Dotenv;
