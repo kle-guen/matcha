@@ -27,8 +27,6 @@ import static com.web.matcha.domain.utils.PasswordUtils.hashPassword;
 @RequiredArgsConstructor
 public class UserDAO {
 
-	final ProfileDAO profileDAO;
-
 	public List<UserModel> researchMembers(final ResearchMembersDto researchMembersDto, final ProfileModel currentUserProfile) {
 		final List<UserModel> users = new ArrayList<>();
 
@@ -51,7 +49,7 @@ public class UserDAO {
 								genderCondition,
 								StringUtils.isNotBlank(interestsCondition) ? "public.interests.code IN (" + interestsCondition + ") " : null,
 								researchMembersDto.getAgeMin() != null ? "birthdate < get_date_minus_years(?)" : null,
-								researchMembersDto.getAgeMax() != null ? "birthdate > get_date_minus_years(?)" : null,
+								researchMembersDto.getAgeMax() != null ? "birthdate > get_date_minus_years(?)" : null, // TODO: A REVOIR
 								researchMembersDto.getFameRatingMin() != null ? "calculate_fame_rating(users.id) >= ?" : null,
 								researchMembersDto.getDistanceMax() != null ? "calculate_distance(latitude, longitude, ?, ?) <= ?" : null)
 						.filter(StringUtils::isNotBlank)
@@ -62,7 +60,7 @@ public class UserDAO {
 		final String sql = "SELECT public.users.*, public.profiles.*, array_agg(public.interests.*) AS interests_list "
 				+ "FROM public.users "
 				+ "JOIN public.profiles ON public.profiles.user_id = public.users.id "
-				+ "LEFT JOIN public.user_interests ON public.profiles.user_id = public.user_interests.user_id "
+				+ "LEFT JOIN public.user_interests ON public.users.id = public.user_interests.user_id "
 				+ "LEFT JOIN public.interests ON public.user_interests.interest_code = public.interests.code "
 				+ filters
 				+ " GROUP BY public.users.id, public.profiles.user_id";
@@ -170,6 +168,24 @@ public class UserDAO {
 		return Optional.of(userModel);
 	}
 
+	public void updateUser(UserModel userModel) {
+		final String sql = "UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ? WHERE id = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setString(1, userModel.getUsername());
+			stmt.setString(2, userModel.getEmail());
+			stmt.setString(3, userModel.getFirstName());
+			stmt.setString(4, userModel.getLastName());
+			stmt.setInt(5, UserHolder.getUserId());
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			log.error("Error while updating user", e);
+		}
+	}
+
 	public static UserModel extractUser(final ResultSet rs) throws SQLException {
 		if (rs == null) {
 			return null;
@@ -201,6 +217,20 @@ public class UserDAO {
 
 		} catch (SQLException e) {
 			log.error("Error while verifying user email", e);
+		}
+	}
+
+	public void deleteUserByEmail(String email) {
+		final String sql = "DELETE FROM users WHERE email = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setString(1, email);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			log.error("Error while deleting user by email", e);
 		}
 	}
 

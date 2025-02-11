@@ -1,6 +1,6 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {map, Observable, take} from "rxjs";
+import {catchError, map, Observable, of, take} from "rxjs";
 
 @Injectable({
 	providedIn: "root"
@@ -24,11 +24,14 @@ export class VerifyEmailHttpService {
 	public verifyEmail(token: string): Observable<boolean> {
 		const url = `${this.API_URL}?token=${token}`;
 
-		return this.http.post<boolean>(url, {}).pipe(
+		return this.http.post(url, {}).pipe(
 			take(1),
-			map(response => {
-				return response;
+			map(() => {
+				return true;
 			}),
+			catchError(() => {
+				return of(false);
+			})
 		);
 	}
 }

@@ -24,6 +24,10 @@ public class UserService {
 				.orElseThrow(() -> new BadRequestResponse("Error while adding user"));
 	}
 
+	public void updateUser(UserDto userDto) {
+		userDAO.updateUser(userMapper.toModel(userDto));
+	}
+
 	public void verifyUserEmail(int userId) {
 		userDAO.verifyUserEmail(userId);
 	}

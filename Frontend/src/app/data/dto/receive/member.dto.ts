@@ -1,3 +1,5 @@
+import {PicturesDto} from "./pictures.dto";
+
 /**
  * The member dto class.
  */
@@ -32,5 +34,9 @@ export class MemberDto {
 	 */
 	description!: string;
 
+	/**
+	 * The fame rating of the member.
+	 */
+	pictures!: PicturesDto | null;
 
 }

@@ -21,12 +21,7 @@
 						</div>
 					</mat-card-title>
 				</mat-card-header>
-				<mat-card-content class="flex flex-grow w-full  text-center ">
-					<span class="material-icons text-iconXl text-gray-300">
-						account_circle
-					</span>
-					<app-image-uploader ngDefaultControl [isProfilePicture]="true" [formControl]="completeProfileForm.controls.profilePicture" class="flex flex-grow justify-center w-full"/>
-				</mat-card-content>
+				<app-image-uploader ngDefaultControl [formControl]="completeProfileForm.controls.profilePicture"/>
 			</mat-card>
 		</div>
 		<div class="complete-profile-container">
@@ -41,30 +36,10 @@
 				</mat-card-header>
 				<mat-card-content class="flex w-full text-center ">
 					<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4">
-						<div class="upload-image flex flex-col">
-							<span class="material-icons text-gray-300 text-iconXl">
-								add_photo_alternate
-							</span>
-							<app-image-uploader ngDefaultControl [isProfilePicture]="false" [formControl]="completeProfileForm.controls.firstAdditionalPicture" class="flex justify-center"/>
-						</div>
-						<div class="upload-image flex flex-col">
-							<span class="material-icons text-gray-300 text-iconXl">
-								add_photo_alternate
-							</span>
-							<app-image-uploader ngDefaultControl [isProfilePicture]="false" [formControl]="completeProfileForm.controls.secondAdditionalPicture" class="flex justify-center"/>
-						</div>
-						<div class="upload-image flex flex-col">
-							<span class="material-icons text-gray-300 text-iconXl">
-								add_photo_alternate
-							</span>
-							<app-image-uploader ngDefaultControl [isProfilePicture]="false" [formControl]="completeProfileForm.controls.thirdAdditionalPicture" class="flex justify-center"/>
-						</div>
-						<div class="upload-image flex flex-col">
-							<span class="material-icons text-gray-300 text-iconXl">
-								add_photo_alternate
-							</span>
-							<app-image-uploader ngDefaultControl [isProfilePicture]="false" [formControl]="completeProfileForm.controls.fourthAdditionalPicture" class="flex justify-center"/>
-						</div>
+						<app-image-uploader ngDefaultControl [formControl]="completeProfileForm.controls.picture1"/>
+						<app-image-uploader ngDefaultControl [formControl]="completeProfileForm.controls.picture2"/>
+						<app-image-uploader ngDefaultControl [formControl]="completeProfileForm.controls.picture3"/>
+						<app-image-uploader ngDefaultControl [formControl]="completeProfileForm.controls.picture4"/>
 					</div>
 				</mat-card-content>
 			</mat-card>
@@ -100,7 +75,8 @@
 				<mat-card-content class="w-full">
 					<div class="flex flex-col mb-5">
 						<span class="text-left text-sm">Select your gender: </span>
-						<mat-radio-group [formControl]="completeProfileForm.controls.gender" class="flex justify-center" aria-label="Select an option">
+						<mat-radio-group [formControl]="completeProfileForm.controls.gender" class="flex justify-center"
+										 aria-label="Select an option">
 							<mat-radio-button value="{{genderEnum.MALE}}">Male</mat-radio-button>
 							<mat-radio-button value="{{genderEnum.FEMALE}}">Female</mat-radio-button>
 						</mat-radio-group>
@@ -108,8 +84,10 @@
 
 					<div class="flex flex-wrap flex-col">
 						<span class="text-left text-sm">Select your sexual orientation: </span>
-						<mat-radio-group [formControl]="completeProfileForm.controls.sexualPreference" class="flex flex-wrap justify-center" aria-label="Select an option">
-							<mat-radio-button value="{{sexualPreferenceEnum.HETEROSEXUAL}}">Heterosexual</mat-radio-button>
+						<mat-radio-group [formControl]="completeProfileForm.controls.sexualPreference"
+										 class="flex flex-wrap justify-center" aria-label="Select an option">
+							<mat-radio-button value="{{sexualPreferenceEnum.HETEROSEXUAL}}">Heterosexual
+							</mat-radio-button>
 							<mat-radio-button value="{{sexualPreferenceEnum.HOMOSEXUAL}}">Homosexual</mat-radio-button>
 							<mat-radio-button value="{{sexualPreferenceEnum.BISEXUAL}}">Bisexual</mat-radio-button>
 						</mat-radio-group>
@@ -124,7 +102,7 @@
 				<mat-card-header>
 					<mat-card-title class="items-center">
 						<div class="flex items-center gap-2">
-							<span class="material-icons-outlined">description</span>							Add a description to your profile
+							<span class="material-icons-outlined">description</span> Add a description to your profile
 						</div>
 					</mat-card-title>
 				</mat-card-header>
@@ -159,27 +137,12 @@
 				</mat-card-content>
 			</mat-card>
 		</div>
-<!--		<div class="complete-profile-container">-->
-<!--			<mat-card class="flex-grow flex max-w-xl gap-10 items-center">-->
-<!--				<mat-card-header>-->
-<!--					<mat-card-title class="items-center">-->
-<!--						<div class="flex items-center gap-2">-->
-<!--							<span class="material-icons-outlined">location_on</span>-->
-<!--							Add your location-->
-<!--						</div>-->
-<!--					</mat-card-title>-->
-<!--				</mat-card-header>-->
-<!--				<mat-card-content class="w-full">-->
-<!--					<app-address-picker></app-address-picker>-->
-<!--				</mat-card-content>-->
-<!--			</mat-card>-->
-<!--		</div>-->
 		<div class="complete-profile-container text-center">
 			<app-button
 					class="w-full"
-					[disabled]="completeProfileForm.invalid"
 					label="Complete profile"
-					(click)="completeProfileForm.valid && completeProfile()"
+					[disabled]="completeProfileForm.invalid"
+					(clicked)="completeProfileForm.valid && completeProfile()"
 			>
 			</app-button>
 		</div>

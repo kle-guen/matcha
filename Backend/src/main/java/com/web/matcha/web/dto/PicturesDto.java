@@ -1,20 +1,20 @@
-package com.web.matcha.domain.model;
+package com.web.matcha.web.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@Builder
-public class PictureModel {
-	private String id;
-	private int userId;
+public class PicturesDto {
+
 	private String profilePicture;
+
 	private String picture1;
+
 	private String picture2;
+
 	private String picture3;
+
 	private String picture4;
+
 }

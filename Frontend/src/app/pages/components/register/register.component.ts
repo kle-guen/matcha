@@ -8,7 +8,7 @@ import {Router, RouterLink} from "@angular/router";
 import {passwordMatchValidator} from "../../../shared/validators/passwordMatch.validator";
 import {RegisterDto} from "../../../data/dto/send/register-dto";
 import {MatError} from "@angular/material/form-field";
-import {UsersHttpsService} from "../../../data/http/users-https.service";
+import {UsersHttpService} from "../../../data/http/users-http.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
@@ -40,7 +40,7 @@ export class RegisterComponent {
 	/**
 	 * The auth http service.
 	 */
-	private readonly usersHttpService = inject(UsersHttpsService);
+	private readonly usersHttpService = inject(UsersHttpService);
 
 	/**
 	 * The snack bar.

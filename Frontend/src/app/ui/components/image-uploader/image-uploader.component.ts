@@ -1,32 +1,35 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {MatFormField, MatInput} from "@angular/material/input";
 import {ButtonComponent} from "../button/button.component";
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
-import {PictureDto} from "../../../data/dto/send/picture.dto";
+import {MatCardContent} from "@angular/material/card";
+import {NgOptimizedImage} from "@angular/common";
 
 @Component({
-  selector: 'app-image-uploader',
-  standalone: true,
+	selector: 'app-image-uploader',
+	standalone: true,
 	imports: [
 		MatInput,
 		MatFormField,
 		ButtonComponent,
-		ReactiveFormsModule
+		ReactiveFormsModule,
+		MatCardContent,
+		NgOptimizedImage
 	],
-  templateUrl: './image-uploader.component.html',
-  styleUrl: './image-uploader.component.scss'
+	templateUrl: './image-uploader.component.html',
+	styleUrl: './image-uploader.component.scss'
 })
-export class ImageUploaderComponent {
+export class ImageUploaderComponent implements OnInit {
 
 	/**
 	 * The form control for the image uploader
 	 */
-	@Input() public formControl = new FormControl();
+	@Input() public formControl = new FormControl<File | null>(null);
 
-	/**
-	 * Boolean to check if the image is a profile picture
-	 */
-	@Input() public isProfilePicture = false;
+
+	protected imgUrl: string = "";
+
+	protected fileInputId!: string;
 
 	/**
 	 * The allowed max size of the file
@@ -43,14 +46,37 @@ export class ImageUploaderComponent {
 			const file = input.files[0];
 
 			if (file.size > this.ALLOWED_MAX_SIZE) {
-				this.formControl.setErrors({ maxSize: true }); //todo add error handling
+				this.formControl.setErrors({maxSize: true}); //todo add error handling
 				return;
 			}
 
-			this.formControl.setValue({
-				file: file,
-				isProfilePicture: this.isProfilePicture
-			} as PictureDto);
+			this.formControl.setValue(file);
 		}
+		this.updateimgUrl()
+	}
+
+	ngOnInit() {
+		this.fileInputId = `fileInput-${Math.random().toString(36).substr(2, 9)}`;
+		this.updateimgUrl();
+	}
+
+	updateimgUrl() {
+		const file = this.formControl.value;
+
+		if (!file || !(file instanceof Blob)) {
+			return;
+		}
+
+		const reader = new FileReader();
+
+		reader.onload = () => {
+			this.imgUrl = reader.result as string;
+		};
+
+		reader.onerror = (error) => {
+			console.error("Erreur lors de la lecture du fichier :", error);
+		};
+
+		reader.readAsDataURL(file);
 	}
 }

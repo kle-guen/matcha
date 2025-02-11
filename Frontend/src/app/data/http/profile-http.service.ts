@@ -21,41 +21,22 @@ export class ProfileHttpService {
 	/**
 	 * The complete profile method.
 	 */
-	public completeProfile(formData: FormData): Observable<ProfileDto> {
+	public completeProfile(formData: FormData) {
 		const url = this.API_PROFILE_URL;
 
-		return this.http.post<ProfileDto>(url, formData).pipe(
-			take(1),
-			map(response => {
-				return response;
-			}),
+		return this.http.post(url, formData).pipe(
+			take(1)
 		);
 	}
 
 	/**
-	 * The get profile method.
+	 * The update profile method.
 	 */
-	public getMyProfile(): Observable<ProfileDto> {
-		const url = this.API_PROFILE_URL + '/me';
-		return this.http.get<ProfileDto>(url).pipe(
-			take(1),
-			map(response => {
-				return response;
-			}),
-		);
-	}
+	public updateProfile(formData: FormData) {
+		const url = this.API_PROFILE_URL;
 
-	/**
-	 * The get profile by id method.
-	 */
-	public getProfileById(id: number): Observable<ProfileDto> {
-		const url = `${this.API_PROFILE_URL}/${id}`;
-
-		return this.http.get<ProfileDto>(url).pipe(
+		return this.http.put(url, formData).pipe(
 			take(1),
-			map(response => {
-				return response;
-			}),
 		);
 	}
 

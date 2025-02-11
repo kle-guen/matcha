@@ -16,6 +16,7 @@ import {verifyEmailResolver} from "./data/resolvers/verify-email.resolver";
 import {VerifyEmailComponent} from "./pages/components/verify-email/verify-email.component";
 import {HistoryComponent} from "./pages/components/history/history.component";
 import {historyResolver} from "./data/resolvers/history.resolver";
+import {memberProfileResolver} from "./data/resolvers/members-profile.resolver";
 
 export const routes: Routes = [
 	{
@@ -29,7 +30,7 @@ export const routes: Routes = [
 	{
 		path: 'verify-email',
 		resolve: {
-			verified: verifyEmailResolver
+			isVerified: verifyEmailResolver
 		},
 		component: VerifyEmailComponent,
 	},
@@ -65,6 +66,9 @@ export const routes: Routes = [
 					},
 					{
 						path: ':id',
+						resolve: {
+							member: memberProfileResolver
+						},
 						component: MemberProfile
 					}
 				]
@@ -95,5 +99,5 @@ export const routes: Routes = [
 			}
 		]
 	},
-	{ path: '**', redirectTo: '/login'}
+	{path: '**', redirectTo: '/login'}
 ];

@@ -50,7 +50,7 @@ export class FormFieldComponent {
 	/**
 	 * Function to compare the interests for the select
 	 */
-	public compareInterests(value: string, option: InterestDto): boolean {
-		return option.code === value;
+	public compareInterests(value: string, option: string): boolean {
+		return option === value;
 	}
 }
