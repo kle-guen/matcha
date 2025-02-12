@@ -98,15 +98,6 @@ export class CompleteProfileComponent implements OnInit {
 	ngOnInit() {
 		this.interests = this.activatedRoute.snapshot.data['interests'];
 		this.getCurrentPosition();
-
-		this.completeProfileForm.controls.profilePicture.valueChanges.subscribe((value) => {
-			console.log("profilePicture", value);
-		});
-
-		this.completeProfileForm.controls.picture1.valueChanges.subscribe((value) => {
-			console.log("picture1", value);
-		});
-
 	}
 
 	/**
