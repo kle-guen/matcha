@@ -57,7 +57,6 @@ export class UsersHttpService {
 		return this.http.get<any>(url).pipe(
 			take(1),
 			map(response => {
-				// Vérifie chaque photo et convertit en File si nécessaire
 				if (response.profilePicture && typeof response.profilePicture === 'string') {
 					response.profilePicture = this.convertBase64ToFile(response.profilePicture, 'profilePicture.jpg');
 				}
@@ -84,7 +83,7 @@ export class UsersHttpService {
 	}
 
 	convertBase64ToFile(base64String: string, fileName: string): File {
-		const byteCharacters = atob(base64String); // Décoder la base64 en caractères binaires
+		const byteCharacters = atob(base64String);
 		const byteArrays = [];
 
 		for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
@@ -96,6 +95,6 @@ export class UsersHttpService {
 			byteArrays.push(new Uint8Array(byteNumbers));
 		}
 
-		return new File(byteArrays, fileName, {type: 'image/jpeg'}); // Assumer ici le type MIME image/jpeg
+		return new File(byteArrays, fileName, {type: 'image/jpeg'});
 	}
 }

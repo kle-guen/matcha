@@ -14,7 +14,7 @@ export class IpInfoHttpService {
 	/**
 	 * The API URL to get client ip address.
 	 */
-	private apiUrl = 'https://ipinfo.io/json?token=05385b52108053'; // API publique pour récupérer l'adresse IP
+	private apiUrl = 'https://ipinfo.io/json?token=05385b52108053';
 
 	/**
 	 * Get the IP.

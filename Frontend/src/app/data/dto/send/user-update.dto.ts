@@ -1,5 +1,3 @@
-import {ProfileUpdateDto} from "./profile-update.dto";
-
 export class UserUpdateDto {
 	/**
 	 * The first name of the user.

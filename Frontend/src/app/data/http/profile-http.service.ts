@@ -1,7 +1,6 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {map, Observable, take} from "rxjs";
-import {ProfileDto} from "../dto/receive/profile.dto";
 
 @Injectable({
 	providedIn: "root"

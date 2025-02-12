@@ -25,20 +25,5 @@ public final class App {
 			new AuthMiddleware().handle(ctx);
 		});
 		RoutesConfig.configure(app);
-		app.get("/images/{fileName}", ctx -> {
-			String fileName = ctx.pathParam("fileName");
-			File file = new File("uploads/" + fileName);
-
-			// 🔐 Vérifier si le fichier existe
-			if (!file.exists()) {
-				ctx.status(404).result("Image not found");
-				return;
-			}
-
-			// 📤 Envoyer l'image avec le bon type MIME
-			String mimeType = Files.probeContentType(file.toPath());
-			ctx.contentType(mimeType != null ? mimeType : "application/octet-stream");
-			ctx.result(new FileInputStream(file));
-		});
 	}
 }

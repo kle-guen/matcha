@@ -24,6 +24,7 @@ import com.web.matcha.web.controller.AbstractController;
 import com.web.matcha.web.controller.AuthController;
 import com.web.matcha.web.controller.EmailTokenController;
 import com.web.matcha.web.controller.HistoryController;
+import com.web.matcha.web.controller.ImageController;
 import com.web.matcha.web.controller.InterestsController;
 import com.web.matcha.web.controller.MemberController;
 import com.web.matcha.web.controller.ProfileController;
@@ -73,7 +74,8 @@ public class RoutesConfig {
 				new EmailTokenController(emailService, userService),
 				new AuthController(authService),
 				new ProfileController(profileService, picturesService),
-				new HistoryController(historyService));
+				new HistoryController(historyService),
+				new ImageController());
 
 		controllers.forEach(controller -> controller.registerRoutes(app));
 
