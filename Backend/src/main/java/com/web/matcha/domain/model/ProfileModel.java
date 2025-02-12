@@ -34,5 +34,5 @@ public class ProfileModel {
 
 	List<InterestModel> interests;
 
-	List<PictureModel> pictureModels;
+	PictureModel pictureModel;
 }

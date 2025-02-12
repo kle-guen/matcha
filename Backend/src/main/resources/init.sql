@@ -40,10 +40,12 @@ CREATE TABLE user_interests
 
 CREATE TABLE pictures
 (
-    id                 SERIAL PRIMARY KEY,
-    user_id            INT          NOT NULL,
-    picture_path       VARCHAR(255) NOT NULL,
-    is_profile_picture BOOLEAN DEFAULT FALSE,
+    user_id           INT PRIMARY KEY,
+    profile_picture       VARCHAR(255) NOT NULL,
+    picture1       VARCHAR(255),
+    picture2       VARCHAR(255),
+    picture3       VARCHAR(255),
+    picture4       VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 

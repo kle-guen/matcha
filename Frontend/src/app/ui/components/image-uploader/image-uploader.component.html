@@ -1,3 +1,13 @@
-<div class="flex flex-wrap justify-center gap-y-2">
-	<input (change)="onFileSelected($event)" type="file" accept="image/*" class="flex justify-center w-full">
-</div>
+<mat-card-content class="flex text-center">
+	<img width="100" height="100" [src]="imgUrl || 'assets/defaut.webp'"
+		 class="rounded-full w-32 h-32 object-cover material-icons text-gray-300" alt=""/>
+	<div class="flex flex-wrap justify-center gap-y-2 pt-4">
+		<div>
+			<label [for]="fileInputId" class="cursor-pointer bg-gray-500 text-white px-4 py-2 rounded-3xl">
+				Choose a file
+			</label>
+
+			<input [id]="fileInputId" type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden">
+		</div>
+	</div>
+</mat-card-content>

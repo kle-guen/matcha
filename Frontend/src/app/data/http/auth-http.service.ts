@@ -38,7 +38,7 @@ export class AuthHttpService {
 	public logIn(email: string, password: string): Observable<boolean> {
 		const url = this.API_AUTH_URL;
 
-		return this.http.post<any>(url, { email, password }).pipe(
+		return this.http.post<any>(url, {email, password}).pipe(
 			take(1),
 			map(response => {
 				if (response?.token) {

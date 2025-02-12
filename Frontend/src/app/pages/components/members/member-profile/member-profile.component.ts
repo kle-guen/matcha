@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {MatCard, MatCardHeader, MatCardImage, MatCardModule} from "@angular/material/card";
+import {MatCardImage, MatCardModule} from "@angular/material/card";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MembersHttpService} from "../../../../data/http/members-http.service";
 import {NgClass, NgOptimizedImage} from "@angular/common";
@@ -10,6 +10,7 @@ import {MatChip, MatChipSet} from "@angular/material/chips";
 import {MemberCompleteDto} from "../../../../data/dto/receive/member-complete.dto";
 import {MatIcon} from "@angular/material/icon";
 import {GenderEnum} from "../../../../shared/enums/gender.enum";
+import {ImagesHttpService} from "../../../../data/http/images-http.service";
 
 @Component({
 	selector: 'app-member-profile',
@@ -65,12 +66,38 @@ export class MemberProfile implements OnInit {
 	member!: MemberCompleteDto;
 
 	/**
+	 * The images http service.
+	 * @private
+	 */
+	private readonly imagesHttpService = inject(ImagesHttpService);
+
+	picturesUrl: string[] = [];
+
+	indexImg = 0;
+
+	/**
 	 * The on init.
 	 */
 	ngOnInit() {
-		this.membersHttpService.getMemberById(this.activatedRoute.snapshot.params['id']).pipe(
-			takeUntil(this.ngDestroy$)
-		).subscribe((res) => this.member = res)
+		this.member = this.activatedRoute.snapshot.data['member'];
+
+		let picturesUrlTmp: (string | null | undefined)[] = [];
+
+		picturesUrlTmp.push(this.member.pictures?.profilePicture);
+		picturesUrlTmp.push(this.member.pictures?.picture1);
+		picturesUrlTmp.push(this.member.pictures?.picture2);
+		picturesUrlTmp.push(this.member.pictures?.picture3);
+		picturesUrlTmp.push(this.member.pictures?.picture4);
+
+		picturesUrlTmp = picturesUrlTmp.filter((url) => url !== null && url !== undefined);
+
+		picturesUrlTmp.forEach((imgName) => {
+			this.imagesHttpService.getImage(imgName || '').subscribe({
+				next: (img) => {
+					this.picturesUrl.push(this.imagesHttpService.loadUserImage(img));
+				},
+			});
+		});
 	}
 
 	/**
@@ -102,5 +129,12 @@ export class MemberProfile implements OnInit {
 		this.membersHttpService.reportMemberById(this.member.id).pipe(
 			takeUntil(this.ngDestroy$)
 		).subscribe();
+	}
+
+	nextImg() {
+		this.indexImg++;
+		if (this.indexImg >= this.picturesUrl.length) {
+		 this.indexImg = 0;
+		}
 	}
 }

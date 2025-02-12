@@ -53,12 +53,8 @@
 						</div>
 					</mat-card-title>
 				</mat-card-header>
-				<mat-card-content class="flex text-center ">
-					<span class="material-icons text-iconXl text-gray-300">
-						account_circle
-					</span>
-					<app-image-uploader class="flex w-full"/>
-				</mat-card-content>
+				<app-image-uploader ngDefaultControl [formControl]="updateProfileForm.controls.profilePicture"
+									class="flex flex-grow justify-center w-full"/>
 			</mat-card>
 		</div>
 		<div class="update-profile-container">
@@ -71,32 +67,12 @@
 						</div>
 					</mat-card-title>
 				</mat-card-header>
-				<mat-card-content class="flex w-full text-center ">
+				<mat-card-content class="flex flex-wrap w-full">
 					<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4">
-						<div class="upload-image flex flex-col">
-							<span class="material-icons text-gray-300 text-iconXl">
-								add_photo_alternate
-							</span>
-							<app-image-uploader class="flex justify-center"/>
-						</div>
-						<div class="upload-image flex flex-col">
-							<span class="material-icons text-gray-300 text-iconXl">
-								add_photo_alternate
-							</span>
-							<app-image-uploader class="flex justify-center"/>
-						</div>
-						<div class="upload-image flex flex-col">
-							<span class="material-icons text-gray-300 text-iconXl">
-								add_photo_alternate
-							</span>
-							<app-image-uploader class="flex justify-center"/>
-						</div>
-						<div class="upload-image flex flex-col">
-							<span class="material-icons text-gray-300 text-iconXl">
-								add_photo_alternate
-							</span>
-							<app-image-uploader class="flex justify-center"/>
-						</div>
+						<app-image-uploader ngDefaultControl [formControl]="updateProfileForm.controls.picture1"/>
+						<app-image-uploader ngDefaultControl [formControl]="updateProfileForm.controls.picture2"/>
+						<app-image-uploader ngDefaultControl [formControl]="updateProfileForm.controls.picture3"/>
+						<app-image-uploader ngDefaultControl [formControl]="updateProfileForm.controls.picture4"/>
 					</div>
 				</mat-card-content>
 			</mat-card>
@@ -205,7 +181,7 @@
 					</mat-card-title>
 				</mat-card-header>
 				<mat-card-content class="w-full">
-					<app-address-picker [control]="updateProfileForm.controls.location"></app-address-picker>
+					<app-address-picker [control]="updateProfileForm.controls.location"/>
 				</mat-card-content>
 			</mat-card>
 		</div>
@@ -214,9 +190,9 @@
 			<app-button
 					class="w-full"
 					[disabled]="updateProfileForm.invalid"
+					(clicked)="completeProfile()"
 					label="Save changes"
-			>
-			</app-button>
+			/>
 		</div>
 	</form>
 </div>

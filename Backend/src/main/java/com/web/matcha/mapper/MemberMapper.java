@@ -2,10 +2,12 @@ package com.web.matcha.mapper;
 
 import com.web.matcha.domain.enums.GenderEnum;
 import com.web.matcha.domain.enums.SexualPreferenceEnum;
+import com.web.matcha.domain.model.PictureModel;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.web.dto.CompleteMemberDto;
 import com.web.matcha.web.dto.MemberDto;
+import com.web.matcha.web.dto.PicturesDto;
 import org.mapstruct.InheritConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,12 +23,15 @@ import java.util.List;
 @Mapper
 public interface MemberMapper {
 
+	PicturesDto toPicturesDto(PictureModel userDto);
+
 	@Mapping(target = "id", source = "id")
 	@Mapping(target = "name", source = "firstName")
 	@Mapping(target = "age", source = "profile.birthdate", qualifiedByName = "mapAge")
 	@Mapping(target = "nickname", source = "username")
 	@Mapping(target = "sexe", source = "profile.gender", qualifiedByName = "mapGender")
 	@Mapping(target = "description", source = "profile.description")
+	@Mapping(target = "pictures", source = "profile.pictureModel")
 	MemberDto toMember(UserModel userDto);
 
 	@InheritConfiguration

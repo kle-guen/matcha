@@ -1,22 +1,21 @@
-
-export interface UserInfoInterface {
+export class UserUpdateDto {
 	/**
 	 * The first name of the user.
 	 */
-	firstName: string | null;
+	firstName!: string | null;
 
 	/**
 	 * The last name of the user.
 	 */
-	lastName: string | null;
+	lastName!: string | null;
 
 	/**
 	 * The username of the user.
 	 */
-	username: string | null;
+	username!: string | null;
 
 	/**
 	 * The email of the user.
 	 */
-	email: string | null;
+	email!: string | null;
 }

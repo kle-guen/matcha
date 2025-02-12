@@ -1,4 +1,3 @@
-import {PictureDto} from "../send/picture.dto";
 import {GenderEnum} from "../../../shared/enums/gender.enum";
 import {SexualPreferenceEnum} from "../../../shared/enums/sexual-preference.enum";
 import {InterestDto} from "./interest.dto";
@@ -26,7 +25,7 @@ export class ProfileDto {
 	/**
 	 * The user interests.
 	 */
-	interests!: string[];
+	interests!: InterestDto[];
 
 	/**
 	 * The description of the user
@@ -49,17 +48,7 @@ export class ProfileDto {
 	city!: string;
 
 	/**
-	 * The fame rating
-	 */
-	fameRating!: number;
-
-	/**
 	 * The date of birth of the user.
 	 */
 	birthdate!: Date;
-
-	/**
-	 * The pictures of the user.
-	 */
-	pictures: PictureDto[] = [];
 }

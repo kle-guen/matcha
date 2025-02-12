@@ -1,9 +1,8 @@
-import {locationInterface} from "./location.interface";
-import {InterestDto} from "../../data/dto/receive/interest.dto";
-import {GenderEnum} from "../enums/gender.enum";
-import {SexualPreferenceEnum} from "../enums/sexual-preference.enum";
+import {locationInterface} from "../../../shared/interfaces/location.interface";
+import {GenderEnum} from "../../../shared/enums/gender.enum";
+import {SexualPreferenceEnum} from "../../../shared/enums/sexual-preference.enum";
 
-export interface profileInfoInterface {
+export interface ProfileUpdateDto {
 	/**
 	 * The date of birth of the user.
 	 */

@@ -1,8 +1,15 @@
 <div class="page-layout flex flex-col flex-grow">
-	<div class="header sticky-top">
-		<app-main-header class="w-full"/>
+	<div style="min-height: 100vh" class="header sticky-top flex flex-col justify-between">
+		<div>
+			<app-main-header class="w-full"/>
+			<div class="h-full">
+				<router-outlet/>
+			</div>
+		</div>
+		<footer class="bg-white rounded-lg shadow-sm m-4">
+				<span class="text-sm text-gray-500 sm:text-center dark:text-gray-400 p-4">© 2025 kle-guen/pmailly™. All Rights Reserved.
+				</span>
+		</footer>
 	</div>
-	<div class="h-full">
-		<router-outlet/>
-	</div>
+
 </div>

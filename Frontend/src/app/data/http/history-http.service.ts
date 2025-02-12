@@ -1,8 +1,7 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {catchError, map, Observable, of, take} from "rxjs";
+import {catchError, Observable, of, take} from "rxjs";
 import {HistoryDto} from "../dto/receive/history.dto";
-import {log} from "node:util";
 
 @Injectable({
 	providedIn: "root"

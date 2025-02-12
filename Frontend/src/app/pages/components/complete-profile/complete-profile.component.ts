@@ -8,15 +8,14 @@ import {provideNativeDateAdapter} from "@angular/material/core";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatFormField} from "@angular/material/form-field";
 import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
-import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {ButtonComponent} from "../../../ui/components/button/button.component";
 import {AddressPickerComponent} from "../../../ui/components/address-picker/address-picker.component";
 import {GeocodingHttpService} from "../../../data/http/geocoding-http.service";
 import {InterestDto} from "../../../data/dto/receive/interest.dto";
-import {PictureDto} from "../../../data/dto/send/picture.dto";
 import {locationInterface} from "../../../shared/interfaces/location.interface";
-import {profileInfoInterface} from "../../../shared/interfaces/profile-info.interface";
+import {ProfileUpdateDto} from "../../../data/dto/send/profile-update.dto";
 import {ProfileHttpService} from "../../../data/http/profile-http.service";
 import {GenderEnum} from "../../../shared/enums/gender.enum";
 import {SexualPreferenceEnum} from "../../../shared/enums/sexual-preference.enum";
@@ -105,11 +104,11 @@ export class CompleteProfileComponent implements OnInit {
 	 * The complete-profile form.
 	 */
 	public completeProfileForm = this.formBuilder.group({
-		profilePicture: [null as PictureDto | null, Validators.required],
-		firstAdditionalPicture: null as PictureDto | null,
-		secondAdditionalPicture: null as PictureDto | null,
-		thirdAdditionalPicture: null as PictureDto | null,
-		fourthAdditionalPicture: null as PictureDto | null,
+		profilePicture: [null as File | null, Validators.required],
+		picture1: null as File | null,
+		picture2: null as File | null,
+		picture3: null as File | null,
+		picture4: null as File | null,
 		birthdate: [null as Date | null, Validators.required],
 		gender: [null as GenderEnum | null, Validators.required],
 		sexualPreference: [null as SexualPreferenceEnum | null, Validators.required],
@@ -172,7 +171,7 @@ export class CompleteProfileComponent implements OnInit {
 
 		const formData = new FormData();
 
-		const profileData: profileInfoInterface = {
+		const profileData: ProfileUpdateDto = {
 			birthdate: this.completeProfileForm.value.birthdate ?? null,
 			sexualPreference: this.completeProfileForm.value.sexualPreference ?? null,
 			gender: this.completeProfileForm.value.gender ?? null,
@@ -183,19 +182,19 @@ export class CompleteProfileComponent implements OnInit {
 
 		formData.append("profileData", JSON.stringify(profileData));
 		const pictureFields = [
-			'profilePicture', 'firstAdditionalPicture', 'secondAdditionalPicture',
-			'thirdAdditionalPicture', 'fourthAdditionalPicture'
+			'profilePicture', 'picture1', 'picture2',
+			'picture3', 'picture4'
 		];
 
 		pictureFields.forEach(field => {
-			const picture: PictureDto = this.completeProfileForm.get(field)?.value;
-			if (picture?.file) {
-				formData.append('pictures', picture.file);
+			const picture: File = this.completeProfileForm.get(field)?.value;
+			if (picture) {
+				formData.append(field, picture);
 			}
 		});
 
 		this.profileHttpService.completeProfile(formData).subscribe(
-			(response) => {
+			() => {
 				this.router.navigate(['/members']);
 			},
 			(err) => {

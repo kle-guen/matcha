@@ -36,4 +36,9 @@ public class MemberDto {
 	 * The description of the member.
 	 */
 	private String description;
+
+	/**
+	 * The pictures of the member.
+	 */
+	private PicturesDto pictures;
 }

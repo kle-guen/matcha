@@ -30,6 +30,19 @@ public class InterestDAO {
 		}
 	}
 
+	public void deleteInterestsById(Integer id) {
+		final String sql = "DELETE FROM user_interests WHERE user_id = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, id);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			log.error("Error while deleting interests", e);
+		}
+	}
+
 	public void setInterestsForUsers(List<String> interests) {
 		final Integer userId = UserHolder.getUserId();
 		final String sql = "INSERT INTO user_interests (user_id, interest_code) VALUES (?, ?)";

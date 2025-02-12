@@ -3,6 +3,7 @@ package com.web.matcha.service;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.BlockDAO;
 import com.web.matcha.domain.dao.LikeDAO;
+import com.web.matcha.domain.dao.PicturesDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.dao.VisitDAO;
@@ -39,10 +40,13 @@ public class MemberService {
 
 	private final VisitDAO visitDAO;
 
+	private final PicturesDAO picturesDAO;
+
 	public List<MemberDto> researchMembers(final ResearchMembersDto researchMembersDto, final SortResearchUsersEnum sortBy) {
 		final ProfileModel currentUserProfile = profileDAO.getProfileById(UserHolder.getUserId())
 				.orElseThrow(() -> new NotFoundResponse("Profile of current user not found"));
 		final List<UserModel> userModels = userDAO.researchMembers(researchMembersDto, currentUserProfile);
+		userModels.forEach(userModel -> picturesDAO.getPicturesById(userModel.getId()).ifPresent(pictureModel -> userModel.getProfile().setPictureModel(pictureModel)));
 
 		if (CollectionUtils.isEmpty(userModels)) {
 			return List.of();
@@ -56,6 +60,8 @@ public class MemberService {
 		final ProfileModel currentUserProfile = profileDAO.getProfileById(UserHolder.getUserId())
 				.orElseThrow(() -> new NotFoundResponse("Profile of current user not found"));
 		final List<UserModel> userModels = userDAO.researchMembers(new ResearchMembersDto(), currentUserProfile);
+
+		userModels.forEach(userModel -> picturesDAO.getPicturesById(userModel.getId()).ifPresent(pictureModel -> userModel.getProfile().setPictureModel(pictureModel)));
 
 		if (CollectionUtils.isEmpty(userModels)) {
 			return List.of();
@@ -80,9 +86,12 @@ public class MemberService {
 		if (isBlockedOrBlocker(memberId)) {
 			throw new ForbiddenResponse("You can't get this member");
 		}
-		final UserModel userModels = userDAO.getUserById(memberId)
+		final UserModel userModel = userDAO.getUserById(memberId)
 				.orElseThrow(() -> new NotFoundResponse("User not found"));
-		final CompleteMemberDto completeMemberDto = memberMapper.toCompleteMember(userModels);
+
+		picturesDAO.getPicturesById(userModel.getId()).ifPresent(pictureModel -> userModel.getProfile().setPictureModel(pictureModel));
+
+		final CompleteMemberDto completeMemberDto = memberMapper.toCompleteMember(userModel);
 		completeMemberDto.setLiked(likeDAO.getLikesByLikerId(UserHolder.getUserId()).stream()
 				.anyMatch(likeModel -> Objects.equals(likeModel.getLikedId(), memberId)));
 

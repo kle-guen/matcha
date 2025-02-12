@@ -4,6 +4,7 @@ import com.web.matcha.config.DatabaseConfig;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.enums.GenderEnum;
 import com.web.matcha.domain.enums.SexualPreferenceEnum;
+import com.web.matcha.domain.model.PictureModel;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.utils.FileUtils;
 import io.javalin.http.UploadedFile;
@@ -49,9 +50,8 @@ public class ProfileDAO {
 	 *
 	 * @param profileModel
 	 */
-	public Optional<ProfileModel> createProfile(ProfileModel profileModel, List<UploadedFile> pictures) {
+	public Optional<ProfileModel> createProfile(ProfileModel profileModel) {
 		final String sql = "INSERT INTO profiles (gender, sexual_preference, biography, latitude, longitude, city, birthdate, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-		final String pictureSql = "INSERT INTO pictures (user_id, picture_path, is_profile_picture) VALUES (?, ?, ?)";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -67,21 +67,39 @@ public class ProfileDAO {
 			stmt.setInt(8, userId);
 			stmt.executeUpdate();
 
-			try (PreparedStatement pictureStmt = conn.prepareStatement(pictureSql)) {
-				for (UploadedFile picture : pictures) {
-					String filePath = FileUtils.saveUploadedFile(picture);
-					pictureStmt.setInt(1, userId);
-					pictureStmt.setString(2, filePath);
-					pictureStmt.setBoolean(3, pictures.indexOf(picture) == 0);
-					pictureStmt.executeUpdate();
-				}
-			}
 		} catch (SQLException e) {
 			log.error("Error while inserting user", e);
 			return Optional.empty();
 		}
 
 		return Optional.of(profileModel);
+	}
+
+	/**
+	 * Create profile
+	 *
+	 * @param profileModel
+	 */
+	public void updateProfile(ProfileModel profileModel) {
+		final String sql = "UPDATE profiles SET gender = ?, sexual_preference = ?, biography = ?, latitude = ?, longitude = ?, city = ?, birthdate = ? WHERE user_id = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+			final int userId = UserHolder.getUserId();
+
+			stmt.setString(1, profileModel.getGender().toString());
+			stmt.setString(2, profileModel.getSexualPreference().toString());
+			stmt.setString(3, profileModel.getDescription());
+			stmt.setFloat(4, profileModel.getLatitude());
+			stmt.setFloat(5, profileModel.getLongitude());
+			stmt.setString(6, profileModel.getCity());
+			stmt.setTimestamp(7, profileModel.getBirthdate());
+			stmt.setInt(8, userId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			log.error("Error while inserting user", e);
+		}
 	}
 
 	public Integer getDistance(final Float latitude1, final Float longitude1, final Float latitude2, final Float longitude2) {

@@ -3,9 +3,14 @@ package com.web.matcha.service;
 import com.web.matcha.config.Env;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.EmailTokenDAO;
+import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.model.EmailTokenModel;
 import io.github.cdimascio.dotenv.Dotenv;
+import io.javalin.http.MisdirectedRequestResponse;
+import io.javalin.http.NotFoundResponse;
+import io.javalin.http.UnauthorizedResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.SimpleEmail;
@@ -13,7 +18,7 @@ import org.apache.commons.mail.SimpleEmail;
 import java.util.Objects;
 import java.util.UUID;
 
-
+@Slf4j
 @RequiredArgsConstructor
 public class EmailService {
 
@@ -21,6 +26,11 @@ public class EmailService {
 	 * The email token DAO
 	 */
 	final private EmailTokenDAO emailTokenDAO;
+
+	/**
+	 * The user DAO.
+	 */
+	final private UserDAO userDAO;
 
 	/**
 	 * Add the email token
@@ -41,7 +51,7 @@ public class EmailService {
 	 */
 	public int getUserIdByToken(String token) {
 		return emailTokenDAO.getUserIdByToken(token)
-				.orElseThrow(() -> new RuntimeException("Token not Found"));
+				.orElseThrow(() -> new NotFoundResponse("Token not Found"));
 	}
 
 	/**
@@ -76,7 +86,9 @@ public class EmailService {
 			email.send();
 
 		} catch (Exception e) {
-			throw new RuntimeException("Error sending email: " + e.getMessage(), e);
+			userDAO.deleteUserByEmail(receivingEmail);
+			log.error("Error sending email",e);
+			throw new MisdirectedRequestResponse("Error sending email: " + e.getMessage());
 		}
 	}
 }

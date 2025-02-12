@@ -5,6 +5,9 @@ import com.web.matcha.config.RoutesConfig;
 import com.web.matcha.config.AuthMiddleware;
 import io.javalin.Javalin;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.util.Objects;
 
 public final class App {
@@ -16,7 +19,7 @@ public final class App {
 		app.before(ctx -> {
 			String path = ctx.path();
 			String method = String.valueOf(ctx.method());
-			if (path.equals("/auth/token") || (path.equals("/users")) && method.equals("POST") || path.equals("/verify-email")) {
+			if (path.equals("/auth/token") || ((path.equals("/users")) && method.equals("POST")) || path.equals("/verify-email")) {
 				return;
 			}
 			new AuthMiddleware().handle(ctx);
