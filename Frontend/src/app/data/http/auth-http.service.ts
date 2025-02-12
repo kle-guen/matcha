@@ -4,6 +4,7 @@ import {catchError, map, Observable, of, take} from "rxjs";
 import {Router} from "@angular/router";
 import {RegisterDto} from "../dto/send/register-dto";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {AuthService} from "../../shared/services/auth-service";
 
 @Injectable({
 	providedIn: 'root',
@@ -11,19 +12,14 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 export class AuthHttpService {
 
 	/**
-	 * The snack bar.
-	 */
-	private readonly snackBar = inject(MatSnackBar);
-
-	/**
-	 * The router.
-	 */
-	private readonly router = inject(Router);
-
-	/**
 	 * The http client.
 	 */
 	private readonly http = inject(HttpClient);
+
+	/**
+	 * The auth service.
+	 */
+	private readonly authService = inject(AuthService);
 
 	/**
 	 * The login URL.
@@ -42,22 +38,13 @@ export class AuthHttpService {
 			take(1),
 			map(response => {
 				if (response?.token) {
-					localStorage.setItem('matcha-token', response.token);
+					this.authService.setToken(response.token);
 					return true;
 				} else {
 					return false;
 				}
 			})
 		);
-	}
-
-	/**
-	 * Logs the user out.
-	 */
-	public logOut(): void {
-		localStorage.removeItem('matcha-token');
-		this.snackBar.open('You have been logged out.', 'Close', {duration: 3000});
-		this.router.navigate(['/login']);
 	}
 
 	/**

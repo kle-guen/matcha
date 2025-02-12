@@ -1,6 +1,7 @@
 package com.web.matcha.config;
 
 import com.web.matcha.domain.utils.JwtUtils;
+import com.web.matcha.web.dto.NotificationDto;
 import com.web.matcha.web.ws.dto.WsDataConnection;
 import com.web.matcha.web.ws.dto.WsDto;
 import io.javalin.Javalin;
@@ -90,5 +91,16 @@ public class WebSocketConfig {
 
 	void onError(final WsErrorContext ctx) {
 //		log.error("Erreur WebSocket pour " + ctx.getSessionId() + " : " + ctx.error());
+	}
+
+	public static void sendNotificationToUser(Integer userId, NotificationDto notification) {
+		Optional.ofNullable(sessionToUser.get(userId))
+				.ifPresent(sessions -> sessions.forEach(sessionId -> {
+					Optional.ofNullable(clientConnections.get(sessionId))
+							.ifPresent(ctx -> ctx.send(WsDto.builder()
+									.data(notification)
+									.type("NOTIFICATION")
+									.build()));
+				}));
 	}
 }

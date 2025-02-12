@@ -14,8 +14,8 @@ import {InterestsResolver} from "./data/resolvers/interests.resolver";
 import {AuthGuard} from "./guards/auth.guard";
 import {verifyEmailResolver} from "./data/resolvers/verify-email.resolver";
 import {VerifyEmailComponent} from "./pages/components/verify-email/verify-email.component";
-import {HistoryComponent} from "./pages/components/history/history.component";
-import {historyResolver} from "./data/resolvers/history.resolver";
+import {NotificationsComponent} from "./pages/components/notifications/notifications.component";
+import {NotificationsResolver} from "./data/resolvers/notifications.resolver";
 import {memberProfileResolver} from "./data/resolvers/members-profile.resolver";
 
 export const routes: Routes = [
@@ -74,6 +74,13 @@ export const routes: Routes = [
 				]
 			},
 			{
+				path: 'notifications',
+				resolve: {
+					notifications: NotificationsResolver
+				},
+				component: NotificationsComponent,
+			},
+			{
 				path: 'chat',
 				component: ChatComponent,
 				// resolve: {
@@ -90,13 +97,6 @@ export const routes: Routes = [
 				component: UpdateProfileComponent,
 				runGuardsAndResolvers: 'always'
 			},
-			{
-				path: 'history',
-				resolve: {
-					history: historyResolver,
-				},
-				component: HistoryComponent,
-			}
 		]
 	},
 	{path: '**', redirectTo: '/login'}

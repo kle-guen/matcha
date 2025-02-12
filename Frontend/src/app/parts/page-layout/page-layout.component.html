@@ -1,7 +1,7 @@
 <div class="page-layout flex flex-col flex-grow">
 	<div style="min-height: 100vh" class="header sticky-top flex flex-col justify-between">
 		<div>
-			<app-main-header class="w-full"/>
+			<app-main-header [notificationsCount]="notificationsCount" class="w-full"/>
 			<div class="h-full">
 				<router-outlet/>
 			</div>
@@ -11,5 +11,4 @@
 				</span>
 		</footer>
 	</div>
-
 </div>

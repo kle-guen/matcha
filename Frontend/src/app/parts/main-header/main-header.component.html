@@ -16,9 +16,9 @@
 					}
 					Chat
 				</a>
-				<a [routerLink]="'#'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
-					@if (notifications > 0) {
-						<mat-icon aria-hidden="false" [matBadge]="notifications">notifications</mat-icon>
+				<a [routerLink]="'/notifications'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+					@if (notificationsCount > 0) {
+						<mat-icon aria-hidden="false" [matBadge]="notificationsCount">notifications</mat-icon>
 					} @else {
 						<mat-icon aria-hidden="false">notifications_none</mat-icon>
 					}
