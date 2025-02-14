@@ -37,6 +37,16 @@ export class NotificationsService {
 	public notificationsCount$: Observable<number> = this.notificationsCountSubject.asObservable();
 
 	/**
+	 * The dislike subject.
+	 */
+	public dislikeSubject = new BehaviorSubject<string>('');
+
+	/**
+	 * Observable for the id of the disliker.
+	 */
+	public dislike$: Observable<string> = this.dislikeSubject.asObservable();
+
+	/**
 	 * Get the notifications.
 	 */
 	public getNotifications(): void {
@@ -120,6 +130,7 @@ export class NotificationsService {
 					color: '#6c757d',
 					isRead: notification.isRead
 				};
+				this.dislikeSubject.next(notification.username);
 				break;
 			default:
 				break;

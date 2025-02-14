@@ -30,7 +30,7 @@ export class HeaderComponent {
 	/**
 	 * The number of messages.
 	 */
-	@Input() public messages: number = 1;
+	@Input() public messages: number = 0;
 
 	/**
 	 * Boolean to toggle the menu.

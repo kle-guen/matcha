@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, inject, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {MemberCardComponent} from "../member-card/member-card.component";
 import {MatSlider, MatSliderRangeThumb, MatSliderThumb} from "@angular/material/slider";
 import {FormFieldComponent} from "../../../../ui/components/form-field/form-field.component";
@@ -17,6 +17,8 @@ import {MatIcon} from "@angular/material/icon";
 import {InterestDto} from "../../../../data/dto/receive/interest.dto";
 import {MatChipListbox, MatChipOption} from "@angular/material/chips";
 import {SortResearchMembersEnum} from "../../../../shared/enums/sort-research-members.enum";
+import {FooterService} from "../../../../shared/services/footer.service";
+import {FooterComponent} from "../../../../parts/footer/footer.component";
 
 @Component({
 	selector: 'app-research-members',
@@ -36,12 +38,13 @@ import {SortResearchMembersEnum} from "../../../../shared/enums/sort-research-me
 		MatIcon,
 		MatChipOption,
 		MatChipListbox,
+		FooterComponent,
 	],
 	templateUrl: './research-members.component.html',
 	styleUrl: './research-members.component.scss',
 	encapsulation: ViewEncapsulation.None //TODO: Check if this is necessary
 })
-export class ResearchMembersComponent implements OnInit {
+export class ResearchMembersComponent implements OnInit, OnDestroy {
 
 	/**
 	 * The ng destroy subject.
@@ -66,6 +69,12 @@ export class ResearchMembersComponent implements OnInit {
 	 * @private
 	 */
 	private readonly formBuilder = inject(FormBuilder);
+
+	/**
+	 * The footer service.
+	 * @private
+	 */
+	private readonly footerService = inject(FooterService);
 
 	/**
 	 * The research form group.
@@ -104,6 +113,7 @@ export class ResearchMembersComponent implements OnInit {
 	ngOnInit() {
 		this.interests = this.activatedRoute.snapshot.data['interests'];
 		this.members = this.activatedRoute.snapshot.data['members'];
+		this.footerService.setFooterVisibility(false);
 	}
 
 	/**
@@ -148,4 +158,8 @@ export class ResearchMembersComponent implements OnInit {
 	}
 
 	protected readonly SortResearchMembersEnum = SortResearchMembersEnum;
+
+	ngOnDestroy(): void {
+		this.footerService.setFooterVisibility(true);
+	}
 }

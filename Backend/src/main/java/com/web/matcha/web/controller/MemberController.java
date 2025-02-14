@@ -1,6 +1,7 @@
 package com.web.matcha.web.controller;
 
 import com.web.matcha.domain.enums.SortResearchUsersEnum;
+import com.web.matcha.service.BlockService;
 import com.web.matcha.service.MemberService;
 import com.web.matcha.web.dto.ResearchMembersDto;
 import io.javalin.Javalin;
@@ -13,11 +14,17 @@ public class MemberController extends AbstractController {
 
 	private final MemberService memberService;
 
+	private final BlockService blockService;
+
 	@Override
 	public void registerRoutes(final Javalin app) {
-		app.post("/members/research", this::researchMembers);
+		//GET
 		app.get("/members/suggest", this::suggestMembers);
 		app.get("/members/{id}", this::getCompleteMember);
+		app.get("/matches", this::getMatches);
+
+		//POST
+		app.post("/members/research", this::researchMembers);
 		app.post("/members/{id}/block", this::blockMember);
 		app.post("/members/{id}/report", this::reportMember);
 		app.post("/members/{id}/like", this::likeMember);
@@ -64,7 +71,7 @@ public class MemberController extends AbstractController {
 	 */
 	private void blockMember(final Context ctx) {
 		final Integer id = Integer.parseInt(ctx.pathParam("id"));
-		memberService.blockMember(id);
+		blockService.blockMember(id);
 		ctx.status(HttpStatus.ACCEPTED.getCode());
 	}
 
@@ -88,6 +95,10 @@ public class MemberController extends AbstractController {
 		final Integer id = Integer.parseInt(ctx.pathParam("id"));
 		memberService.likeMember(id);
 		ctx.status(HttpStatus.ACCEPTED.getCode());
+	}
+
+	private void getMatches(Context ctx) {
+		ctx.json(memberService.getMatches());
 	}
 
 

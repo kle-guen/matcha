@@ -5,11 +5,13 @@ import {FormControl, ReactiveFormsModule} from "@angular/forms";
 import {MatOption} from "@angular/material/core";
 import {MatSelect} from "@angular/material/select";
 import {InterestDto} from "../../../data/dto/receive/interest.dto";
+import {MatIcon} from "@angular/material/icon";
+import {MatIconButton} from "@angular/material/button";
 
 @Component({
 	selector: 'app-form-field',
 	standalone: true,
-	imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatOption, MatSelect],
+	imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatOption, MatSelect, MatIcon, MatIconButton],
 	templateUrl: './form-field.component.html',
 	styleUrl: './form-field.component.scss'
 })
@@ -48,9 +50,18 @@ export class FormFieldComponent {
 	@Input() value: string | null = null;
 
 	/**
+	 * The icon for the input
+	 */
+	@Input() icon: string | null = null;
+
+	/**
 	 * Function to compare the interests for the select
 	 */
 	public compareInterests(value: string, option: string): boolean {
 		return option === value;
+	}
+
+	sendEvent($event: MouseEvent) {
+		console.log($event);
 	}
 }

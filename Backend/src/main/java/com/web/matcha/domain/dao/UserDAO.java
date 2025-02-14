@@ -138,6 +138,32 @@ public class UserDAO {
 		return Optional.empty();
 	}
 
+	public List<UserModel> getMatches(final int userId) {
+		String sql = "SELECT u.* FROM users u "
+				+ "JOIN likes l1 ON u.id = l1.liked_id "
+				+ "JOIN likes l2 ON u.id = l2.liker_id "
+				+ "WHERE l1.liker_id = ? "
+				+ "AND l2.liked_id = ?";
+
+		final List<UserModel> users = new ArrayList<>();
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, userId);
+			stmt.setInt(2, userId);
+			final ResultSet rs = stmt.executeQuery();
+			UserModel u = extractUser(rs);
+			while (u != null) {
+				users.add(u);
+				u = extractUser(rs);
+			}
+		} catch (SQLException e) {
+			log.error("Error while getting matches", e);
+		}
+		return users;
+	}
+
 
 	public Optional<UserModel> insertUser(UserModel userModel) {
 		final String sql = "INSERT INTO users (username, email, password, first_name, last_name) VALUES (?, ?, ?, ?, ?)";

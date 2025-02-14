@@ -6,7 +6,6 @@ import com.web.matcha.domain.dao.LikeDAO;
 import com.web.matcha.domain.dao.PicturesDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.domain.dao.UserDAO;
-import com.web.matcha.domain.dao.VisitDAO;
 import com.web.matcha.domain.enums.SortResearchUsersEnum;
 import com.web.matcha.domain.enums.TypeNotificationEnum;
 import com.web.matcha.domain.model.InterestModel;
@@ -14,6 +13,7 @@ import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.mapper.MemberMapper;
 import com.web.matcha.web.dto.CompleteMemberDto;
+import com.web.matcha.web.dto.MatchDto;
 import com.web.matcha.web.dto.MemberDto;
 import com.web.matcha.web.dto.ResearchMembersDto;
 import io.javalin.http.ForbiddenResponse;
@@ -35,15 +35,13 @@ public class MemberService {
 
 	private final ProfileDAO profileDAO;
 
-	private final BlockDAO blockDAO;
-
 	private final LikeDAO likeDAO;
-
-	private final VisitDAO visitDAO;
 
 	private final PicturesDAO picturesDAO;
 
 	private final NotificationService notificationService;
+
+	private final BlockService blockService;
 
 	public List<MemberDto> researchMembers(final ResearchMembersDto researchMembersDto, final SortResearchUsersEnum sortBy) {
 		final ProfileModel currentUserProfile = profileDAO.getProfileById(UserHolder.getUserId())
@@ -54,7 +52,7 @@ public class MemberService {
 		if (CollectionUtils.isEmpty(userModels)) {
 			return List.of();
 		}
-		userModels.removeIf(userModel -> isBlockedOrBlocker(userModel.getId()));
+		userModels.removeIf(userModel -> blockService.isBlockedOrBlocker(userModel.getId()));
 
 		return sortAndMapUsers(userModels, sortBy, currentUserProfile);
 	}
@@ -69,7 +67,7 @@ public class MemberService {
 		if (CollectionUtils.isEmpty(userModels)) {
 			return List.of();
 		}
-		userModels.removeIf(userModel -> isBlockedOrBlocker(userModel.getId()));
+		userModels.removeIf(userModel -> blockService.isBlockedOrBlocker(userModel.getId()));
 
 		userModels.sort(Comparator.comparing(userModel -> calculateScore(userModel.getProfile(), currentUserProfile)));
 
@@ -86,7 +84,7 @@ public class MemberService {
 	}
 
 	public CompleteMemberDto getCompleteMember(final Integer memberId) {
-		if (isBlockedOrBlocker(memberId)) {
+		if (blockService.isBlockedOrBlocker(memberId)) {
 			throw new ForbiddenResponse("You can't get this member");
 		}
 		final UserModel userModel = userDAO.getUserById(memberId)
@@ -98,19 +96,9 @@ public class MemberService {
 		completeMemberDto.setLiked(likeDAO.getLikesByLikerId(UserHolder.getUserId()).stream()
 				.anyMatch(likeModel -> Objects.equals(likeModel.getLikedId(), memberId)));
 
-		visitDAO.addVisit(UserHolder.getUserId(), memberId);
 		this.notificationService.sendNotificationToUser(memberId, TypeNotificationEnum.VISIT, userDAO.getUsernameById(UserHolder.getUserId())
 				.orElseThrow(() -> new NotFoundResponse("User not found")));
 		return completeMemberDto;
-	}
-
-	public void blockMember(final Integer memberId) {
-		if (blockDAO.getBlockedByUserId(UserHolder.getUserId()).stream()
-				.anyMatch(blockModel -> Objects.equals(blockModel.getBlockedId(), memberId))) {
-			blockDAO.unblockUser(UserHolder.getUserId(), memberId);
-		} else {
-			blockDAO.blockUser(UserHolder.getUserId(), memberId);
-		}
 	}
 
 	public void reportMember(final Integer memberId) {
@@ -118,7 +106,7 @@ public class MemberService {
 	}
 
 	public void likeMember(final Integer memberId) {
-		if (isBlockedOrBlocker(memberId) || Objects.equals(UserHolder.getUserId(), memberId)) {
+		if (blockService.isBlockedOrBlocker(memberId) || Objects.equals(UserHolder.getUserId(), memberId)) {
 			throw new ForbiddenResponse("You can't like this member");
 		}
 
@@ -136,12 +124,6 @@ public class MemberService {
 		}
 		this.notificationService.sendNotificationToUser(memberId, type, userDAO.getUsernameById(UserHolder.getUserId())
 				.orElseThrow(() -> new NotFoundResponse("User not found")));
-	}
-
-	private boolean isBlockedOrBlocker(final Integer memberId) {
-		return blockDAO.getBlockedAndBlockerByUserId(UserHolder.getUserId()).stream()
-				.anyMatch(blockModel -> Objects.equals(blockModel.getBlockedId(), memberId)
-						|| Objects.equals(blockModel.getBlockerId(), memberId));
 	}
 
 	private Integer countCommonInterests(final List<InterestModel> interests1, final List<InterestModel> interests2) {
@@ -179,6 +161,13 @@ public class MemberService {
 
 		return userModels.stream()
 				.map(memberMapper::toMember)
+				.toList();
+	}
+
+	public List<MatchDto> getMatches() {
+		final List<UserModel> userModels = userDAO.getMatches(UserHolder.getUserId());
+		return userModels.stream()
+				.map(memberMapper::toMatchDto)
 				.toList();
 	}
 }

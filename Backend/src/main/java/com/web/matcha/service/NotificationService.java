@@ -27,7 +27,7 @@ public class NotificationService {
 				.toList();
 	}
 
-	public void createNotification(Integer userId, NotificationDto notificationDto) {
+	private void createNotification(Integer userId, NotificationDto notificationDto) {
 		notificationDAO.createNotification(userId, notificationMapper.toModel(notificationDto));
 	}
 

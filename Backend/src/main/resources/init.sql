@@ -49,16 +49,6 @@ CREATE TABLE pictures
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE TABLE visits
-(
-    visitor_id INT NOT NULL,
-    visited_id INT NOT NULL,
-    visited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (visitor_id, visited_id),
-    FOREIGN KEY (visitor_id) REFERENCES users (id) ON DELETE CASCADE,
-    FOREIGN KEY (visited_id) REFERENCES users (id) ON DELETE CASCADE
-);
-
 CREATE TABLE likes
 (
     liker_id   INT NOT NULL,
@@ -85,6 +75,7 @@ CREATE TABLE messages
     sender_id   INT  NOT NULL,
     receiver_id INT  NOT NULL,
     content     TEXT NOT NULL,
+    is_read     BOOLEAN DEFAULT FALSE,
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (sender_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (receiver_id) REFERENCES users (id) ON DELETE CASCADE
@@ -162,23 +153,30 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION calculate_fame_rating(user_id INT)
+CREATE OR REPLACE FUNCTION calculate_fame_rating(id_user INT)
     RETURNS INT AS $$
 DECLARE
     views_count INT;
     likes_count INT;
+    dislikes_count INT;
 BEGIN
     -- Récupère le nombre de vues pour cet utilisateur
     SELECT COUNT(*)
     INTO views_count
-    FROM visits
-    WHERE visited_id = user_id;
+    FROM notifications
+    WHERE user_id = id_user AND type = 'LIKE';
 
     -- Récupère le nombre de likes pour cet utilisateur
     SELECT COUNT(*)
     INTO likes_count
-    FROM likes
-    WHERE liked_id = user_id AND disliked = FALSE;
+    FROM notifications
+    WHERE user_id = id_user AND type = 'LIKE';
+
+    -- Récupère le nombre de dislikes pour cet utilisateur
+    SELECT COUNT(*)
+    INTO dislikes_count
+    FROM notifications
+    WHERE user_id = id_user AND type = 'DISLIKE';
 
     -- Si views_count est zéro, on retourne 0 pour éviter la division par zéro
     IF views_count = 0 THEN
@@ -186,6 +184,6 @@ BEGIN
     END IF;
 
     -- Calcul de la fame rating
-    RETURN (likes_count * 10 / views_count);
+    RETURN ((likes_count - dislikes_count) * 10 / views_count);
 END;
 $$ LANGUAGE plpgsql;

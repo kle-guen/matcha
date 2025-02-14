@@ -1,12 +1,11 @@
 import {inject, Injectable} from '@angular/core';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
-import {BehaviorSubject, Observable} from 'rxjs';
 import {AuthService} from "./auth-service";
 import {SocketDto} from "../../data/dto/socket/socket.dto";
 import {NotificationDto} from "../../data/dto/socket/notification.dto";
-import {ChatDto} from "../../data/dto/socket/chat.dto";
 import {TypeSocketEnum} from "../enums/type-socket.enum";
 import {NotificationsService} from "./notifications-service";
+import {ChatService} from "./chat-service";
+import {ChatDto} from "../../data/dto/socket/chat.dto";
 
 @Injectable({
 	providedIn: 'root',
@@ -16,6 +15,8 @@ export class SocketService {
 
 	private readonly notificationsService = inject(NotificationsService);
 	private readonly authService: AuthService = inject(AuthService);
+	private readonly chatService = inject(ChatService);
+	interval?: NodeJS.Timeout;
 
 	startWebSocketConnection() {
 		const token = this.authService.getToken();
@@ -23,7 +24,8 @@ export class SocketService {
 
 		this.socket.onopen = () => {
 			console.log('WebSocket connecté');
-			setInterval(() => {
+			clearInterval(this.interval!);
+			this.interval = setInterval(() => {
 				if (this.socket.readyState === WebSocket.OPEN) {
 					this.socket.send('ping');
 				}
@@ -37,6 +39,7 @@ export class SocketService {
 
 		this.socket.onclose = () => {
 			console.log('WebSocket fermé, tentative de reconnexion...');
+			clearInterval(this.interval!);
 			setTimeout(() => this.startWebSocketConnection(), 5000);
 		};
 	}
@@ -44,12 +47,19 @@ export class SocketService {
 	private handleIncomingMessage(msg: SocketDto) {
 		console.log('Received message:', msg);
 
-		if (msg.type == TypeSocketEnum.NOTIFICATION ) {
-			this.notificationsService.addNotification(msg.data as NotificationDto);
-		} else if (msg.type == TypeSocketEnum.CHAT) {
-			// this.chatService.addChat(msg.data as ChatDto);
-		} else {
-			console.error('Unknown message type', msg);
+		switch (msg.type) {
+			case TypeSocketEnum.NOTIFICATION:
+				this.notificationsService.addNotification(msg.data as NotificationDto);
+				break;
+			case TypeSocketEnum.CHAT:
+				this.chatService.receiveMessage(msg.data as ChatDto);
+				break;
+			case TypeSocketEnum.PONG:
+				console.log('Received pong');
+				break;
+			default:
+				console.error('Unknown message type', msg);
+				break;
 		}
 	}
 }

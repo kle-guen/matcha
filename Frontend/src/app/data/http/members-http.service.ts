@@ -5,6 +5,7 @@ import {catchError, Observable, of, take} from "rxjs";
 import {inject, Injectable} from "@angular/core";
 import {MemberCompleteDto} from "../dto/receive/member-complete.dto";
 import {SortResearchMembersEnum} from "../../shared/enums/sort-research-members.enum";
+import {MatchDto} from "../dto/receive/match.dto";
 
 @Injectable({
 	providedIn: "root"
@@ -104,6 +105,14 @@ export class MembersHttpService {
 		const url = `${this.API_MEMBERS_URL}/${id}/like`;
 		return this.http.post(url, {}).pipe(
 			catchError(() => of()),
+			take(1)
+		);
+	}
+
+	getMatches(): Observable<MatchDto[]> {
+		const url = `/api/matches`;
+		return this.http.get<MatchDto[]>(url).pipe(
+			catchError(() => of([])),
 			take(1)
 		);
 	}

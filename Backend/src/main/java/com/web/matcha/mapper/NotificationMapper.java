@@ -8,28 +8,20 @@ import org.mapstruct.Mapping;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Mapper
+@Mapper(uses = {UtilsMapper.class})
 public interface NotificationMapper {
 
 	@InheritConfiguration
 	@Mapping(target = "type", source = "type")
-	@Mapping(target = "date", expression = "java(mapTimestampToLocalDateTime(notification.getCreatedAt()))")
+	@Mapping(target = "date", source = "createdAt", qualifiedByName = "mapTimestampToLocalDateTime")
 	@Mapping(target = "username", source = "username")
 	@Mapping(target = "isRead", source = "isRead")
 	NotificationDto toDto(NotificationModel notification);
 
 	@InheritConfiguration
 	@Mapping(target = "type", source = "type")
-	@Mapping(target = "createdAt", expression = "java(mapLocalDateTimeToTimestamp(notification.getDate()))")
+	@Mapping(target = "createdAt", source = "date", qualifiedByName = "mapLocalDateTimeToTimestamp")
 	@Mapping(target = "username", source = "username")
 	@Mapping(target = "isRead", source = "isRead")
 	NotificationModel toModel(NotificationDto notification);
-
-	default LocalDateTime mapTimestampToLocalDateTime(Timestamp timestamp) {
-		return timestamp != null ? timestamp.toLocalDateTime() : null;
-	}
-
-	default Timestamp mapLocalDateTimeToTimestamp(LocalDateTime localDateTime) {
-		return localDateTime != null ? Timestamp.valueOf(localDateTime) : null;
-	}
 }

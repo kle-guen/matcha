@@ -1,4 +1,7 @@
 export class ChatDto {
-	roomId!: string;
-	message!: string;
+	receiverId!: number;
+	senderId!: number | null;
+	content!: string;
+	isRead!: boolean;
+	createdAt!: Date;
 }

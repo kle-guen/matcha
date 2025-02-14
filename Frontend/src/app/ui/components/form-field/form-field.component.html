@@ -17,13 +17,21 @@
 				[formControl]="control"
 		></textarea>
 	} @else {
-		<input
-				matInput
-				[placeholder]="label"
-				[formControl]="control"
-				[type]="type"
-				[value]="value"
-		>
+		<div class="flex justify-between">
+			<input
+					matInput
+					[placeholder]="label"
+					[formControl]="control"
+					[type]="type"
+					[value]="value"
+			>
+			@if (icon) {
+				<mat-icon class="text-gray-700 cursor-pointer hover:text-gray-500"
+						  (click)="sendEvent($event)">
+					{{ icon }}
+				</mat-icon>
+			}
+		</div>
 	}
 	@if (control.invalid) {
 		<mat-error>

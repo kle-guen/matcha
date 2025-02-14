@@ -6,6 +6,7 @@ import com.web.matcha.domain.model.PictureModel;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.web.dto.CompleteMemberDto;
+import com.web.matcha.web.dto.MatchDto;
 import com.web.matcha.web.dto.MemberDto;
 import com.web.matcha.web.dto.PicturesDto;
 import org.mapstruct.InheritConfiguration;
@@ -39,6 +40,8 @@ public interface MemberMapper {
 	@Mapping(target = "lookingFor", expression = "java(mapLookingFor(userDto.getProfile()))")
 	@Mapping(target = "interests", source = "profile.interests")
 	CompleteMemberDto toCompleteMember(UserModel userDto);
+
+	MatchDto toMatchDto(UserModel userDto);
 
 	@Named("mapAge")
 	default Integer mapAge(final Timestamp birthdate) {

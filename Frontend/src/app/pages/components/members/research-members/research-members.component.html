@@ -1,5 +1,5 @@
 <mat-drawer-container class="h-full">
-	<mat-drawer #drawer class="mobile:w-full" mode="over">
+	<mat-drawer #drawer style="height: 100vh" class="mobile:w-full" mode="over">
 		<div class="p-8 flex flex-col justify-center items-center w-full gap-4">
 			<div class="flex justify-between items-center w-full">
 				<mat-label>Age:</mat-label>
@@ -57,29 +57,37 @@
 		</div>
 
 	</mat-drawer>
-
-	<div class="page-wrapper pb-4">
-		<h1 class="text-center pt-4">Research members</h1>
-		<div class="my-4 flex">
-			<app-button
-					label="Search"
-					[disabled]="researchFormGroup.invalid"
-					(clicked)="drawer.toggle()"
-					icon="tune"
-					type="tertiary"
-			/>
-			<mat-chip-listbox>
-				<mat-chip-option (click)="sortList(SortResearchMembersEnum.AGE)" [selected]="sortBy === SortResearchMembersEnum.AGE">Age</mat-chip-option>
-				<mat-chip-option (click)="sortList(SortResearchMembersEnum.DISTANCE)" [selected]="sortBy === SortResearchMembersEnum.DISTANCE">Distance</mat-chip-option>
-				<mat-chip-option (click)="sortList(SortResearchMembersEnum.FAME_RATING)" [selected]="sortBy === SortResearchMembersEnum.FAME_RATING">Fame rating</mat-chip-option>
-				<mat-chip-option (click)="sortList(SortResearchMembersEnum.COMMON_INTERESTS)" [selected]="sortBy === SortResearchMembersEnum.COMMON_INTERESTS">Common tags</mat-chip-option>
-			</mat-chip-listbox>
+		<div class="page-wrapper pb-4">
+			<h1 class="text-center pt-4">Research members</h1>
+			<div class="my-4 flex">
+				<app-button
+						label="Search"
+						[disabled]="researchFormGroup.invalid"
+						(clicked)="drawer.toggle()"
+						icon="tune"
+						type="tertiary"
+				/>
+				<mat-chip-listbox>
+					<mat-chip-option (click)="sortList(SortResearchMembersEnum.AGE)"
+									 [selected]="sortBy === SortResearchMembersEnum.AGE">Age
+					</mat-chip-option>
+					<mat-chip-option (click)="sortList(SortResearchMembersEnum.DISTANCE)"
+									 [selected]="sortBy === SortResearchMembersEnum.DISTANCE">Distance
+					</mat-chip-option>
+					<mat-chip-option (click)="sortList(SortResearchMembersEnum.FAME_RATING)"
+									 [selected]="sortBy === SortResearchMembersEnum.FAME_RATING">Fame rating
+					</mat-chip-option>
+					<mat-chip-option (click)="sortList(SortResearchMembersEnum.COMMON_INTERESTS)"
+									 [selected]="sortBy === SortResearchMembersEnum.COMMON_INTERESTS">Common tags
+					</mat-chip-option>
+				</mat-chip-listbox>
+			</div>
+			<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-4">
+				@for (user of members; track user.id) {
+					<app-member-card [member]="user"/>
+				}
+			</div>
 		</div>
-		<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-4">
-			@for (user of members; track user.id) {
-				<app-member-card [member]="user"/>
-			}
-		</div>
-	</div>
+		<app-footer/>
 
 </mat-drawer-container>

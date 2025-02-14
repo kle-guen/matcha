@@ -1,6 +1,7 @@
 package com.web.matcha.config;
 
 import com.web.matcha.domain.utils.JwtUtils;
+import com.web.matcha.web.dto.MessageDto;
 import com.web.matcha.web.dto.NotificationDto;
 import com.web.matcha.web.ws.dto.WsDataConnection;
 import com.web.matcha.web.ws.dto.WsDto;
@@ -46,23 +47,15 @@ public class WebSocketConfig {
 	void onConnect(final WsConnectContext ctx) {
 		final Integer clientId = JwtUtils.validateTokenAndGetUserId(ctx.queryParam("token"));
 		if (clientId == null) {
-			ctx.session.close(1008, "ID client manquant");
+				ctx.session.close(1008, "ID client manquant");
 			return;
 		}
 
 		Optional.ofNullable(sessionToUser.get(clientId))
-				.ifPresentOrElse(sessionsUser -> sessionsUser.add(ctx.sessionId()),
-						() -> {
-							sessionToUser.put(clientId, new ArrayList<>(List.of(ctx.sessionId())));
-							//TODO notifier les users l'user clientId s'est connecté
-						});
+				.ifPresentOrElse(sessionsUser -> sessionsUser.add(ctx.sessionId()), //if
+						() -> sessionToUser.put(clientId, new ArrayList<>(List.of(ctx.sessionId())))); //else
 		clientConnections.put(ctx.sessionId(), ctx);
 		log.info("Client {} a ouvert une session WebSocket", clientId);
-		ctx.send(WsDto.builder()
-				.data(WsDataConnection.builder()
-						.message("Connexion WebSocket établie")
-						.build())
-				.build());
 	}
 
 	void onMessage(final WsMessageContext ctx) {
@@ -72,9 +65,11 @@ public class WebSocketConfig {
 				.findFirst()
 				.orElse(null);
 		if (clientId != null) {
-			log.info("Message reçu de {} : {}", clientId, ctx.message());
-		} else {
-			log.info("Message reçu d'un client inconnu : {}", ctx.sessionId());
+			log.info("Ping reçu de {} : {}", clientId, ctx.message());
+			ctx.send(WsDto.builder()
+					.type("PONG")
+					.data("Message reçu")
+					.build());
 		}
 	}
 
@@ -82,7 +77,6 @@ public class WebSocketConfig {
 		clientConnections.remove(ctx.sessionId());
 		sessionToUser.forEach((k, v) -> {
 			if (v.remove(ctx.sessionId()) && v.isEmpty()) {
-				//TODO notifier les users l'user k s'est déconnecté
 				sessionToUser.remove(k);
 				log.info("Client déconnecté : ID={}", k);
 			}
@@ -100,6 +94,26 @@ public class WebSocketConfig {
 							.ifPresent(ctx -> ctx.send(WsDto.builder()
 									.data(notification)
 									.type("NOTIFICATION")
+									.build()));
+				}));
+	}
+
+	public static void sendMessageToUser(Integer userId, MessageDto message) {
+		Optional.ofNullable(sessionToUser.get(userId))
+				.ifPresent(sessions -> sessions.forEach(sessionId -> {
+					Optional.ofNullable(clientConnections.get(sessionId))
+							.ifPresent(ctx -> ctx.send(WsDto.builder()
+									.data(message)
+									.type("CHAT")
+									.build()));
+				}));
+		message.setRead(true);
+		Optional.ofNullable(sessionToUser.get(message.senderId))
+				.ifPresent(sessions -> sessions.forEach(sessionId -> {
+					Optional.ofNullable(clientConnections.get(sessionId))
+							.ifPresent(ctx -> ctx.send(WsDto.builder()
+									.data(message)
+									.type("CHAT")
 									.build()));
 				}));
 	}
