@@ -25,6 +25,8 @@ import {UserPicturesDto} from "../../../data/dto/receive/user-pictures.dto";
 import {NgOptimizedImage} from "@angular/common";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {timeout} from "rxjs";
+import {takeUntil} from "rxjs";
+import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
 
 @Component({
 	selector: 'app-update-profile',
@@ -53,6 +55,12 @@ import {timeout} from "rxjs";
 	styleUrl: './update-profile.component.scss'
 })
 export class UpdateProfileComponent implements OnInit {
+
+	/**
+	 * The on destroy
+	 * @private
+	 */
+	private readonly onDestroy$ = createNgDestroySubject();
 
 	/**
 	 * The activated route.
@@ -176,13 +184,17 @@ export class UpdateProfileComponent implements OnInit {
 			}
 		});
 
-		this.profileHttpService.updateProfile(formData).subscribe();
+		this.profileHttpService.updateProfile(formData).pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe();
 		this.userHttpService.updateUser({
 			firstName: this.updateProfileForm.value.firstName ?? null,
 			lastName: this.updateProfileForm.value.lastName ?? null,
 			username: this.updateProfileForm.value.username ?? null,
 			email: this.updateProfileForm.value.email ?? null
-		}).subscribe({
+		}).pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe({
 				next: () => {
 					setTimeout(() => {
 						this.router.navigate(['/members']);

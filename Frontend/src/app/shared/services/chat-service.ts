@@ -1,12 +1,13 @@
 import {inject, Injectable} from "@angular/core";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, takeUntil} from "rxjs";
 import {ChatDto} from "../../data/dto/socket/chat.dto";
 import {ChatHttpService} from "../../data/http/chat-http.service";
+import {AbstractService} from "./abstract.service";
 
 @Injectable({
 	providedIn: 'root'
 })
-export class ChatService {
+export class ChatService extends AbstractService {
 
 	/**
 	 * The NotificationsHttpService.
@@ -52,12 +53,16 @@ export class ChatService {
 	 * Get the notifications.
 	 */
 	public getMessages() { //constructor ici ?
-		this.chatHttpService.getMessages().subscribe(messages => {
+		this.chatHttpService.getMessages().pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(messages => {
 			this.allMessages = messages;
 			this.messagesCountSubject.next(messages.filter(message => !message.isRead).length);
 		});
 
-		this.userSelected$.subscribe(userId => {
+		this.userSelected$.pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(userId => {
 			if (userId) {
 				const newMessages = this.allMessages.filter(message => message.senderId === userId || message.receiverId === userId);
 				newMessages.sort((a, b) => b.createdAt < a.createdAt ? 1 : -1);
@@ -73,7 +78,9 @@ export class ChatService {
 	public receiveMessage(chat: ChatDto) {
 		if (chat) {
 			if (this.userSelectedSubject.value && chat.senderId == this.userSelectedSubject.value) {
-				this.chatHttpService.markAsRead(this.userSelectedSubject.value).subscribe({
+				this.chatHttpService.markAsRead(this.userSelectedSubject.value).pipe(
+					takeUntil(this.onDestroy$)
+				).subscribe({
 					next: () => chat.isRead = true
 				});
 			} else if (!chat.isRead) {
@@ -92,7 +99,9 @@ export class ChatService {
 	 */
 	public sendMessage(chat: ChatDto) {
 		if (chat) {
-			this.chatHttpService.sendMessage(chat).subscribe();
+			this.chatHttpService.sendMessage(chat).pipe(
+				takeUntil(this.onDestroy$)
+			).subscribe();
 		}
 	}
 

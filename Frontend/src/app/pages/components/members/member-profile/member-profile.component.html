@@ -7,6 +7,7 @@
 						{{ member.sexe == GenderEnum.MALE ? 'male' : 'female' }}
 					</mat-icon>
 					{{ member.name }}
+						<div class="circle ml-2" [ngClass]="isConnected ? 'bg-green-500' : 'bg-red-500'"></div>
 				</div>
 			</mat-card-title>
 			<mat-card-subtitle>{{ member.nickname }}</mat-card-subtitle>

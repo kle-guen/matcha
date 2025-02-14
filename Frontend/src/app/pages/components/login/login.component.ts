@@ -11,6 +11,8 @@ import {AuthHttpService} from "../../../data/http/auth-http.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ProfileHttpService} from "../../../data/http/profile-http.service";
+import {takeUntil} from "rxjs";
+import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
 
 @Component({
 	selector: 'app-login',
@@ -29,6 +31,12 @@ import {ProfileHttpService} from "../../../data/http/profile-http.service";
 	styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+
+	/**
+	 * The on destroy
+	 * @private
+	 */
+	private readonly onDestroy$ = createNgDestroySubject();
 
 	/**
 	 * The error message.
@@ -72,12 +80,16 @@ export class LoginComponent {
 		const email = this.logInForm.get('email')?.value;
 		const password = this.logInForm.get('password')?.value;
 		if (!email || !password) return;
-		this.authHttpService.logIn(email, password).subscribe({
+		this.authHttpService.logIn(email, password).pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe({
 			next: (success) => {
 				if (success) {
 					this.snackBar.open('Logged in successfully', 'Close', {duration: 3000});
 
-					this.profileHttpService.isProfileComplete().subscribe({
+					this.profileHttpService.isProfileComplete().pipe(
+						takeUntil(this.onDestroy$)
+					).subscribe({
 						next: (isComplete) => {
 							if (isComplete) {
 								this.router.navigateByUrl('/members');

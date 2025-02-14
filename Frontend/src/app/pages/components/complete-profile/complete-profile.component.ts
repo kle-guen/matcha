@@ -19,6 +19,8 @@ import {ProfileUpdateDto} from "../../../data/dto/send/profile-update.dto";
 import {ProfileHttpService} from "../../../data/http/profile-http.service";
 import {GenderEnum} from "../../../shared/enums/gender.enum";
 import {SexualPreferenceEnum} from "../../../shared/enums/sexual-preference.enum";
+import {takeUntil} from "rxjs";
+import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
 
 @Component({
 	selector: 'app-complete-profile',
@@ -46,6 +48,12 @@ import {SexualPreferenceEnum} from "../../../shared/enums/sexual-preference.enum
 	styleUrl: './complete-profile.component.scss'
 })
 export class CompleteProfileComponent implements OnInit {
+
+	/**
+	 * The on destroy
+	 * @private
+	 */
+	private readonly onDestroy$ = createNgDestroySubject();
 
 	/**
 	 * The geocoding service.
@@ -125,7 +133,9 @@ export class CompleteProfileComponent implements OnInit {
 		if ('geolocation' in navigator) {
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
-					this.geocodingService.getCityFromCoordinates(position.coords.latitude, position.coords.longitude).subscribe(
+					this.geocodingService.getCityFromCoordinates(position.coords.latitude, position.coords.longitude).pipe(
+						takeUntil(this.onDestroy$)
+					).subscribe(
 						(city) => {
 							this.completeProfileForm.controls['location'].setValue({
 								latitude: position.coords.latitude,
@@ -188,7 +198,9 @@ export class CompleteProfileComponent implements OnInit {
 			}
 		});
 
-		this.profileHttpService.completeProfile(formData).subscribe(
+		this.profileHttpService.completeProfile(formData).pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(
 			() => {
 				this.router.navigate(['/members']);
 			},

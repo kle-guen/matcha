@@ -117,4 +117,12 @@ export class MembersHttpService {
 		);
 	}
 
+	getConnectedUsers(): Observable<number[]> {
+		const url = `${this.API_MEMBERS_URL}/connected`;
+		return this.http.get<number[]>(url).pipe(
+			catchError(() => of([])),
+			take(1)
+		);
+	}
+
 }

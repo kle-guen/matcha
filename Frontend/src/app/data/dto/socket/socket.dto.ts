@@ -5,6 +5,6 @@ import {NotificationDto} from "./notification.dto";
 
 export class SocketDto {
 	type!: TypeSocketEnum;
-	data!: ChatDto | NotificationDto;
+	data!: ChatDto | NotificationDto | number;
 }
 

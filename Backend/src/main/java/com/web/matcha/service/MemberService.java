@@ -1,6 +1,7 @@
 package com.web.matcha.service;
 
 import com.web.matcha.config.UserHolder;
+import com.web.matcha.config.WebSocketConfig;
 import com.web.matcha.domain.dao.BlockDAO;
 import com.web.matcha.domain.dao.LikeDAO;
 import com.web.matcha.domain.dao.PicturesDAO;
@@ -21,10 +22,12 @@ import io.javalin.http.NotFoundResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class MemberService {
@@ -169,5 +172,9 @@ public class MemberService {
 		return userModels.stream()
 				.map(memberMapper::toMatchDto)
 				.toList();
+	}
+
+	public Set<Integer> getConnectedMembers() {
+		return WebSocketConfig.getSessionToUser().keySet();
 	}
 }

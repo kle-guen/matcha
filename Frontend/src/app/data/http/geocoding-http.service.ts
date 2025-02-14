@@ -1,11 +1,12 @@
 import {inject, Injectable} from "@angular/core";
-import {Observable, of} from "rxjs";
+import {Observable, takeUntil, of} from "rxjs";
 import {HttpClient} from "@angular/common/http";
+import {AbstractService} from "../../shared/services/abstract.service";
 
 @Injectable({
 	providedIn: "root"
 })
-export class GeocodingHttpService {
+export class GeocodingHttpService extends AbstractService {
 
 	/**
 	 * The http client.
@@ -29,7 +30,9 @@ export class GeocodingHttpService {
 			return of('');
 		}
 		return new Observable<any>(observer => {
-			this.http.get(url).subscribe((data: any) => {
+			this.http.get(url).pipe(
+				takeUntil(this.onDestroy$)
+			).subscribe((data: any) => {
 				let city = '';
 				if (data.results.length > 0) {
 					data.results[0].address_components.forEach((addressComponent: any) => {

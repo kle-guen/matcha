@@ -12,7 +12,7 @@ import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatIcon} from "@angular/material/icon";
 import {MatListItem, MatNavList} from "@angular/material/list";
 import {FormFieldComponent} from "../../../ui/components/form-field/form-field.component";
-import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FooterService} from "../../../shared/services/footer.service";
 import {FooterComponent} from "../../../parts/footer/footer.component";
 import {MatFormField} from "@angular/material/form-field";
@@ -25,6 +25,8 @@ import {ActivatedRoute} from "@angular/router";
 import {MatchDto} from "../../../data/dto/receive/match.dto";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {NotificationsService} from "../../../shared/services/notifications-service";
+import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
+import {takeUntil} from "rxjs";
 
 @Component({
 	selector: 'app-chat',
@@ -53,7 +55,13 @@ import {NotificationsService} from "../../../shared/services/notifications-servi
 export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 
 	/**
-	 * The footer service.
+	 * The on destroy
+	 * @private
+	 */
+	private readonly onDestroy$ = createNgDestroySubject();
+
+	/**
+	 * 	The footer service.
 	 * @private
 	 */
 	private readonly footerService = inject(FooterService);
@@ -108,13 +116,17 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.messageControl.disable();
 		this.matches = this.activatedRoute.snapshot.data['matches'];
 		this.footerService.setFooterVisibility(false);
-		this.chatService.messagesSelected$.subscribe(messages => {
+		this.chatService.messagesSelected$.pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(messages => {
 			this.messages = messages;
 			setTimeout(() => {
 				this.textareaContainer.nativeElement.scrollTop = this.textareaContainer.nativeElement.scrollHeight;
 			}, 30);
 		})
-		this.chatService.userSelected$.subscribe(userId => {
+		this.chatService.userSelected$.pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(userId => {
 			this.matchSelected = this.matches.find(match => match.id === userId) || null;
 			if (userId) {
 				this.messageControl.enable();
@@ -122,9 +134,18 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 				this.messageControl.disable();
 			}
 		});
-		this.notificationsService.dislike$.subscribe(disliker => {
+		this.notificationsService.dislike$.pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(disliker => {
 			if (disliker) {
-				this.matches = this.matches.filter(match => match.username !== disliker);
+				this.matches = this.matches.filter(match => match.id !== disliker);
+			}
+		})
+		this.notificationsService.match$.pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(notification => {
+			if (notification && !this.matches.some(match => match.id === notification.userId)) {
+				this.matches.push({id: notification.userId, username: notification.username});
 			}
 		})
 	}
@@ -142,7 +163,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 	 * Send a message.
 	 */
 	sendMessage() {
-		if ((this.messageControl.value?.length || 0 ) > 0 && this.matchSelected?.id) {
+		if ((this.messageControl.value?.length || 0) > 0 && this.matchSelected?.id) {
 			const message: ChatDto = {
 				senderId: null,
 				receiverId: this.matchSelected.id,

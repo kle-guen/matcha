@@ -6,6 +6,8 @@ import {TypeSocketEnum} from "../enums/type-socket.enum";
 import {NotificationsService} from "./notifications-service";
 import {ChatService} from "./chat-service";
 import {ChatDto} from "../../data/dto/socket/chat.dto";
+import {ConnectionService} from "./connection.service";
+import {createNgDestroySubject} from "../utils/create-ng-destroy-subject.fn";
 
 @Injectable({
 	providedIn: 'root',
@@ -16,6 +18,7 @@ export class SocketService {
 	private readonly notificationsService = inject(NotificationsService);
 	private readonly authService: AuthService = inject(AuthService);
 	private readonly chatService = inject(ChatService);
+	private readonly connectionService = inject(ConnectionService);
 	interval?: NodeJS.Timeout;
 
 	startWebSocketConnection() {
@@ -44,6 +47,10 @@ export class SocketService {
 		};
 	}
 
+	public closeWebSocketConnection() {
+		this.socket.close();
+	}
+
 	private handleIncomingMessage(msg: SocketDto) {
 		console.log('Received message:', msg);
 
@@ -56,6 +63,12 @@ export class SocketService {
 				break;
 			case TypeSocketEnum.PONG:
 				console.log('Received pong');
+				break;
+			case TypeSocketEnum.CONNECTION:
+				this.connectionService.addConnectedUser(msg.data as number);
+				break;
+			case TypeSocketEnum.DISCONNECTION:
+				this.connectionService.removeConnectedUser(msg.data as number);
 				break;
 			default:
 				console.error('Unknown message type', msg);

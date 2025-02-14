@@ -3,7 +3,6 @@ package com.web.matcha.config;
 import com.web.matcha.domain.utils.JwtUtils;
 import com.web.matcha.web.dto.MessageDto;
 import com.web.matcha.web.dto.NotificationDto;
-import com.web.matcha.web.ws.dto.WsDataConnection;
 import com.web.matcha.web.ws.dto.WsDto;
 import io.javalin.Javalin;
 import io.javalin.websocket.WsCloseContext;
@@ -12,6 +11,7 @@ import io.javalin.websocket.WsConnectContext;
 import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsErrorContext;
 import io.javalin.websocket.WsMessageContext;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -23,8 +23,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class WebSocketConfig {
 
+	@Getter
 	private static final Map<String, WsContext> clientConnections = new ConcurrentHashMap<>();
 
+	@Getter
 	private static final Map<Integer, List<String>> sessionToUser = new ConcurrentHashMap<>();
 
 	public void configure(Javalin app) {
@@ -47,13 +49,24 @@ public class WebSocketConfig {
 	void onConnect(final WsConnectContext ctx) {
 		final Integer clientId = JwtUtils.validateTokenAndGetUserId(ctx.queryParam("token"));
 		if (clientId == null) {
-				ctx.session.close(1008, "ID client manquant");
+			ctx.session.close(1008, "ID client manquant");
 			return;
 		}
 
 		Optional.ofNullable(sessionToUser.get(clientId))
 				.ifPresentOrElse(sessionsUser -> sessionsUser.add(ctx.sessionId()), //if
-						() -> sessionToUser.put(clientId, new ArrayList<>(List.of(ctx.sessionId())))); //else
+						() -> {
+							sessionToUser.forEach((k, v) -> {  //else
+								v.forEach(sessionId -> {
+									Optional.ofNullable(clientConnections.get(sessionId))
+											.ifPresent(c -> c.send(WsDto.builder()
+													.type("CONNECTION")
+													.data(clientId)
+													.build()));
+								});
+							});
+							sessionToUser.put(clientId, new ArrayList<>(List.of(ctx.sessionId())));
+						});
 		clientConnections.put(ctx.sessionId(), ctx);
 		log.info("Client {} a ouvert une session WebSocket", clientId);
 	}
@@ -78,6 +91,15 @@ public class WebSocketConfig {
 		sessionToUser.forEach((k, v) -> {
 			if (v.remove(ctx.sessionId()) && v.isEmpty()) {
 				sessionToUser.remove(k);
+				sessionToUser.forEach((k2, v2) -> {
+					v2.forEach(sessionId -> {
+						Optional.ofNullable(clientConnections.get(sessionId))
+								.ifPresent(c -> c.send(WsDto.builder()
+										.type("DISCONNECTION")
+										.data(k)
+										.build()));
+					});
+				});
 				log.info("Client déconnecté : ID={}", k);
 			}
 		});

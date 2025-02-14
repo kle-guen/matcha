@@ -20,6 +20,7 @@ public class MemberController extends AbstractController {
 	public void registerRoutes(final Javalin app) {
 		//GET
 		app.get("/members/suggest", this::suggestMembers);
+		app.get("/members/connected", this::getConnectedMembers);
 		app.get("/members/{id}", this::getCompleteMember);
 		app.get("/matches", this::getMatches);
 
@@ -101,5 +102,7 @@ public class MemberController extends AbstractController {
 		ctx.json(memberService.getMatches());
 	}
 
-
+	private void getConnectedMembers(Context ctx) {
+		ctx.json(memberService.getConnectedMembers());
+	}
 }

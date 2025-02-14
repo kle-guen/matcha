@@ -33,6 +33,7 @@ public class NotificationService {
 
 	public void sendNotificationToUser(int memberId, TypeNotificationEnum type, String username) {
 		NotificationDto notification = new NotificationDto(
+				memberId,
 				type,
 				LocalDateTime.now(),
 				username,
