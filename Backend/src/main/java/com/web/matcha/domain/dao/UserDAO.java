@@ -143,7 +143,10 @@ public class UserDAO {
 				+ "JOIN likes l1 ON u.id = l1.liked_id "
 				+ "JOIN likes l2 ON u.id = l2.liker_id "
 				+ "WHERE l1.liker_id = ? "
-				+ "AND l2.liked_id = ?";
+				+ "AND l2.liked_id = ? "
+				+ "AND l1.disliked = false "
+				+ "AND l2.disliked = false "
+				+ "AND u.id <> ?";
 
 		final List<UserModel> users = new ArrayList<>();
 
@@ -152,6 +155,7 @@ public class UserDAO {
 
 			stmt.setInt(1, userId);
 			stmt.setInt(2, userId);
+			stmt.setInt(3, userId);
 			final ResultSet rs = stmt.executeQuery();
 			UserModel u = extractUser(rs);
 			while (u != null) {

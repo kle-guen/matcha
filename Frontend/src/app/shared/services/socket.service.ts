@@ -1,32 +1,40 @@
-import {inject, Injectable} from '@angular/core';
-import {AuthService} from "./auth-service";
-import {SocketDto} from "../../data/dto/socket/socket.dto";
-import {NotificationDto} from "../../data/dto/socket/notification.dto";
-import {TypeSocketEnum} from "../enums/type-socket.enum";
-import {NotificationsService} from "./notifications-service";
-import {ChatService} from "./chat-service";
-import {ChatDto} from "../../data/dto/socket/chat.dto";
-import {ConnectionService} from "./connection.service";
-import {createNgDestroySubject} from "../utils/create-ng-destroy-subject.fn";
+import { inject, Injectable } from '@angular/core';
+import { AuthService } from "./auth-service";
+import { SocketDto } from "../../data/dto/socket/socket.dto";
+import { NotificationDto } from "../../data/dto/socket/notification.dto";
+import { TypeSocketEnum } from "../enums/type-socket.enum";
+import { NotificationsService } from "./notifications-service";
+import { ChatService } from "./chat-service";
+import { ChatDto } from "../../data/dto/socket/chat.dto";
+import { ConnectionService } from "./connection.service";
 
 @Injectable({
 	providedIn: 'root',
 })
 export class SocketService {
 	private socket!: WebSocket;
-
+	private isManuallyClosed = false;
 	private readonly notificationsService = inject(NotificationsService);
-	private readonly authService: AuthService = inject(AuthService);
+	private readonly authService = inject(AuthService);
 	private readonly chatService = inject(ChatService);
 	private readonly connectionService = inject(ConnectionService);
-	interval?: NodeJS.Timeout;
+	private interval?: ReturnType<typeof setInterval>;
 
+	/**
+	 * Démarre la connexion WebSocket
+	 */
 	startWebSocketConnection() {
+		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+			console.log('WebSocket déjà connecté, aucune nouvelle connexion');
+			return;
+		}
+
+		this.isManuallyClosed = false;
 		const token = this.authService.getToken();
 		this.socket = new WebSocket(`ws://backend_container:7000/ws?token=${token}`);
 
 		this.socket.onopen = () => {
-			console.log('WebSocket connecté');
+			console.log('✅ WebSocket connecté');
 			clearInterval(this.interval!);
 			this.interval = setInterval(() => {
 				if (this.socket.readyState === WebSocket.OPEN) {
@@ -36,23 +44,45 @@ export class SocketService {
 		};
 
 		this.socket.onmessage = (event) => {
-			console.log('Received message:', event);
+			console.log('📩 Message reçu:', event);
 			this.handleIncomingMessage(JSON.parse(event.data) as SocketDto);
 		};
 
 		this.socket.onclose = () => {
-			console.log('WebSocket fermé, tentative de reconnexion...');
+			console.log('❌ WebSocket fermé');
+
 			clearInterval(this.interval!);
-			setTimeout(() => this.startWebSocketConnection(), 5000);
+
+			// Vérifie si la fermeture est manuelle ou non
+			if (!this.isManuallyClosed) {
+				console.log('🔄 Tentative de reconnexion...');
+				setTimeout(() => this.startWebSocketConnection(), 5000);
+			} else {
+				console.log('🛑 Fermeture manuelle, pas de reconnexion');
+			}
 		};
 	}
 
+	/**
+	 * Ferme la connexion WebSocket manuellement
+	 */
 	public closeWebSocketConnection() {
+		if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+			console.log('Aucune connexion WebSocket active à fermer');
+			return;
+		}
+
+		this.isManuallyClosed = true;
 		this.socket.close();
+		console.log('🔌 WebSocket fermé manuellement');
 	}
 
+	/**
+	 * Gère les messages entrants
+	 * @param msg Message reçu
+	 */
 	private handleIncomingMessage(msg: SocketDto) {
-		console.log('Received message:', msg);
+		console.log('📨 Nouveau message:', msg);
 
 		switch (msg.type) {
 			case TypeSocketEnum.NOTIFICATION:
@@ -62,7 +92,7 @@ export class SocketService {
 				this.chatService.receiveMessage(msg.data as ChatDto);
 				break;
 			case TypeSocketEnum.PONG:
-				console.log('Received pong');
+				console.log('🏓 Pong reçu');
 				break;
 			case TypeSocketEnum.CONNECTION:
 				this.connectionService.addConnectedUser(msg.data as number);
@@ -71,7 +101,7 @@ export class SocketService {
 				this.connectionService.removeConnectedUser(msg.data as number);
 				break;
 			default:
-				console.error('Unknown message type', msg);
+				console.error('⚠️ Type de message inconnu', msg);
 				break;
 		}
 	}

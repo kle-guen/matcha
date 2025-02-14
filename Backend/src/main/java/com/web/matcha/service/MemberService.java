@@ -171,6 +171,7 @@ public class MemberService {
 		final List<UserModel> userModels = userDAO.getMatches(UserHolder.getUserId());
 		return userModels.stream()
 				.map(memberMapper::toMatchDto)
+				.filter(matchDto -> !blockService.isBlockedOrBlocker(matchDto.getId()))
 				.toList();
 	}
 

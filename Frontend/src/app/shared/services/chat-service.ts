@@ -64,6 +64,16 @@ export class ChatService extends AbstractService {
 			takeUntil(this.onDestroy$)
 		).subscribe(userId => {
 			if (userId) {
+				this.allMessages = this.allMessages.map(message => {
+					if (message.senderId === userId) {
+						message.isRead = true;
+					}
+					return message;
+				});
+				this.chatHttpService.markAsRead(userId).pipe(
+					takeUntil(this.onDestroy$)
+				).subscribe();
+				this.messagesCountSubject.next(this.allMessages.filter(message => !message.isRead).length);
 				const newMessages = this.allMessages.filter(message => message.senderId === userId || message.receiverId === userId);
 				newMessages.sort((a, b) => b.createdAt < a.createdAt ? 1 : -1);
 				this.messagesSelectedSubject.next(newMessages);
@@ -106,23 +116,17 @@ export class ChatService extends AbstractService {
 	}
 
 	/**
-	 * Mark notifications as read.
-	 */
-	public resetChatCount() {
-		this.messagesCountSubject.next(0);
-		this.allMessages = this.allMessages.map(message => ({
-			...message,
-			isRead: true
-		}));
-	}
-
-	/**
 	 * Select a user.
 	 * @param userId
 	 */
 	selectUser(userId: number | null) {
 		if (userId != this.userSelectedSubject.value) {
 			this.userSelectedSubject.next(userId);
+			if (userId) {
+				this.chatHttpService.markAsRead(userId).pipe(
+					takeUntil(this.onDestroy$)
+				).subscribe();
+			}
 		}
 	}
 }

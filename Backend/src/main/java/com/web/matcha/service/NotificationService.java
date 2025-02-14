@@ -6,6 +6,7 @@ import com.web.matcha.domain.dao.NotificationDAO;
 import com.web.matcha.domain.enums.TypeNotificationEnum;
 import com.web.matcha.mapper.NotificationMapper;
 import com.web.matcha.web.dto.NotificationDto;
+import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.NotFoundResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,8 @@ public class NotificationService {
 	private final NotificationDAO notificationDAO;
 
 	private final NotificationMapper notificationMapper;
+
+	private final BlockService blockService;
 
 	public List<NotificationDto> getNotificationsByUserId() {
 		return notificationDAO.getNotificationsByUserId(UserHolder.getUserId())
@@ -32,8 +35,8 @@ public class NotificationService {
 	}
 
 	public void sendNotificationToUser(int memberId, TypeNotificationEnum type, String username) {
-		NotificationDto notification = new NotificationDto(
-				memberId,
+		final NotificationDto notification = new NotificationDto(
+				UserHolder.getUserId(),
 				type,
 				LocalDateTime.now(),
 				username,

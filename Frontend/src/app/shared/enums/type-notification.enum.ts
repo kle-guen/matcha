@@ -4,4 +4,5 @@ export enum TypeNotificationEnum {
 	UNLIKE = 'UNLIKE',
 	MESSAGE = 'MESSAGE',
 	MATCH = 'MATCH',
+	BLOCK = 'BLOCK',
 }

@@ -130,6 +130,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 			this.matchSelected = this.matches.find(match => match.id === userId) || null;
 			if (userId) {
 				this.messageControl.enable();
+
 			} else {
 				this.messageControl.disable();
 			}
@@ -139,6 +140,7 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 		).subscribe(disliker => {
 			if (disliker) {
 				this.matches = this.matches.filter(match => match.id !== disliker);
+				this.chatService.selectUser(null);
 			}
 		})
 		this.notificationsService.match$.pipe(

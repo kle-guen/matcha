@@ -12,12 +12,6 @@ public interface MessageMapper {
 
 
 	@Mapping(target = "createdAt", source = "createdAt", qualifiedByName = "mapTimestampToLocalDateTime")
-	@Mapping(target = "isRead", source = "messageModel", qualifiedByName = "mapRead")
 	MessageDto toMessageDto(MessageModel messageModel);
-
-	@Named("mapRead")
-	default boolean mapRead(MessageModel messageModel) {
-		return messageModel.isRead() || messageModel.getSenderId() == UserHolder.getUserId();
-	}
 
 }

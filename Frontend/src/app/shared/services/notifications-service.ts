@@ -92,6 +92,9 @@ export class NotificationsService extends AbstractService{
 			case TypeNotificationEnum.UNLIKE:
 				this.dislikeSubject.next(notification.userId);
 				break;
+			case TypeNotificationEnum.BLOCK:
+				this.blockSubject.next(notification.userId);
+				break;
 		}
 		if (newNotification) {
 			this.notificationsSubject.next([newNotification, ...this.notificationsSubject.value]);

@@ -25,7 +25,7 @@ import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-su
 	templateUrl: './notifications.component.html',
 	styleUrl: './notifications.component.scss'
 })
-export class NotificationsComponent implements OnInit, OnDestroy {
+export class NotificationsComponent implements OnInit {
 
 	/**
 	 * The on destroy
@@ -66,12 +66,6 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 				return new Date(b.date).getTime() - new Date(a.date).getTime();
 			});
 		});
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public ngOnDestroy(): void {
 		this.notificationsService.resetNotificationsCount();
 	}
 }

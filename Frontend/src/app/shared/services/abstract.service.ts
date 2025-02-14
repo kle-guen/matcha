@@ -1,6 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import {Injectable, OnDestroy} from '@angular/core';
+import {Subject} from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'

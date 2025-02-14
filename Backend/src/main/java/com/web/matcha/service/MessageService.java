@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class MessageService {
@@ -53,7 +54,10 @@ public class MessageService {
 	public List<MessageDto> getMessages() {
 		return messageDAO.getMessagesById(UserHolder.getUserId()).stream()
 				.map(messageMapper::toMessageDto)
+				.peek(messageDto -> messageDto.setRead(messageDto.isRead() || Objects.equals(messageDto.getSenderId(), UserHolder.getUserId())))
+				.filter(messageDto -> !blockService.isBlockedOrBlocker(messageDto.getSenderId()) || !blockService.isBlockedOrBlocker(messageDto.getReceiverId()))
 				.toList();
+
 	}
 
 	public void readMessages(int senderId) {
