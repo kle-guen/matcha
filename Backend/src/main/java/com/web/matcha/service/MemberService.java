@@ -8,6 +8,7 @@ import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.dao.VisitDAO;
 import com.web.matcha.domain.enums.SortResearchUsersEnum;
+import com.web.matcha.domain.enums.TypeNotificationEnum;
 import com.web.matcha.domain.model.InterestModel;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.domain.model.UserModel;
@@ -41,6 +42,8 @@ public class MemberService {
 	private final VisitDAO visitDAO;
 
 	private final PicturesDAO picturesDAO;
+
+	private final NotificationService notificationService;
 
 	public List<MemberDto> researchMembers(final ResearchMembersDto researchMembersDto, final SortResearchUsersEnum sortBy) {
 		final ProfileModel currentUserProfile = profileDAO.getProfileById(UserHolder.getUserId())
@@ -96,7 +99,8 @@ public class MemberService {
 				.anyMatch(likeModel -> Objects.equals(likeModel.getLikedId(), memberId)));
 
 		visitDAO.addVisit(UserHolder.getUserId(), memberId);
-
+		this.notificationService.sendNotificationToUser(memberId, TypeNotificationEnum.VISIT, userDAO.getUsernameById(UserHolder.getUserId())
+				.orElseThrow(() -> new NotFoundResponse("User not found")));
 		return completeMemberDto;
 	}
 
@@ -114,15 +118,24 @@ public class MemberService {
 	}
 
 	public void likeMember(final Integer memberId) {
-		if (isBlockedOrBlocker(memberId)) {
+		if (isBlockedOrBlocker(memberId) || Objects.equals(UserHolder.getUserId(), memberId)) {
 			throw new ForbiddenResponse("You can't like this member");
 		}
+
+		TypeNotificationEnum type = TypeNotificationEnum.LIKE;
 		if (likeDAO.getLikesByLikerId(UserHolder.getUserId()).stream()
 				.anyMatch(likeModel -> Objects.equals(likeModel.getLikedId(), memberId))) {
 			likeDAO.unlikeUser(UserHolder.getUserId(), memberId);
+			type = TypeNotificationEnum.UNLIKE;
 		} else {
 			likeDAO.likeUser(UserHolder.getUserId(), memberId);
+			if (likeDAO.getLikesByLikerId(memberId).stream()
+					.anyMatch(likeModel -> Objects.equals(likeModel.getLikedId(), UserHolder.getUserId()))) {
+				type = TypeNotificationEnum.MATCH;
+			}
 		}
+		this.notificationService.sendNotificationToUser(memberId, type, userDAO.getUsernameById(UserHolder.getUserId())
+				.orElseThrow(() -> new NotFoundResponse("User not found")));
 	}
 
 	private boolean isBlockedOrBlocker(final Integer memberId) {

@@ -95,15 +95,16 @@ CREATE TABLE notifications
     id         SERIAL PRIMARY KEY,
     user_id    INT         NOT NULL,
     type       VARCHAR(50) NOT NULL,
-    content    TEXT,
+    username    VARCHAR(50) NOT NULL,
     is_read    BOOLEAN   DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-CREATE TABLE email_verification_tokens (
+CREATE TABLE email_tokens (
     user_id INT NOT NULL,
     token VARCHAR(255) NOT NULL,
+    type VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

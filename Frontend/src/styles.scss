@@ -9,7 +9,7 @@
 }
 
 .page-wrapper > h1 {
-    @apply text-xl font-semibold;
+  @apply text-xl font-semibold;
 }
 
 .sticky-top {
@@ -30,4 +30,14 @@
 
 .btn {
   cursor: pointer;
+}
+
+img {
+  &.h-500 {
+    height: 500px;
+  }
+
+  &.h-300 {
+    height: 300px;
+  }
 }

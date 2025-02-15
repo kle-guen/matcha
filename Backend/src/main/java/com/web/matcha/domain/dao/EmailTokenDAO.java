@@ -13,13 +13,14 @@ import java.util.Optional;
 @Slf4j
 public class EmailTokenDAO {
 	public Optional<EmailTokenModel> insertEmailToken(final EmailTokenModel emailToken) {
-		final String sql = "INSERT INTO email_verification_tokens (user_id, token) VALUES (?, ?)";
+		final String sql = "INSERT INTO email_tokens (user_id, token, type) VALUES (?, ?, ?)";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
 			stmt.setLong(1, emailToken.getUserId());
 			stmt.setString(2, emailToken.getToken());
+			stmt.setString(3, emailToken.getType().name());
 			stmt.executeUpdate();
 
 			try (final ResultSet generatedKeys = stmt.getGeneratedKeys()) {
@@ -37,7 +38,7 @@ public class EmailTokenDAO {
 	}
 
 	public Optional<Integer> getUserIdByToken(final String token) {
-		final String sql = "SELECT * FROM email_verification_tokens WHERE token = ?";
+		final String sql = "SELECT * FROM email_tokens WHERE token = ?";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -57,7 +58,7 @@ public class EmailTokenDAO {
 	}
 
 	public void deleteToken(final String token) {
-		final String sql = "DELETE FROM email_verification_tokens WHERE token = ?";
+		final String sql = "DELETE FROM email_tokens WHERE token = ?";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {

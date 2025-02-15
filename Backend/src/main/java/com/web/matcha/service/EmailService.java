@@ -4,6 +4,8 @@ import com.web.matcha.config.Env;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.EmailTokenDAO;
 import com.web.matcha.domain.dao.UserDAO;
+import com.web.matcha.domain.enums.EmailTokenTypeEnum;
+import com.web.matcha.domain.enums.TypeNotificationEnum;
 import com.web.matcha.domain.model.EmailTokenModel;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.javalin.http.MisdirectedRequestResponse;
@@ -37,9 +39,9 @@ public class EmailService {
 	 *
 	 * @param userId
 	 */
-	public String addEmailToken(Integer userId) {
+	public String addEmailToken(Integer userId, EmailTokenTypeEnum type) {
 		final String token = UUID.randomUUID().toString();
-		final EmailTokenModel emailToken = new EmailTokenModel(userId, token);
+		final EmailTokenModel emailToken = new EmailTokenModel(userId, token, type);
 		emailTokenDAO.insertEmailToken(emailToken);
 		return emailToken.getToken();
 	}
@@ -52,6 +54,11 @@ public class EmailService {
 	public int getUserIdByToken(String token) {
 		return emailTokenDAO.getUserIdByToken(token)
 				.orElseThrow(() -> new NotFoundResponse("Token not Found"));
+	}
+
+	public int getUserIdByEmail(String email) {
+		return userDAO.getUserIdByEmail(email)
+				.orElseThrow(() -> new UnauthorizedResponse("User not found"));
 	}
 
 	/**
@@ -68,25 +75,32 @@ public class EmailService {
 	 *
 	 * @param receivingEmail
 	 */
-	public void sendVerificationEmail(String receivingEmail) {
+	public void sendEmail(String receivingEmail, EmailTokenTypeEnum type) {
 		Dotenv env = Env.getDotenv();
 
 		try {
-			final Integer userId = UserHolder.getUserId();
-			final String emailToken = addEmailToken(userId);
+			final Integer userId = getUserIdByEmail(receivingEmail);
+			final String emailToken = addEmailToken(userId, type);
 
 			Email email = new SimpleEmail();
 			email.setHostName(env.get("SMTP_HOSTNAME"));
 			email.setSmtpPort(Integer.parseInt(Objects.requireNonNull(env.get("SMTP_PORT"))));
 			email.setAuthenticator(new DefaultAuthenticator(env.get("SMTP_USERNAME"), env.get("SMTP_PASSWORD")));
 			email.setFrom("noreplymatcha42angouleme@gmail.com");
-			email.setSubject("Matcha - Email Verification");
-			email.setMsg("Please click the following link to verify your email: " + env.get("FRONT_URL") + "/verify-email?token=" + emailToken);
+
+			if (type == EmailTokenTypeEnum.VERIFY_EMAIL) {
+				email.setSubject("Matcha - Email Verification");
+				email.setMsg("Please click the following link to verify your email: " + env.get("FRONT_URL") + "/verify-email?token=" + emailToken);
+			}
+			else {
+				email.setSubject("Matcha - Reset Password");
+				email.setMsg("Please click the following link to reset your password: " + env.get("FRONT_URL") + "/forgot-password?token=" + emailToken);
+			}
+
 			email.addTo(receivingEmail);
 			email.send();
 
 		} catch (Exception e) {
-			userDAO.deleteUserByEmail(receivingEmail);
 			log.error("Error sending email",e);
 			throw new MisdirectedRequestResponse("Error sending email: " + e.getMessage());
 		}

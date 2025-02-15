@@ -84,7 +84,7 @@ export class AddressPickerComponent implements OnInit {
       draggable: true,
     });
 
-    if (this.control.value) {
+    if (this.control.value && typeof this.control.value === 'string') {
       this.geocodeAddress(this.control.value);
     }
 
@@ -150,6 +150,8 @@ export class AddressPickerComponent implements OnInit {
    */
   public geocodeAddress(address: string) {
     const geocoder = new google.maps.Geocoder();
+
+    if (!address) return;
     geocoder.geocode({ address }, (results, status) => {
       if (results == null) return ;
       if (status === 'OK' && results[0]) {

@@ -1,8 +1,8 @@
-import {Component, inject, Input} from '@angular/core';
-import {Router, RouterLink} from "@angular/router";
-import {MatIcon, MatIconModule} from "@angular/material/icon";
+import {Component, inject, Input, OnInit} from '@angular/core';
+import {RouterLink} from "@angular/router";
+import {MatIconModule} from "@angular/material/icon";
 import {MatBadgeModule} from "@angular/material/badge";
-import {AuthHttpService} from "../../data/http/auth-http.service";
+import {AuthService} from "../../shared/services/auth-service";
 
 @Component({
 	selector: 'app-main-header',
@@ -20,12 +20,12 @@ export class HeaderComponent {
 	/**
 	 * The auth http service.
 	 */
-	private readonly authHttpService = inject(AuthHttpService);
+	private readonly authService = inject(AuthService);
 
 	/**
 	 * The number of notifications.
 	 */
-	@Input() public notifications: number = 2;
+	@Input() public notificationsCount = 0;
 
 	/**
 	 * The number of messages.
@@ -33,9 +33,21 @@ export class HeaderComponent {
 	@Input() public messages: number = 1;
 
 	/**
+	 * Boolean to toggle the menu.
+	 */
+	isMenuOpen = false;
+
+	/**
 	 * Logs the user out.
 	 */
 	public logOut(): void {
-		this.authHttpService.logOut();
+		this.authService.logOut();
+	}
+
+	/**
+	 * Toggles the menu.
+	 */
+	public toggleMenu(): void {
+		this.isMenuOpen = !this.isMenuOpen;
 	}
 }

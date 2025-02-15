@@ -1,16 +1,22 @@
-<mat-drawer-container class="h-full">
-	<mat-drawer #drawer class="mobile:w-full" mode="over">
-	</mat-drawer>
-
-	<div class="page-wrapper h-screen">
-		<div class="w-full flex flex-col">
-			<div class="bubble right justify-end">
-				<p>
-
-					Ok, Thank you Ok, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank youOk, Thank you
-				</p>
+<div class="page-wrapper">
+	<mat-drawer-container class="drawer-container flex flex-grow justify-start">
+		<mat-drawer #drawer mode="side" class="chat-drawer flex flex-grow">
+			<div class="drawer-head flex flex-grow justify-between">
+				<h1>Users</h1>
+				<mat-icon (click)="drawer.toggle()">close</mat-icon>
 			</div>
-			<div class="bubble left justify-start"> ut labore et dolore magna</div>
+			<div class="drawer-content">
+				<app-users-list></app-users-list>
+			</div>
+		</mat-drawer>
+
+		<div class="sidenav-content flex flex-grow flex-col h-full">
+			<button type="button" mat-button (click)="drawer.toggle()">
+				Toggle sidenav
+			</button>
+			<app-message-list class="flex flex-grow"></app-message-list>
+			<app-message-input></app-message-input>
 		</div>
-	</div>
-</mat-drawer-container>
+
+	</mat-drawer-container>
+</div>

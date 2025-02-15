@@ -88,11 +88,6 @@ export class CompleteProfileComponent implements OnInit {
 	public sexualPreferenceEnum = SexualPreferenceEnum;
 
 	/**
-	 * the profile completion status
-	 */
-	private isProfileComplete: boolean = false;
-
-	/**
 	 * @inheritDoc
 	 */
 	ngOnInit() {

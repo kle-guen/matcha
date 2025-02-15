@@ -1,90 +1,55 @@
-import {Injectable, OnDestroy} from '@angular/core';
-import {Observable, Subject, timer} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
+import {inject, Injectable} from '@angular/core';
+import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {AuthService} from "./auth-service";
+import {SocketDto} from "../../data/dto/socket/socket.dto";
+import {NotificationDto} from "../../data/dto/socket/notification.dto";
+import {ChatDto} from "../../data/dto/socket/chat.dto";
+import {TypeSocketEnum} from "../enums/type-socket.enum";
+import {NotificationsService} from "./notifications-service";
 
 @Injectable({
 	providedIn: 'root',
 })
-export class SocketService implements OnDestroy {
-	private socket: WebSocket | null = null;
-	private messageSubject = new Subject<any>();
-	private reconnectAttempts = 0;
-	private readonly maxReconnectAttempts = 5;
-	private readonly reconnectDelay = 3000; // Délai entre les tentatives de reconnexion (3 secondes)
-	private isConnected = false;
+export class SocketService {
+	private socket!: WebSocket;
 
-	connect(url: string): void {
-		if (!this.socket) {
-			this.initializeWebSocket(url);
-		}
-	}
+	private readonly notificationsService = inject(NotificationsService);
+	private readonly authService: AuthService = inject(AuthService);
 
-	private initializeWebSocket(url: string): void {
-		this.socket = new WebSocket(url + `?token=${localStorage.getItem('matcha-token')}`);
+	startWebSocketConnection() {
+		const token = this.authService.getToken();
+		this.socket = new WebSocket(`ws://backend_container:7000/ws?token=${token}`);
 
-		// Gérer les messages reçus
-		this.socket.onmessage = (event) => {
-			this.messageSubject.next(JSON.parse(event.data));
-		};
-
-		// Gérer les erreurs
-		this.socket.onerror = (error) => {
-			console.error('Erreur WebSocket:', error);
-		};
-
-		// Gérer la fermeture (et tenter de reconnecter)
-		this.socket.onclose = () => {
-			console.warn('WebSocket déconnecté.');
-			this.isConnected = false;
-			if (this.reconnectAttempts < this.maxReconnectAttempts) {
-				this.reconnectAttempts++;
-				console.log(`Tentative de reconnexion (${this.reconnectAttempts})...`);
-				timer(this.reconnectDelay)
-					.pipe(
-						tap(() => console.log('Nouvelle tentative de connexion...')),
-						switchMap(() => this.retryConnection(url)),
-					)
-					.subscribe();
-			} else {
-				console.error('Nombre maximum de tentatives atteint.');
-			}
-		};
-
-		// État connecté
 		this.socket.onopen = () => {
-			console.log('Connexion WebSocket établie.');
-			this.isConnected = true;
-			this.reconnectAttempts = 0; // Réinitialiser les tentatives en cas de succès
+			console.log('WebSocket connecté');
+			setInterval(() => {
+				if (this.socket.readyState === WebSocket.OPEN) {
+					this.socket.send('ping');
+				}
+			}, 20000);
+		};
+
+		this.socket.onmessage = (event) => {
+			console.log('Received message:', event);
+			this.handleIncomingMessage(JSON.parse(event.data) as SocketDto);
+		};
+
+		this.socket.onclose = () => {
+			console.log('WebSocket fermé, tentative de reconnexion...');
+			setTimeout(() => this.startWebSocketConnection(), 5000);
 		};
 	}
 
-	private retryConnection(url: string): Observable<void> {
-		return new Observable<void>((observer) => {
-			this.initializeWebSocket(url);
-			observer.next();
-			observer.complete();
-		});
-	}
+	private handleIncomingMessage(msg: SocketDto) {
+		console.log('Received message:', msg);
 
-	sendMessage(message: any): void {
-		if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-			this.socket.send(JSON.stringify(message));
+		if (msg.type == TypeSocketEnum.NOTIFICATION ) {
+			this.notificationsService.addNotification(msg.data as NotificationDto);
+		} else if (msg.type == TypeSocketEnum.CHAT) {
+			// this.chatService.addChat(msg.data as ChatDto);
 		} else {
-			console.error('Impossible d\'envoyer le message, WebSocket non connecté.');
+			console.error('Unknown message type', msg);
 		}
-	}
-
-	getMessages(): Observable<any> {
-		return this.messageSubject.asObservable();
-	}
-
-	disconnect(): void {
-		if (this.socket) {
-			this.socket.close();
-		}
-	}
-
-	ngOnDestroy(): void {
-		this.disconnect();
 	}
 }

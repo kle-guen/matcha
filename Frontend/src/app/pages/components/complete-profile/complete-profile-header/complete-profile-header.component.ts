@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {RouterLink} from "@angular/router";
-import {AuthHttpService} from "../../../../data/http/auth-http.service";
+import {AuthService} from "../../../../shared/services/auth-service";
 
 @Component({
   selector: 'app-complete-profile-header',
@@ -16,12 +16,12 @@ export class CompleteProfileHeaderComponent {
 	/**
 	 * The auth http service.
 	 */
-	private readonly authHttpService = inject(AuthHttpService);
+	private readonly authService = inject(AuthService);
 
 	/**
 	 * Logs the user out.
 	 */
 	public logOut(): void {
-		this.authHttpService.logOut();
+		this.authService.logOut();
 	}
 }

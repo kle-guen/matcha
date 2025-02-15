@@ -1,5 +1,6 @@
 package com.web.matcha.service;
 
+import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.mapper.UserMapper;
@@ -30,5 +31,9 @@ public class UserService {
 
 	public void verifyUserEmail(int userId) {
 		userDAO.verifyUserEmail(userId);
+	}
+
+	public void resetPassword(int userId, String password) {
+		userDAO.resetPassword(userId, password);
 	}
 }

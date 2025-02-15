@@ -1,0 +1,14 @@
+<mat-nav-list>
+	@for (user of users; track user) {
+		<mat-list-item>
+			<div class="flex">
+				<h3>{{user.username}}</h3>
+				@if (user.status) {
+					<mat-icon aria-hidden="false" class="text-green-500">circle</mat-icon>
+				} @else {
+					<mat-icon aria-hidden="false" class="text-red-500">circle</mat-icon>
+				}
+			</div>
+		</mat-list-item>
+	}
+</mat-nav-list>

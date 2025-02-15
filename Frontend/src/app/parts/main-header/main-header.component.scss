@@ -1,0 +1,15 @@
+:host {
+  .menu-mobile {
+    transition: all 0.3s;
+    opacity: 0;
+    &[data-menu-open="false"] {
+      max-height: 0;
+      opacity: 0;
+    }
+    &[data-menu-open="true"] {
+      padding: 20px 0;
+      max-height: 500px;
+      opacity: 1;
+    }
+  }
+}
