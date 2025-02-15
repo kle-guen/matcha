@@ -10,7 +10,7 @@ import {ImageUploaderComponent} from "../../../ui/components/image-uploader/imag
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
 import {MatRadioModule} from "@angular/material/radio";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
-import {ActivatedRoute, RouterLink} from "@angular/router";
+import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {MatFormField} from "@angular/material/form-field";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {provideNativeDateAdapter} from "@angular/material/core";
@@ -23,6 +23,8 @@ import {ProfileHttpService} from "../../../data/http/profile-http.service";
 import {UsersHttpService} from "../../../data/http/users-http.service";
 import {UserPicturesDto} from "../../../data/dto/receive/user-pictures.dto";
 import {NgOptimizedImage} from "@angular/common";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {timeout} from "rxjs";
 
 @Component({
 	selector: 'app-update-profile',
@@ -105,6 +107,16 @@ export class UpdateProfileComponent implements OnInit {
 	 */
 	public interests: InterestDto[] = [];
 
+	/**
+	 * The router.
+	 */
+	private readonly router = inject(Router);
+
+	/**
+	 * The snackbar.
+	 */
+	private readonly snackBar = inject(MatSnackBar);
+
 	ngOnInit() {
 
 		this.interests = this.activatedRoute.snapshot.data['interests'];
@@ -138,7 +150,7 @@ export class UpdateProfileComponent implements OnInit {
 	/**
 	 * Completes the profile by sending the form data to the server.
 	 */
-	public completeProfile() {
+	public updateProfile() {
 
 		const formData = new FormData();
 
@@ -170,7 +182,20 @@ export class UpdateProfileComponent implements OnInit {
 			lastName: this.updateProfileForm.value.lastName ?? null,
 			username: this.updateProfileForm.value.username ?? null,
 			email: this.updateProfileForm.value.email ?? null
-		}).subscribe();
+		}).subscribe({
+				next: () => {
+					setTimeout(() => {
+						this.router.navigate(['/members']);
+					}, 1000);
+					this.snackBar.open('Profile updated', 'Close', {
+						duration: 1000,
+					});
+				},
+				error: (err) => {
+					console.log(err);
+				}
+			}
+		);
 	}
 
 	protected readonly GenderEnum = GenderEnum;

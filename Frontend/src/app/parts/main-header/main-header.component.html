@@ -24,10 +24,6 @@
 					}
 					Notifications
 				</a>
-				<a [routerLink]="'/history'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
-					<span class="material-icons-outlined">history</span>
-					History
-				</a>
 				<a [routerLink]="'/update-profile'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
 					<span class="material-icons-outlined">manage_accounts</span>
 					Profile
@@ -48,7 +44,7 @@
 
 			<!-- Mobile Menu Button -->
 			<div class="tablet:hidden">
-				<button class="text-gray-300 hover:text-white focus:outline-none">
+				<button class="text-gray-300 hover:text-white focus:outline-none" (click)="toggleMenu()">
 					<svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
 						 stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -56,6 +52,31 @@
 					</svg>
 				</button>
 			</div>
+		</div>
+		<div class="menu-mobile desktop:hidden" [attr.data-menu-open]="isMenuOpen" (click)="toggleMenu()">
+			<nav class="flex flex-col gap-4">
+				<a [routerLink]="'/chat'" class="flex items
+					-end text-gray-300 hover:text-white gap-1.5">
+					@if (messages > 0) {
+						<mat-icon aria-hidden="false" [matBadge]="messages">question_answer</mat-icon>
+					} @else {
+						<span class="material-icons-outlined">question_answer</span>
+					}
+					Chat
+				</a>
+				<a [routerLink]="'/notifications'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+					@if (notificationsCount > 0) {
+						<mat-icon aria-hidden="false" [matBadge]="notificationsCount">notifications</mat-icon>
+					} @else {
+						<mat-icon aria-hidden="false">notifications_none</mat-icon>
+					}
+					Notifications
+				</a>
+				<a [routerLink]="'/update-profile'" class="flex items-end text-gray-300 hover:text-white gap-1.5">
+					<span class="material-icons-outlined">manage_accounts</span>
+					Profile
+				</a>
+			</nav>
 		</div>
 	</div>
 </header>

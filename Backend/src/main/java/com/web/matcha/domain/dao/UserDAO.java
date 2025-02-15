@@ -271,4 +271,37 @@ public class UserDAO {
 		}
 		return Optional.empty();
 	}
+
+	public void resetPassword(int userId, String password) {
+		final String sql = "UPDATE users SET password = ? WHERE id = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setString(1, hashPassword(password));
+			stmt.setInt(2, userId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			log.error("Error while resetting password", e);
+		}
+	}
+
+	public Optional<Integer> getUserIdByEmail(String email) {
+		final String sql = "SELECT id FROM users WHERE email = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setString(1, email);
+			final ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return Optional.of(rs.getInt("id"));
+			}
+
+		} catch (SQLException e) {
+			log.error("Error while getting user id by email", e);
+		}
+		return Optional.empty();
+	}
 }

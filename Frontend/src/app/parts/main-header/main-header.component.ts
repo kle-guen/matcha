@@ -1,4 +1,4 @@
-import {Component, inject, Input} from '@angular/core';
+import {Component, inject, Input, OnInit} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
 import {MatBadgeModule} from "@angular/material/badge";
@@ -33,9 +33,21 @@ export class HeaderComponent {
 	@Input() public messages: number = 1;
 
 	/**
+	 * Boolean to toggle the menu.
+	 */
+	isMenuOpen = false;
+
+	/**
 	 * Logs the user out.
 	 */
 	public logOut(): void {
 		this.authService.logOut();
+	}
+
+	/**
+	 * Toggles the menu.
+	 */
+	public toggleMenu(): void {
+		this.isMenuOpen = !this.isMenuOpen;
 	}
 }

@@ -6,9 +6,8 @@
 		<mat-card-title>{{ member.name + ' ' + member.age }}</mat-card-title>
 		<mat-card-subtitle>{{ member.nickname }}</mat-card-subtitle>
 	</mat-card-header>
-	<img mat-card-image [src]="this.member.pictures?.profilePicture || 'assets/defaut.webp'" alt="Photo of a Shiba Inu">
+	<img mat-card-image class="w-full member-img object-contain" [src]="this.member.pictures?.profilePicture || 'assets/defaut.webp'" alt="Photo of a Shiba Inu">
 	<div class="h-full flex flex-col justify-between">
-
 		<mat-card-content>
 			<p class="line-clamp-3">
 				{{ member.description }}

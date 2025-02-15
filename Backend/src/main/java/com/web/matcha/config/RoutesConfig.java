@@ -16,7 +16,6 @@ import com.web.matcha.mapper.ProfileMapper;
 import com.web.matcha.mapper.UserMapper;
 import com.web.matcha.service.AuthService;
 import com.web.matcha.service.EmailService;
-import com.web.matcha.service.HistoryService;
 import com.web.matcha.service.InterestsService;
 import com.web.matcha.service.MemberService;
 import com.web.matcha.service.PicturesService;
@@ -26,12 +25,12 @@ import com.web.matcha.service.UserService;
 import com.web.matcha.web.controller.AbstractController;
 import com.web.matcha.web.controller.AuthController;
 import com.web.matcha.web.controller.EmailTokenController;
-import com.web.matcha.web.controller.HistoryController;
 import com.web.matcha.web.controller.ImageController;
 import com.web.matcha.web.controller.InterestsController;
 import com.web.matcha.web.controller.MemberController;
 import com.web.matcha.web.controller.NotificationController;
 import com.web.matcha.web.controller.ProfileController;
+import com.web.matcha.web.controller.ResetPasswordController;
 import com.web.matcha.web.controller.UserController;
 import io.javalin.Javalin;
 import org.mapstruct.factory.Mappers;
@@ -70,7 +69,6 @@ public class RoutesConfig {
 		final AuthService authService = new AuthService(userDAO);
 		final EmailService emailService = new EmailService(emailTokenDAO, userDAO);
 		final ProfileService profileService = new ProfileService(profileDAO, profileMapper, interestDAO);
-		final HistoryService historyService = new HistoryService(visitDAO, likeDAO, userDAO);
 		final PicturesService picturesService = new PicturesService(picturesDAO);
 
 		// Controllers
@@ -81,9 +79,9 @@ public class RoutesConfig {
 				new EmailTokenController(emailService, userService),
 				new AuthController(authService),
 				new ProfileController(profileService, picturesService),
-				new HistoryController(historyService),
 				new ImageController(),
-				new NotificationController(notificationService));
+				new NotificationController(notificationService),
+				new ResetPasswordController(emailService, userService));
 
 		controllers.forEach(controller -> controller.registerRoutes(app));
 

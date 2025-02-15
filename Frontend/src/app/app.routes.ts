@@ -17,6 +17,7 @@ import {VerifyEmailComponent} from "./pages/components/verify-email/verify-email
 import {NotificationsComponent} from "./pages/components/notifications/notifications.component";
 import {NotificationsResolver} from "./data/resolvers/notifications.resolver";
 import {memberProfileResolver} from "./data/resolvers/members-profile.resolver";
+import {ForgotPasswordComponent} from "./pages/components/forgot-password/forgot-password.component";
 
 export const routes: Routes = [
 	{
@@ -33,6 +34,10 @@ export const routes: Routes = [
 			isVerified: verifyEmailResolver
 		},
 		component: VerifyEmailComponent,
+	},
+	{
+		path: 'forgot-password',
+		component: ForgotPasswordComponent,
 	},
 	{
 		path: 'complete-profile',

@@ -15,14 +15,22 @@ export function AuthInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn):
 	 */
 	const token = authService.getToken();
 
-	// Add Authorization header if token exists
+	/**
+	 * The excluded urls.
+	 */
+	const excludedUrls = ['maps.googleapis.com'];
+
+
+	if (excludedUrls.some(url => req.url.includes(url))) {
+		return next(req);
+	}
+
 	const authReq = token
 		? req.clone({
 			setHeaders: {Authorization: `Bearer ${token}`},
 		})
 		: req;
 
-	// Handle the request and catch errors
 	return next(authReq).pipe(
 		catchError((error) => {
 			if (error.status === 401) {

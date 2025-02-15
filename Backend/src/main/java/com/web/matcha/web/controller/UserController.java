@@ -1,6 +1,7 @@
 package com.web.matcha.web.controller;
 
 import com.web.matcha.config.UserHolder;
+import com.web.matcha.domain.enums.EmailTokenTypeEnum;
 import com.web.matcha.domain.model.PictureModel;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.domain.utils.FileUtils;
@@ -60,7 +61,7 @@ public class UserController extends AbstractController {
 	private void createUser(final Context ctx) {
 		UserDto userDto = ctx.bodyAsClass(UserDto.class);
 		userService.addUser(userDto);
-		emailService.sendVerificationEmail(userDto.getEmail());
+		emailService.sendEmail(userDto.getEmail(), EmailTokenTypeEnum.VERIFY_EMAIL);
 		ctx.status(HttpStatus.CREATED.getCode()).json(userDto);
 	}
 
