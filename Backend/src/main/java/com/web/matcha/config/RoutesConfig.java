@@ -68,8 +68,8 @@ public class RoutesConfig {
 
 		// Services
 		final UserService userService = new UserService(userDAO, userMapper);
-		final NotificationService notificationService = new NotificationService(notificationDAO, notificationMapper);
 		final BlockService blockService = new BlockService(blockDAO);
+		final NotificationService notificationService = new NotificationService(notificationDAO, notificationMapper, blockService);
 		final MemberService memberService = new MemberService(memberMapper, userDAO, profileDAO, likeDAO, picturesDAO, notificationService, blockService);
 		final InterestsService interestsService = new InterestsService(interestDAO, interestMapper);
 		final AuthService authService = new AuthService(userDAO);

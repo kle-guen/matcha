@@ -143,6 +143,14 @@ export class ChatComponent implements OnInit, AfterViewInit, OnDestroy {
 				this.chatService.selectUser(null);
 			}
 		})
+		this.notificationsService.block$.pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(blocker => {
+			if (blocker) {
+				this.matches = this.matches.filter(match => match.id !== blocker);
+				this.chatService.selectUser(null);
+			}
+		})
 		this.notificationsService.match$.pipe(
 			takeUntil(this.onDestroy$)
 		).subscribe(notification => {

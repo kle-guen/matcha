@@ -1,7 +1,10 @@
 package com.web.matcha.service;
 
 import com.web.matcha.config.UserHolder;
+import com.web.matcha.config.WebSocketConfig;
 import com.web.matcha.domain.dao.BlockDAO;
+import com.web.matcha.domain.enums.TypeNotificationEnum;
+import com.web.matcha.web.dto.NotificationDto;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
@@ -23,9 +26,13 @@ public class BlockService {
 	public void blockMember(final Integer memberId) {
 		if (blockDAO.getBlockedByUserId(UserHolder.getUserId()).stream()
 				.anyMatch(blockModel -> Objects.equals(blockModel.getBlockedId(), memberId))) {
-			blockDAO.unblockUser(UserHolder.getUserId(), memberId); // TODO: remove unblock
+			blockDAO.unblockUser(UserHolder.getUserId(), memberId);
 		} else {
 			blockDAO.blockUser(UserHolder.getUserId(), memberId);
+			WebSocketConfig.sendNotificationToUser(memberId, NotificationDto.builder()
+					.userId(UserHolder.getUserId())
+					.type(TypeNotificationEnum.BLOCK)
+					.build());
 		}
 	}
 }
