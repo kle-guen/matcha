@@ -1,34 +1,41 @@
 package com.web.matcha.web.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.matcha.service.MessageService;
 import com.web.matcha.web.dto.SendMessageDto;
-import io.javalin.Javalin;
-import io.javalin.http.Context;
 import lombok.RequiredArgsConstructor;
+
+import static spark.Spark.*;
 
 @RequiredArgsConstructor
 public class MessagesController extends AbstractController {
 
-	private final MessageService messageService;
+    private final MessageService messageService;
+    private final ObjectMapper objectMapper = new ObjectMapper(); // Use Jackson ObjectMapper
 
-	@Override
-	public void registerRoutes(final Javalin app) {
-		app.get("/messages", this::getMessages);
-		app.post("/messages", this::sendMessage);
-		app.put("/messages/read/{id}", this::readMessage);
-	}
+    @Override
+    public void registerRoutes() {
+        get("/messages", this::getMessages);
+        post("/messages", this::sendMessage);
+        put("/messages/read/:id", this::readMessage);
+    }
 
-	private void sendMessage(Context ctx) {
-		final SendMessageDto sendMessageDto = ctx.bodyAsClass(SendMessageDto.class);
-		messageService.createMessage(sendMessageDto);
-	}
+    private Object sendMessage(spark.Request request, spark.Response response) throws Exception {
+        SendMessageDto sendMessageDto = objectMapper.readValue(request.body(), SendMessageDto.class);
+        messageService.createMessage(sendMessageDto);
+        response.status(201);
+        return "Message sent successfully";
+    }
 
-	private void getMessages(Context ctx) {
-		ctx.json(messageService.getMessages());
-	}
+    private Object getMessages(spark.Request request, spark.Response response) throws Exception {
+        response.type("application/json");
+        return objectMapper.writeValueAsString(messageService.getMessages());
+    }
 
-	private void readMessage(Context ctx) {
-		final int senderId = Integer.parseInt(ctx.pathParam("id"));
-		this.messageService.readMessages(senderId);
-	}
+    private Object readMessage(spark.Request request, spark.Response response) throws Exception {
+        final int senderId = Integer.parseInt(request.params(":id"));
+        messageService.readMessages(senderId);
+        response.status(200);
+        return "Messages marked as read";
+    }
 }

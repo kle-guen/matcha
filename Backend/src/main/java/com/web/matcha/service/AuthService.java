@@ -3,30 +3,34 @@ package com.web.matcha.service;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.domain.utils.JwtUtils;
-import io.javalin.http.NotFoundResponse;
-import io.javalin.http.UnauthorizedResponse;
 import org.mindrot.jbcrypt.BCrypt;
+
+import javax.naming.AuthenticationException;
+import java.util.Optional;
 
 public class AuthService {
 
-	private final UserDAO userDAO;
+    private final UserDAO userDAO;
 
-	public AuthService(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
+    public AuthService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
-	public String authenticate(String email, String password) {
-		final UserModel user = userDAO.getUserByEmail(email, password)
-				.orElseThrow(() -> new NotFoundResponse("Unknown email."));
+    public String authenticate(String email, String password) throws AuthenticationException {
+        Optional<UserModel> optionalUser = userDAO.getUserByEmail(email, password);
+        if (!optionalUser.isPresent()) {
+            throw new AuthenticationException("Unknown email.");
+        }
 
-		if (!BCrypt.checkpw(password, user.getPassword())) {
-			throw new UnauthorizedResponse("Invalid password");
-		}
-		if (!user.getVerified()) {
-			throw new UnauthorizedResponse("Email not verified");
-		}
+        UserModel user = optionalUser.get();
+        if (!BCrypt.checkpw(password, user.getPassword())) {
+            throw new AuthenticationException("Invalid password");
+        }
+        if (!user.getVerified()) {
+            throw new AuthenticationException("Email not verified");
+        }
 
-		final int userId = user.getId();
-		return JwtUtils.generateToken(userId);
-	}
+        final int userId = user.getId();
+        return JwtUtils.generateToken(userId);
+    }
 }

@@ -1,108 +1,86 @@
 package com.web.matcha.web.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web.matcha.domain.enums.SortResearchUsersEnum;
 import com.web.matcha.service.BlockService;
 import com.web.matcha.service.MemberService;
 import com.web.matcha.web.dto.ResearchMembersDto;
-import io.javalin.Javalin;
-import io.javalin.http.Context;
-import io.javalin.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
+
+import static spark.Spark.*;
 
 @RequiredArgsConstructor
 public class MemberController extends AbstractController {
 
-	private final MemberService memberService;
+    private final MemberService memberService;
+    private final BlockService blockService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-	private final BlockService blockService;
+    @Override
+    public void registerRoutes() {
+        // GET
+        get("/members/suggest", this::suggestMembers);
+        get("/members/connected", this::getConnectedMembers);
+        get("/members/:id", this::getCompleteMember);
+        get("/matches", this::getMatches);
 
-	@Override
-	public void registerRoutes(final Javalin app) {
-		//GET
-		app.get("/members/suggest", this::suggestMembers);
-		app.get("/members/connected", this::getConnectedMembers);
-		app.get("/members/{id}", this::getCompleteMember);
-		app.get("/matches", this::getMatches);
+        // POST
+        post("/members/research", this::researchMembers);
+        post("/members/:id/block", this::blockMember);
+        post("/members/:id/report", this::reportMember);
+        post("/members/:id/like", this::likeMember);
+    }
 
-		//POST
-		app.post("/members/research", this::researchMembers);
-		app.post("/members/{id}/block", this::blockMember);
-		app.post("/members/{id}/report", this::reportMember);
-		app.post("/members/{id}/like", this::likeMember);
-	}
+    private Object researchMembers(spark.Request request, spark.Response response) throws Exception {
+        ResearchMembersDto researchMembersDto = objectMapper.readValue(request.body(), ResearchMembersDto.class);
+        SortResearchUsersEnum sortBy = SortResearchUsersEnum.getValue(request.queryParams("sortBy"));
+        response.status(202);
+        response.type("application/json");
+        return objectMapper.writeValueAsString(memberService.researchMembers(researchMembersDto, sortBy));
+    }
 
-	/**
-	 * Research members
-	 *
-	 * @param ctx
-	 */
-	private void researchMembers(final Context ctx) {
-		ResearchMembersDto researchMembersDto = ctx.bodyAsClass(ResearchMembersDto.class);
-		SortResearchUsersEnum sortBy = SortResearchUsersEnum.getValue(ctx.queryParam("sortBy"));
-		ctx.status(HttpStatus.ACCEPTED.getCode())
-				.json(memberService.researchMembers(researchMembersDto, sortBy));
-	}
+    private Object suggestMembers(spark.Request request, spark.Response response) throws Exception {
+        SortResearchUsersEnum sortBy = SortResearchUsersEnum.getValue(request.queryParams("sortBy"));
+        response.status(202);
+        response.type("application/json");
+        return objectMapper.writeValueAsString(memberService.suggestMembers(sortBy));
+    }
 
-	/**
-	 * Research members
-	 *
-	 * @param ctx
-	 */
-	private void suggestMembers(final Context ctx) {
-		SortResearchUsersEnum sortBy = SortResearchUsersEnum.getValue(ctx.queryParam("sortBy"));
-		ctx.status(HttpStatus.ACCEPTED.getCode())
-				.json(memberService.suggestMembers(sortBy));
-	}
+    private Object getCompleteMember(spark.Request request, spark.Response response) throws Exception {
+        final Integer id = Integer.parseInt(request.params(":id"));
+        response.status(202);
+        response.type("application/json");
+        return objectMapper.writeValueAsString(memberService.getCompleteMember(id));
+    }
 
-	/**
-	 * Get complete member
-	 *
-	 * @param ctx
-	 */
-	private void getCompleteMember(final Context ctx) {
-		final Integer id = Integer.parseInt(ctx.pathParam("id"));
-		ctx.status(HttpStatus.ACCEPTED.getCode())
-				.json(memberService.getCompleteMember(id));
-	}
+    private Object blockMember(spark.Request request, spark.Response response) throws Exception {
+        final Integer id = Integer.parseInt(request.params(":id"));
+        blockService.blockMember(id);
+        response.status(202);
+        return "Member blocked successfully";
+    }
 
-	/**
-	 * Block a member
-	 *
-	 * @param ctx
-	 */
-	private void blockMember(final Context ctx) {
-		final Integer id = Integer.parseInt(ctx.pathParam("id"));
-		blockService.blockMember(id);
-		ctx.status(HttpStatus.ACCEPTED.getCode());
-	}
+    private Object reportMember(spark.Request request, spark.Response response) throws Exception {
+        final Integer id = Integer.parseInt(request.params(":id"));
+        memberService.reportMember(id);
+        response.status(202);
+        return "Member reported successfully";
+    }
 
-	/**
-	 * Report a member
-	 *
-	 * @param ctx
-	 */
-	private void reportMember(final Context ctx) {
-		final Integer id = Integer.parseInt(ctx.pathParam("id"));
-		memberService.reportMember(id);
-		ctx.status(HttpStatus.ACCEPTED.getCode());
-	}
+    private Object likeMember(spark.Request request, spark.Response response) throws Exception {
+        final Integer id = Integer.parseInt(request.params(":id"));
+        memberService.likeMember(id);
+        response.status(202);
+        return "Member liked successfully";
+    }
 
-	/**
-	 * Like a member
-	 *
-	 * @param ctx
-	 */
-	private void likeMember(final Context ctx) {
-		final Integer id = Integer.parseInt(ctx.pathParam("id"));
-		memberService.likeMember(id);
-		ctx.status(HttpStatus.ACCEPTED.getCode());
-	}
+    private Object getMatches(spark.Request request, spark.Response response) throws Exception {
+        response.type("application/json");
+        return objectMapper.writeValueAsString(memberService.getMatches());
+    }
 
-	private void getMatches(Context ctx) {
-		ctx.json(memberService.getMatches());
-	}
-
-	private void getConnectedMembers(Context ctx) {
-		ctx.json(memberService.getConnectedMembers());
-	}
+    private Object getConnectedMembers(spark.Request request, spark.Response response) throws Exception {
+        response.type("application/json");
+        return objectMapper.writeValueAsString(memberService.getConnectedMembers());
+    }
 }

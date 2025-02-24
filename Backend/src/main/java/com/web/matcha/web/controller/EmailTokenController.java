@@ -2,25 +2,36 @@ package com.web.matcha.web.controller;
 
 import com.web.matcha.service.EmailService;
 import com.web.matcha.service.UserService;
-import io.javalin.Javalin;
 import lombok.RequiredArgsConstructor;
-import io.javalin.http.Context;
+
+import static spark.Spark.*;
 
 @RequiredArgsConstructor
 public class EmailTokenController extends AbstractController {
 
-	private final EmailService emailService;
-	private final UserService userService;
+    private final EmailService emailService;
+    private final UserService userService;
 
-	@Override
-	public void registerRoutes(final Javalin app) {
-		app.post("/verify-email", this::verifyEmail);
-	}
+    @Override
+    public void registerRoutes() {
+        post("/verify-email", (request, response) -> {
+            String token = request.queryParams("token");
 
-	public void verifyEmail(final Context ctx) {
-		final String token = ctx.queryParam("token");
-		final int userId = emailService.getUserIdByToken(token);
-		userService.verifyUserEmail(userId);
-		emailService.deleteToken(token);
-	}
+            if (token == null || token.isEmpty()) {
+                response.status(400);
+                return "Token is required";
+            }
+
+            try {
+                int userId = emailService.getUserIdByToken(token);
+                userService.verifyUserEmail(userId);
+                emailService.deleteToken(token);
+                response.status(200);
+                return "Email verified successfully";
+            } catch (Exception e) {
+                response.status(400);
+                return "Error verifying email: " + e.getMessage();
+            }
+        });
+    }
 }

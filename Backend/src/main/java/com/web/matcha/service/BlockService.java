@@ -1,7 +1,7 @@
 package com.web.matcha.service;
 
 import com.web.matcha.config.UserHolder;
-import com.web.matcha.config.WebSocketConfig;
+import com.web.matcha.config.WebSocketHandler;
 import com.web.matcha.domain.dao.BlockDAO;
 import com.web.matcha.domain.enums.TypeNotificationEnum;
 import com.web.matcha.web.dto.NotificationDto;
@@ -29,7 +29,7 @@ public class BlockService {
 			blockDAO.unblockUser(UserHolder.getUserId(), memberId);
 		} else {
 			blockDAO.blockUser(UserHolder.getUserId(), memberId);
-			WebSocketConfig.sendNotificationToUser(memberId, NotificationDto.builder()
+			WebSocketHandler.sendNotificationToUser(memberId, NotificationDto.builder()
 					.userId(UserHolder.getUserId())
 					.type(TypeNotificationEnum.BLOCK)
 					.build());

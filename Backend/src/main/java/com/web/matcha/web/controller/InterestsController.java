@@ -1,23 +1,25 @@
 package com.web.matcha.web.controller;
 
 import com.web.matcha.service.InterestsService;
-import io.javalin.Javalin;
-import io.javalin.http.Context;
-import io.javalin.http.HttpStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+
+import static spark.Spark.*;
 
 @RequiredArgsConstructor
 public class InterestsController extends AbstractController {
 
-	private final InterestsService interestsService;
+    private final InterestsService interestsService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-	@Override
-	public void registerRoutes(final Javalin app) {
-		app.get("/interests", this::getInterests);
-	}
+    @Override
+    public void registerRoutes() {
+        get("/interests", this::getInterests);
+    }
 
-	private void getInterests(final Context ctx) {
-		ctx.status(HttpStatus.ACCEPTED).json(interestsService.getInterests());
-	}
-
+    private Object getInterests(spark.Request request, spark.Response response) throws Exception {
+        response.status(202);
+        response.type("application/json");
+        return objectMapper.writeValueAsString(interestsService.getInterests());
+    }
 }

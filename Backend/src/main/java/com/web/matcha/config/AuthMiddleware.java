@@ -1,30 +1,29 @@
 package com.web.matcha.config;
 
 import com.web.matcha.domain.utils.JwtUtils;
-import io.javalin.http.Context;
-import io.javalin.http.Handler;
-import io.javalin.http.HttpStatus;
+import spark.Request;
+import spark.Response;
+import static spark.Spark.*;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 @Slf4j
-public class AuthMiddleware implements Handler {
+public class AuthMiddleware {
 
-	@Override
-	public void handle(@NotNull Context ctx) throws Exception {
-		String token = JwtUtils.extractToken(ctx);
-		log.info("Ctx: {}", ctx);
-		if (token == null) {
-			ctx.status(HttpStatus.UNAUTHORIZED).result("Authorization token is missing");
-			return;
-		}
+    public static void handle() {
+        before((req, res) -> {
+            String token = JwtUtils.extractToken(req);
+            log.info("Request: {}", req);
+            if (token == null) {
+                halt(401, "Authorization token is missing");
+            }
 
-		try {
-			final Integer userId = JwtUtils.validateTokenAndGetUserId(token);
-			UserHolder.setUserId(userId);
-			log.info("User ID: {}", userId);
-		} catch (Exception e) {
-			ctx.status(HttpStatus.UNAUTHORIZED).result("Token validation failed: " + e.getMessage());
-		}
-	}
+            try {
+                final Integer userId = JwtUtils.validateTokenAndGetUserId(token);
+                UserHolder.setUserId(userId);
+                log.info("User ID: {}", userId);
+            } catch (Exception e) {
+                halt(401, "Token validation failed: " + e.getMessage());
+            }
+        });
+    }
 }

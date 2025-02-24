@@ -4,17 +4,13 @@ import com.web.matcha.config.DatabaseConfig;
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.enums.GenderEnum;
 import com.web.matcha.domain.enums.SexualPreferenceEnum;
-import com.web.matcha.domain.model.PictureModel;
 import com.web.matcha.domain.model.ProfileModel;
-import com.web.matcha.domain.utils.FileUtils;
-import io.javalin.http.UploadedFile;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j

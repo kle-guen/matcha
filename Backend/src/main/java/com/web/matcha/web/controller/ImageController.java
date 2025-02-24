@@ -1,33 +1,36 @@
 package com.web.matcha.web.controller;
 
-import io.javalin.Javalin;
-import io.javalin.http.Context;
 import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 
+import static spark.Spark.*;
+
 @RequiredArgsConstructor
 public class ImageController extends AbstractController {
 
-	@Override
-	public void registerRoutes(final Javalin app) {
-		app.get("/images/{fileName}", this::getImage);
-	}
+    @Override
+    public void registerRoutes() {
+        get("/images/:fileName", this::getImage);
+    }
 
-	private void getImage(final Context ctx) throws Exception {
-		String fileName = ctx.pathParam("fileName");
-		File file = new File("uploads/" + fileName);
+    private Object getImage(spark.Request request, spark.Response response) throws Exception {
+        String fileName = request.params(":fileName");
+        File file = new File("uploads/" + fileName);
 
-		if (!file.exists()) {
-			ctx.status(404).result("Image not found");
-			return;
-		}
+        if (!file.exists()) {
+            response.status(404);
+            return "Image not found";
+        }
 
-		String mimeType = Files.probeContentType(file.toPath());
-		ctx.contentType(mimeType != null ? mimeType : "application/octet-stream");
-		ctx.result(new FileInputStream(file));
-	}
-
+        String mimeType = Files.probeContentType(file.toPath());
+        response.type(mimeType != null ? mimeType : "application/octet-stream");
+        response.raw().setContentLengthLong(file.length());
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            Files.copy(file.toPath(), response.raw().getOutputStream());
+        }
+        return null;
+    }
 }

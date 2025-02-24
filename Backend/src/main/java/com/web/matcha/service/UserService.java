@@ -1,39 +1,36 @@
 package com.web.matcha.service;
 
-import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.model.UserModel;
 import com.web.matcha.mapper.UserMapper;
 import com.web.matcha.web.dto.UserDto;
-import io.javalin.http.BadRequestResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UserService {
 
-	final private UserDAO userDAO;
+    private final UserDAO userDAO;
+    private final UserMapper userMapper;
 
-	final private UserMapper userMapper;
+    public UserModel getUserById(int id) throws Exception {
+        return userDAO.getUserById(id)
+                .orElseThrow(() -> new Exception("User not found for ID: " + id));
+    }
 
-	public UserModel getUserById(int id) {
-		return userDAO.getUserById(id)
-				.orElseThrow(() -> new BadRequestResponse("User not found"));
-	}
+    public void addUser(UserDto userDto) throws Exception {
+        userDAO.insertUser(userMapper.toModel(userDto))
+                .orElseThrow(() -> new Exception("Error while adding user"));
+    }
 
-	public void addUser(UserDto userDto) {
-		userDAO.insertUser(userMapper.toModel(userDto))
-				.orElseThrow(() -> new BadRequestResponse("Error while adding user"));
-	}
+    public void updateUser(UserDto userDto) throws Exception {
+        userDAO.updateUser(userMapper.toModel(userDto));
+    }
 
-	public void updateUser(UserDto userDto) {
-		userDAO.updateUser(userMapper.toModel(userDto));
-	}
+    public void verifyUserEmail(int userId) throws Exception {
+        userDAO.verifyUserEmail(userId);
+    }
 
-	public void verifyUserEmail(int userId) {
-		userDAO.verifyUserEmail(userId);
-	}
-
-	public void resetPassword(int userId, String password) {
-		userDAO.resetPassword(userId, password);
-	}
+    public void resetPassword(int userId, String password) throws Exception {
+        userDAO.resetPassword(userId, password);
+    }
 }

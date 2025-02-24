@@ -1,64 +1,42 @@
 package com.web.matcha.service;
 
+
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.InterestDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
 import com.web.matcha.domain.model.ProfileModel;
 import com.web.matcha.mapper.ProfileMapper;
 import com.web.matcha.web.dto.ProfileDto;
-import io.javalin.http.BadRequestResponse;
-import io.javalin.http.UploadedFile;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
+import static spark.Spark.halt;
 
 @RequiredArgsConstructor
 public class ProfileService {
 
-	/**
-	 * Profile DAO
-	 */
-	final private ProfileDAO profileDAO;
+    private final ProfileDAO profileDAO;
+    private final ProfileMapper profileMapper;
+    private final InterestDAO interestDAO;
 
-	/**
-	 * Profile Mapper
-	 */
-	final private ProfileMapper profileMapper;
+    public ProfileModel getCompletedStatus() throws Exception {
+        final int userId = UserHolder.getUserId();
 
-	/**
-	 * Interest DAO
-	 */
-	final private InterestDAO interestDAO;
+        return profileDAO.getProfileById(userId)
+                .orElseThrow(() ->  halt(404, "Profile not found"));
+    }
 
-	public ProfileModel getCompletedStatus() {
-		final int userId = UserHolder.getUserId();
+    public ProfileModel createProfile(ProfileDto profileDto) throws Exception {
+        ProfileModel profileModel = profileMapper.toModel(profileDto);
+        interestDAO.setInterestsForUsers(profileDto.getInterests());
+        return profileDAO.createProfile(profileModel)
+                .orElseThrow(() -> halt(400, "Profile already exists"));
+    }
 
-		return profileDAO.getProfileById(userId).orElse(null);
-	}
+    public void updateProfile(ProfileDto profileDto) throws Exception {
+        ProfileModel profileModel = profileMapper.toModel(profileDto);
 
-	/**
-	 * Create profile
-	 *
-	 * @param profileDto
-	 */
-	public ProfileModel createProfile(ProfileDto profileDto) {
-		ProfileModel profileModel = profileMapper.toModel(profileDto);
-		interestDAO.setInterestsForUsers(profileDto.getInterests());
-		return profileDAO.createProfile(profileModel)
-				.orElseThrow(() -> new BadRequestResponse("Error while creating profile"));
-	}
-
-
-	/**
-	 * Create profile
-	 *
-	 * @param profileDto
-	 */
-	public void updateProfile(ProfileDto profileDto) {
-		ProfileModel profileModel = profileMapper.toModel(profileDto);
-
-		interestDAO.deleteInterestsById(UserHolder.getUserId());
-		interestDAO.setInterestsForUsers(profileDto.getInterests());
-		profileDAO.updateProfile(profileModel);
-	}
+        interestDAO.deleteInterestsById(UserHolder.getUserId());
+        interestDAO.setInterestsForUsers(profileDto.getInterests());
+        profileDAO.updateProfile(profileModel);
+    }
 }
