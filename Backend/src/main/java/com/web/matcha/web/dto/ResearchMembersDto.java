@@ -10,6 +10,11 @@ import java.util.List;
 public class ResearchMembersDto {
 
 	/**
+	 * The page number.
+	 */
+	private Integer page;
+
+	/**
 	 * The min age of the members.
 	 */
 	private Integer ageMin;

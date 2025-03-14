@@ -31,7 +31,7 @@ export class SocketService {
 
 		this.isManuallyClosed = false;
 		const token = this.authService.getToken();
-		this.socket = new WebSocket(`ws://backend_container:7000/ws?token=${token}`);
+		this.socket = new WebSocket(`ws://localhost:7000/ws?token=${token}`);
 
 		this.socket.onopen = () => {
 			console.log('✅ WebSocket connecté');

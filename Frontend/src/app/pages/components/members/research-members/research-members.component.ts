@@ -108,6 +108,16 @@ export class ResearchMembersComponent implements OnInit, OnDestroy {
 	sortBy: SortResearchMembersEnum | null = null;
 
 	/**
+	 * The number of pages.
+	 */
+	nbPages: number = 1;
+
+	/**
+	 * The current page.
+	 */
+	page: number = 1;
+
+	/**
 	 * The on init.
 	 */
 	ngOnInit() {
@@ -121,6 +131,7 @@ export class ResearchMembersComponent implements OnInit, OnDestroy {
 	 */
 	submit() {
 		this.lastResearch = this.researchFormGroup.value as ResearchMembersDto;
+		this.lastResearch.page = this.page;
 		this.researchMembers();
 	}
 
@@ -136,15 +147,21 @@ export class ResearchMembersComponent implements OnInit, OnDestroy {
 	 * @param researchUsers
 	 */
 	researchMembers() {
-		let memberSubject: Observable<MemberDto[]>;
 		if (!this.lastResearch) {
-			memberSubject = this.usersHttpService.suggestMembers(this.sortBy);
+			this.usersHttpService.suggestMembers(this.sortBy).pipe(
+				takeUntil(this.ngDestroy$)
+			).subscribe(res => {
+				this.members = res;
+				this.nbPages = 1;
+			});
 		} else {
-			memberSubject = this.usersHttpService.researchMembers(this.lastResearch, this.sortBy)
+			this.usersHttpService.researchMembers(this.lastResearch, this.sortBy).pipe(
+				takeUntil(this.ngDestroy$)
+			).subscribe(res => {
+				this.members = res.members;
+				this.nbPages = res.nbPages;
+			});
 		}
-		memberSubject.pipe(
-			takeUntil(this.ngDestroy$)
-		).subscribe(res => this.members = res);
 	}
 
 	sortList(sortBy: SortResearchMembersEnum) {
@@ -157,9 +174,25 @@ export class ResearchMembersComponent implements OnInit, OnDestroy {
 		this.researchMembers();
 	}
 
-	protected readonly SortResearchMembersEnum = SortResearchMembersEnum;
-
 	ngOnDestroy(): void {
 		this.footerService.setFooterVisibility(true);
 	}
+
+	previousPage() {
+		if (this.page > 1 && this.lastResearch) {
+			this.page--;
+			this.lastResearch.page = this.page;
+			this.researchMembers();
+		}
+	}
+
+	nextPage() {
+		if (this.page < this.nbPages && this.lastResearch) {
+			this.page++;
+			this.lastResearch.page = this.page;
+			this.researchMembers();
+		}
+	}
+
+	protected readonly SortResearchMembersEnum = SortResearchMembersEnum;
 }

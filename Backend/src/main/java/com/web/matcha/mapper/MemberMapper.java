@@ -39,6 +39,7 @@ public interface MemberMapper {
 	@Mapping(target = "city", source = "profile.city")
 	@Mapping(target = "lookingFor", expression = "java(mapLookingFor(userDto.getProfile()))")
 	@Mapping(target = "interests", source = "profile.interests")
+	@Mapping(target = "fameRating", source = "profile.fameRating")
 	CompleteMemberDto toCompleteMember(UserModel userDto);
 
 	MatchDto toMatchDto(UserModel userDto);

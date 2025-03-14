@@ -48,18 +48,15 @@ export class MemberCardComponent implements OnInit {
 	@Input({required: true})
 	member!: MemberDto;
 
+	profilePicture: string | null = null;
+
 	ngOnInit() {
 		this.imagesHttpService.getImage(this.member.pictures?.profilePicture || '').pipe(
 			takeUntil(this.onDestroy$)
 		).subscribe({
 			next: (img) => {
 				if (this.member.pictures) {
-					this.member.pictures.profilePicture = this.imagesHttpService.loadUserImage(img);
-				}
-			},
-			error: () => {
-				if (this.member.pictures) {
-					this.member.pictures.profilePicture = null;
+					this.profilePicture = this.imagesHttpService.loadUserImage(img);
 				}
 			}
 		});

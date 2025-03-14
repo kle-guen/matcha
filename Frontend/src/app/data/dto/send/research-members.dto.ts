@@ -4,6 +4,11 @@
 export class ResearchMembersDto {
 
 	/**
+	 * The number of the page.
+	 */
+	page?: number;
+
+	/**
 	 * The min age of the members.
 	 */
 	ageMin?: number;

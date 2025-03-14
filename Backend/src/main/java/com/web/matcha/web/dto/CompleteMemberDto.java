@@ -15,6 +15,8 @@ public class CompleteMemberDto extends MemberDto {
 
 	private InterestDto[] interests;
 
+	private float fameRating;
+
 	private boolean liked;
 
 }

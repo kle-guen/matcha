@@ -87,6 +87,10 @@
 					<app-member-card [member]="user"/>
 				}
 			</div>
+			<div class="flex justify-between">
+				<app-button label="Previous" [disabled]="page <= 1" (clicked)="previousPage()"/>
+				<app-button label="Next" [disabled]="page >= nbPages" (clicked)="nextPage()"/>
+			</div>
 		</div>
 		<app-footer/>
 

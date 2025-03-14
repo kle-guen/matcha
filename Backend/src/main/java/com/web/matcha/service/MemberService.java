@@ -2,7 +2,6 @@ package com.web.matcha.service;
 
 import com.web.matcha.config.UserHolder;
 import com.web.matcha.config.WebSocketConfig;
-import com.web.matcha.domain.dao.BlockDAO;
 import com.web.matcha.domain.dao.LikeDAO;
 import com.web.matcha.domain.dao.PicturesDAO;
 import com.web.matcha.domain.dao.ProfileDAO;
@@ -17,12 +16,12 @@ import com.web.matcha.web.dto.CompleteMemberDto;
 import com.web.matcha.web.dto.MatchDto;
 import com.web.matcha.web.dto.MemberDto;
 import com.web.matcha.web.dto.ResearchMembersDto;
+import com.web.matcha.web.dto.ResultResearchDto;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.NotFoundResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -46,18 +45,31 @@ public class MemberService {
 
 	private final BlockService blockService;
 
-	public List<MemberDto> researchMembers(final ResearchMembersDto researchMembersDto, final SortResearchUsersEnum sortBy) {
+	private final static Integer PAGE_SIZE = 20;
+
+	public ResultResearchDto researchMembers(final ResearchMembersDto researchMembersDto, final SortResearchUsersEnum sortBy) {
 		final ProfileModel currentUserProfile = profileDAO.getProfileById(UserHolder.getUserId())
 				.orElseThrow(() -> new NotFoundResponse("Profile of current user not found"));
 		final List<UserModel> userModels = userDAO.researchMembers(researchMembersDto, currentUserProfile);
 		userModels.forEach(userModel -> picturesDAO.getPicturesById(userModel.getId()).ifPresent(pictureModel -> userModel.getProfile().setPictureModel(pictureModel)));
 
 		if (CollectionUtils.isEmpty(userModels)) {
-			return List.of();
+			return ResultResearchDto.builder()
+					.nbPages(1)
+					.members(List.of())
+					.build();
 		}
 		userModels.removeIf(userModel -> blockService.isBlockedOrBlocker(userModel.getId()));
 
-		return sortAndMapUsers(userModels, sortBy, currentUserProfile);
+		int firstIndex = ((researchMembersDto.getPage() == null || researchMembersDto.getPage() < 1 ? 1 : researchMembersDto.getPage()) - 1) * PAGE_SIZE;
+		final List<MemberDto> members = sortAndMapUsers(userModels, sortBy, currentUserProfile);
+		if (firstIndex > members.size()) {
+			firstIndex -= PAGE_SIZE;
+		}
+		return ResultResearchDto.builder()
+				.nbPages((members.size() + PAGE_SIZE - 1) / PAGE_SIZE)
+				.members(members.subList(firstIndex, Math.min(firstIndex + PAGE_SIZE, members.size())))
+				.build();
 	}
 
 	public List<MemberDto> suggestMembers(final SortResearchUsersEnum sortBy) {
