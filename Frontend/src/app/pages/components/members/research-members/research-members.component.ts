@@ -121,6 +121,9 @@ export class ResearchMembersComponent implements OnInit, OnDestroy {
 	 * The on init.
 	 */
 	ngOnInit() {
+		const drawerElement = document.querySelector('mat-drawer');
+		drawerElement?.addEventListener('touchstart', (event) => {event.preventDefault()}, { passive: true });
+		drawerElement?.addEventListener('touchmove', (event) => {event.preventDefault()}, { passive: true });
 		this.interests = this.activatedRoute.snapshot.data['interests'];
 		this.members = this.activatedRoute.snapshot.data['members'];
 		this.footerService.setFooterVisibility(false);

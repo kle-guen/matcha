@@ -16,7 +16,7 @@ export class GeocodingHttpService extends AbstractService {
 	/**
 	 * The geocode URL.
 	 */
-	private geocodeUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
+	private geocodeUrl = 'https://maps.googleapis.com/maps/api/geocode/json&loading=async';
 
 	/**
 	 * Get city from coordinates.

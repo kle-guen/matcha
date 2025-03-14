@@ -53,7 +53,7 @@
 				</button>
 			</div>
 		</div>
-		<div class="menu-mobile desktop:hidden" [attr.data-menu-open]="isMenuOpen" (click)="toggleMenu()">
+		<div class="menu-mobile desktop:hidden" [attr.data-menu-open]="isMenuOpen" [ngClass]="isMenuOpen ? '' : 'hidden'" (click)="toggleMenu()">
 			<nav class="flex flex-col gap-4">
 				<a [routerLink]="'/chat'" class="flex items
 					-end text-gray-300 hover:text-white gap-1.5">
