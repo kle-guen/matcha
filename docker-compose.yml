@@ -14,6 +14,7 @@ services:
       - my_network
     volumes:
       - .env:/usr/src/app/.env
+      - ./uploads:/usr/src/app/uploads
 
   frontend:
     build:
