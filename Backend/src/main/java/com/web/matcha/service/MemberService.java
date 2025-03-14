@@ -45,6 +45,8 @@ public class MemberService {
 
 	private final BlockService blockService;
 
+	private final EmailService emailService;
+
 	private final static Integer PAGE_SIZE = 20;
 
 	public ResultResearchDto researchMembers(final ResearchMembersDto researchMembersDto, final SortResearchUsersEnum sortBy) {
@@ -117,7 +119,7 @@ public class MemberService {
 	}
 
 	public void reportMember(final Integer memberId) {
-		//TODO: Implement: Envoi email administrateur || Stockage BDD ?
+		emailService.reportUser(memberId);
 	}
 
 	public void likeMember(final Integer memberId) {

@@ -152,6 +152,7 @@ export class MemberProfile implements OnInit {
 		this.membersHttpService.reportMemberById(this.member.id).pipe(
 			takeUntil(this.ngDestroy$)
 		).subscribe();
+		this.blockMember();
 	}
 
 	nextImg() {

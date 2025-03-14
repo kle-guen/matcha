@@ -70,10 +70,10 @@ public class RoutesConfig {
 		final UserService userService = new UserService(userDAO, userMapper);
 		final BlockService blockService = new BlockService(blockDAO);
 		final NotificationService notificationService = new NotificationService(notificationDAO, notificationMapper, blockService);
-		final MemberService memberService = new MemberService(memberMapper, userDAO, profileDAO, likeDAO, picturesDAO, notificationService, blockService);
+		final EmailService emailService = new EmailService(emailTokenDAO, userDAO);
+		final MemberService memberService = new MemberService(memberMapper, userDAO, profileDAO, likeDAO, picturesDAO, notificationService, blockService, emailService);
 		final InterestsService interestsService = new InterestsService(interestDAO, interestMapper);
 		final AuthService authService = new AuthService(userDAO);
-		final EmailService emailService = new EmailService(emailTokenDAO, userDAO);
 		final ProfileService profileService = new ProfileService(profileDAO, profileMapper, interestDAO);
 		final PicturesService picturesService = new PicturesService(picturesDAO);
 		final MessageService messageService = new MessageService(userDAO, messageDAO, blockService, notificationService, messageMapper);
