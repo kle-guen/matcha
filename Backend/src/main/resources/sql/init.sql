@@ -187,3 +187,19 @@ BEGIN
     RETURN ((likes_count - dislikes_count) * 10 / views_count);
 END;
 $$ LANGUAGE plpgsql;
+
+COPY users (id, email, username, password, first_name, last_name, is_verified, last_login_at)
+    FROM '/docker-entrypoint-initdb.d/users.csv'
+    DELIMITER ','
+    CSV HEADER;
+
+COPY profiles (user_id, gender, sexual_preference, biography, latitude, longitude, city, birthdate)
+    FROM '/docker-entrypoint-initdb.d/profiles.csv'
+    DELIMITER ','
+    CSV HEADER;
+
+COPY pictures (user_id, profile_picture, picture1, picture2, picture3, picture4)
+    FROM '/docker-entrypoint-initdb.d/pictures.csv'
+    DELIMITER ','
+    CSV HEADER
+    NULL '';
