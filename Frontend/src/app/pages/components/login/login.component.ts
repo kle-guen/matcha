@@ -69,7 +69,7 @@ export class LoginComponent {
 	 * The login form.
 	 */
 	protected logInForm = this.formBuilder.group({
-		email: [null as string | null, [Validators.required, Validators.email]],
+		username: [null as string | null, Validators.required],
 		password: [null as string | null, [Validators.required, Validators.minLength(8)]],
 	});
 
@@ -77,10 +77,10 @@ export class LoginComponent {
 	 * Logs the user in.
 	 */
 	public logIn(): void {
-		const email = this.logInForm.get('email')?.value;
+		const username = this.logInForm.get('username')?.value;
 		const password = this.logInForm.get('password')?.value;
-		if (!email || !password) return;
-		this.authHttpService.logIn(email, password).pipe(
+		if (!username || !password) return;
+		this.authHttpService.logIn(username, password).pipe(
 			takeUntil(this.onDestroy$)
 		).subscribe({
 			next: (success) => {
@@ -102,7 +102,7 @@ export class LoginComponent {
 						}
 					});
 				} else {
-					this.error = 'Invalid email or password';
+					this.error = 'Invalid username or password';
 				}
 			},
 			error: (error: HttpErrorResponse) => {

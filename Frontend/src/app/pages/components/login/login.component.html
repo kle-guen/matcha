@@ -13,12 +13,10 @@
 		<mat-card-content>
 			<form [formGroup]="logInForm" class="flex items-center flex-col gap-3">
 
-				<app-form-field class="flex flex-grow w-full" label="Email" [control]="logInForm.controls.email">
+				<app-form-field class="flex flex-grow w-full" label="Username" [control]="logInForm.controls.username">
 					<ng-container errors>
-						@if (logInForm.controls.email.hasError('required')) {
-							<span>Email is required</span>
-						} @else if (logInForm.controls.email.hasError('email')) {
-							<span>Email is invalid</span>
+						@if (logInForm.controls.username.hasError('required')) {
+							<span>Username is required</span>
 						}
 					</ng-container>
 				</app-form-field>

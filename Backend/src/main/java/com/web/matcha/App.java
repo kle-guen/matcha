@@ -15,9 +15,9 @@ public final class App {
 
 	public static void main(final String[] args) {
 		System.setProperty("org.slf4j.simpleLogger.logFile", "System.out");
-//		Dotenv.configure().directory("usr/src/app");
+		Dotenv.configure().directory("usr/src/app");
 		final int port = Integer.parseInt(Objects.requireNonNull(Env.getDotenv().get("API_PORT")));
-		final Javalin app = Javalin.create(config -> config.showJavalinBanner = false).start(port);
+		final Javalin app = Javalin.create(config -> config.showJavalinBanner = false).start("0.0.0.0", port);
 		app.before(ctx -> {
 			String path = ctx.path();
 			String method = String.valueOf(ctx.method());

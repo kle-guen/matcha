@@ -35,8 +35,12 @@ public class NotificationService {
 	}
 
 	public void sendNotificationToUser(int memberId, TypeNotificationEnum type, String username) {
+		sendNotificationToUser(memberId, type, username, UserHolder.getUserId());
+	}
+
+	public void sendNotificationToUser(int memberId, TypeNotificationEnum type, String username, int senderId) {
 		final NotificationDto notification = new NotificationDto(
-				UserHolder.getUserId(),
+				senderId,
 				type,
 				LocalDateTime.now(),
 				username,

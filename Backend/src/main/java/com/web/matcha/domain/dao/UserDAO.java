@@ -123,13 +123,13 @@ public class UserDAO {
 		return Optional.empty();
 	}
 
-	public Optional<UserModel> getUserByEmail(final String email, final String password) {
-		String sql = "SELECT * FROM users WHERE email = ?";
+	public Optional<UserModel> getUserByUsername(final String username, final String password) {
+		String sql = "SELECT * FROM users WHERE username = ?";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-			stmt.setString(1, email);
+			stmt.setString(1, username);
 			return Optional.ofNullable(extractUser(stmt.executeQuery()));
 
 		} catch (SQLException e) {
