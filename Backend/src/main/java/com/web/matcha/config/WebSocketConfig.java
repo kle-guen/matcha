@@ -1,5 +1,6 @@
 package com.web.matcha.config;
 
+import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.utils.JwtUtils;
 import com.web.matcha.web.dto.MessageDto;
 import com.web.matcha.web.dto.NotificationDto;
@@ -12,6 +13,7 @@ import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsErrorContext;
 import io.javalin.websocket.WsMessageContext;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
+@RequiredArgsConstructor
 public class WebSocketConfig {
 
 	@Getter
@@ -28,6 +31,8 @@ public class WebSocketConfig {
 
 	@Getter
 	private static final Map<Integer, List<String>> sessionToUser = new ConcurrentHashMap<>();
+
+	private final UserDAO userDAO;
 
 	public void configure(Javalin app) {
 		app.ws("/ws", this::test);
@@ -100,6 +105,7 @@ public class WebSocketConfig {
 					});
 				});
 				log.info("Client déconnecté : ID={}", k);
+				userDAO.updateLastConnection(k);
 			}
 		});
 	}

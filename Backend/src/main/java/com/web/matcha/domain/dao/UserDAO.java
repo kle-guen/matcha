@@ -49,7 +49,7 @@ public class UserDAO {
 								genderCondition,
 								StringUtils.isNotBlank(interestsCondition) ? "public.interests.code IN (" + interestsCondition + ") " : null,
 								researchMembersDto.getAgeMin() != null ? "birthdate < get_date_minus_years(?)" : null,
-								researchMembersDto.getAgeMax() != null ? "birthdate > get_date_minus_years(?)" : null, // TODO: A REVOIR
+								researchMembersDto.getAgeMax() != null ? "birthdate > get_date_minus_years(?)" : null,
 								researchMembersDto.getFameRatingMin() != null ? "calculate_fame_rating(users.id) >= ?" : null,
 								researchMembersDto.getDistanceMax() != null ? "calculate_distance(latitude, longitude, ?, ?) <= ?" : null)
 						.filter(StringUtils::isNotBlank)
@@ -79,7 +79,7 @@ public class UserDAO {
 				stmt.setInt(i++, researchMembersDto.getAgeMin());
 			}
 			if (researchMembersDto.getAgeMax() != null) {
-				stmt.setInt(i++, researchMembersDto.getAgeMax());
+				stmt.setInt(i++, researchMembersDto.getAgeMax() + 1);
 			}
 			if (researchMembersDto.getFameRatingMin() != null) {
 				stmt.setFloat(i++, researchMembersDto.getFameRatingMin());
@@ -333,5 +333,19 @@ public class UserDAO {
 			log.error("Error while getting user id by email", e);
 		}
 		return Optional.empty();
+	}
+
+	public void updateLastConnection(int userId) {
+		final String sql = "UPDATE users SET last_login_at = now() WHERE id = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, userId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			log.error("Error while updating last connection", e);
+		}
 	}
 }

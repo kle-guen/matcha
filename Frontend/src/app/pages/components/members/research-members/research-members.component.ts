@@ -42,7 +42,7 @@ import {FooterComponent} from "../../../../parts/footer/footer.component";
 	],
 	templateUrl: './research-members.component.html',
 	styleUrl: './research-members.component.scss',
-	encapsulation: ViewEncapsulation.None //TODO: Check if this is necessary
+	encapsulation: ViewEncapsulation.None
 })
 export class ResearchMembersComponent implements OnInit, OnDestroy {
 

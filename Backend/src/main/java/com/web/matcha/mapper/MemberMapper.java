@@ -21,7 +21,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
 import java.util.List;
 
-@Mapper
+@Mapper(uses = {UtilsMapper.class})
 public interface MemberMapper {
 
 	PicturesDto toPicturesDto(PictureModel userDto);
@@ -40,6 +40,7 @@ public interface MemberMapper {
 	@Mapping(target = "lookingFor", expression = "java(mapLookingFor(userDto.getProfile()))")
 	@Mapping(target = "interests", source = "profile.interests")
 	@Mapping(target = "fameRating", source = "profile.fameRating")
+	@Mapping(target = "lastConnection", source = "lastLoginAt", qualifiedByName = "mapTimestampToLocalDateTime")
 	CompleteMemberDto toCompleteMember(UserModel userDto);
 
 	MatchDto toMatchDto(UserModel userDto);

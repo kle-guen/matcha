@@ -16,4 +16,6 @@ export class MemberCompleteDto extends MemberDto {
 
 	fameRating!: number;
 
+	lastConnection?: Date;
+
 }

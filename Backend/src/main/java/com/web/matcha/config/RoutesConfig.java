@@ -93,7 +93,7 @@ public class RoutesConfig {
 
 		controllers.forEach(controller -> controller.registerRoutes(app));
 
-		WebSocketConfig webSocketConfig = new WebSocketConfig();
+		WebSocketConfig webSocketConfig = new WebSocketConfig(userDAO);
 		webSocketConfig.configure(app);
 	}
 }

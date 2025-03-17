@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {MatCardImage, MatCardModule} from "@angular/material/card";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MembersHttpService} from "../../../../data/http/members-http.service";
-import {NgClass, NgOptimizedImage} from "@angular/common";
+import {DatePipe, NgClass, NgOptimizedImage} from "@angular/common";
 import {createNgDestroySubject} from "../../../../shared/utils/create-ng-destroy-subject.fn";
 import {takeUntil} from "rxjs";
 import {ButtonComponent} from "../../../../ui/components/button/button.component";
@@ -24,7 +24,8 @@ import {ConnectionService} from "../../../../shared/services/connection.service"
 		MatChip,
 		MatCardModule,
 		MatIcon,
-		NgClass
+		NgClass,
+		DatePipe
 	],
 	templateUrl: './member-profile.component.html',
 	styleUrl: './member-profile.component.scss'
