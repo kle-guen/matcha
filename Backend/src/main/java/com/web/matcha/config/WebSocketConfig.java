@@ -78,7 +78,6 @@ public class WebSocketConfig {
 				.findFirst()
 				.orElse(null);
 		if (clientId != null) {
-			log.info("Ping reçu de {} : {}", clientId, ctx.message());
 			ctx.send(WsDto.builder()
 					.type("PONG")
 					.data("Message reçu")
@@ -106,7 +105,6 @@ public class WebSocketConfig {
 	}
 
 	void onError(final WsErrorContext ctx) {
-//		log.error("Erreur WebSocket pour " + ctx.getSessionId() + " : " + ctx.error());
 	}
 
 	public static void sendNotificationToUser(Integer userId, NotificationDto notification) {

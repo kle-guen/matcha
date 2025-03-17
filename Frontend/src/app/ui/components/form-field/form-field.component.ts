@@ -55,6 +55,11 @@ export class FormFieldComponent {
 	@Input() icon: string | null = null;
 
 	/**
+	 * The autocomplete for the input
+	 */
+	@Input() autocomplete: string | null = null;
+
+	/**
 	 * Function to compare the interests for the select
 	 */
 	public compareInterests(value: string, option: string): boolean {

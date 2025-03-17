@@ -203,3 +203,14 @@ COPY pictures (user_id, profile_picture, picture1, picture2, picture3, picture4)
     DELIMITER ','
     CSV HEADER
     NULL '';
+
+COPY user_interests(user_id, interest_code)
+    FROM '/docker-entrypoint-initdb.d/user_interests.csv'
+    DELIMITER ','
+    CSV HEADER;
+
+SELECT setval(pg_get_serial_sequence('users', 'id'), 500, true);
+
+SELECT setval(pg_get_serial_sequence('profiles', 'user_id'), 500, true);
+
+SELECT setval(pg_get_serial_sequence('pictures', 'user_id'), 500, true);
