@@ -11,10 +11,11 @@
 				matInput
 				rows="4"
 				data-limit-rows="true"
-				data-limit-rows-max="4"
+				data-limit-rows-max="10"
 				maxlength="400"
 				[placeholder]="label"
 				[formControl]="control"
+				(input)="limitRows($event)"
 		></textarea>
 	} @else {
 		<div class="flex justify-between">

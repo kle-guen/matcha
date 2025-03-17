@@ -69,4 +69,15 @@ export class FormFieldComponent {
 	sendEvent($event: MouseEvent) {
 		console.log($event);
 	}
+
+	limitRows(event: Event) {
+		const textarea = event.target as HTMLTextAreaElement;
+		const maxRows = parseInt(textarea.getAttribute('data-limit-rows-max') || '4', 10);
+
+		const lineCount = textarea.value.split('\n').length;
+
+		if (lineCount > maxRows) {
+			textarea.value = textarea.value.split('\n').slice(0, maxRows).join('\n');
+		}
+	}
 }

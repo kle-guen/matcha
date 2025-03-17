@@ -93,10 +93,10 @@ export class UpdateProfileComponent implements OnInit {
 	 * The update profile form.
 	 */
 	protected updateProfileForm = this.formBuilder.group({
-		username: [null as string | null, Validators.required],
-		email: [null as string | null, Validators.required],
-		firstName: [null as string | null, Validators.required],
-		lastName: [null as string | null, Validators.required],
+		username: [null as string | null, [Validators.required, Validators.maxLength(50)]],
+		email: [null as string | null, [Validators.required, Validators.maxLength(255)]],
+		firstName: [null as string | null, [Validators.required, Validators.maxLength(50)]],
+		lastName: [null as string | null, [Validators.required, Validators.maxLength(50)]],
 		profilePicture: [null as File | null, Validators.required],
 		picture1: [null as File | null],
 		picture2: [null as File | null],

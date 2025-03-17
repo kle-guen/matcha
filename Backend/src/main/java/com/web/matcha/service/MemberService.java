@@ -137,6 +137,8 @@ public class MemberService {
 			if (likeDAO.getLikesByLikerId(memberId).stream()
 					.anyMatch(likeModel -> Objects.equals(likeModel.getLikedId(), UserHolder.getUserId()))) {
 				type = TypeNotificationEnum.MATCH;
+				this.notificationService.sendNotificationToUser(UserHolder.getUserId(), type, userDAO.getUsernameById(memberId)
+						.orElseThrow(() -> new NotFoundResponse("User not found")));
 			}
 		}
 		this.notificationService.sendNotificationToUser(memberId, type, userDAO.getUsernameById(UserHolder.getUserId())

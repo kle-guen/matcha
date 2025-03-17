@@ -69,11 +69,11 @@ export class RegisterComponent {
 	 * The register form.
 	 */
 	protected registerForm = this.formBuilder.group({
-			firstName: [null as string | null, Validators.required],
-			lastName: [null as string | null, Validators.required],
-			username: [null as string | null, Validators.required],
-			email: [null as string | null, [Validators.required, Validators.email]],
-			password: [null as string | null, [Validators.required, Validators.minLength(8)]],
+			firstName: [null as string | null, [Validators.required, Validators.maxLength(50)]],
+			lastName: [null as string | null, [Validators.required, Validators.maxLength(50)]],
+			username: [null as string | null, [Validators.required, Validators.maxLength(50)]],
+			email: [null as string | null, [Validators.required, Validators.email, Validators.maxLength(255)]],
+			password: [null as string | null, [Validators.required, Validators.minLength(8), Validators.maxLength(255)]],
 			confirmPassword: [null as string | null, [Validators.required, Validators.minLength(8)]],
 		}, {validators: passwordMatchValidator()}
 	);
