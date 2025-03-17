@@ -5,7 +5,7 @@ import {LoginHeaderComponent} from "../login/login-header/login-header.component
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
-import {passwordMatchValidator} from "../../../shared/validators/passwordMatch.validator";
+import {passwordRulesValidator, passwordValidator} from "../../../shared/validators/password.validator";
 import {ForgotPasswordHttpService} from "../../../data/http/forgot-password-http.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
@@ -80,10 +80,9 @@ export class ForgotPasswordComponent implements OnInit {
 	 * The reset password form.
 	 */
 	protected resetPasswordForm = this.formBuilder.group({
-		password: [null as string | null, Validators.required, Validators.minLength(8)],
-		confirmPassword: [null as string | null, [Validators.required,
-			Validators.minLength(8)]],}, {validators: passwordMatchValidator()
-	});
+		password: [null as string | null, [Validators.required, Validators.minLength(8), Validators.maxLength(255)]],
+		confirmPassword: [null as string | null, Validators.required],
+		}, {validators: [passwordValidator(), passwordRulesValidator()]});
 
 	/**
 	 * @inheritDoc

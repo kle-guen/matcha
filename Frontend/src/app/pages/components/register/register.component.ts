@@ -5,7 +5,7 @@ import {FormFieldComponent} from "../../../ui/components/form-field/form-field.c
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
-import {passwordMatchValidator} from "../../../shared/validators/passwordMatch.validator";
+import {passwordRulesValidator, passwordValidator} from "../../../shared/validators/password.validator";
 import {RegisterDto} from "../../../data/dto/send/register-dto";
 import {MatError} from "@angular/material/form-field";
 import {UsersHttpService} from "../../../data/http/users-http.service";
@@ -74,8 +74,8 @@ export class RegisterComponent {
 			username: [null as string | null, [Validators.required, Validators.maxLength(50)]],
 			email: [null as string | null, [Validators.required, Validators.email, Validators.maxLength(255)]],
 			password: [null as string | null, [Validators.required, Validators.minLength(8), Validators.maxLength(255)]],
-			confirmPassword: [null as string | null, [Validators.required, Validators.minLength(8)]],
-		}, {validators: passwordMatchValidator()}
+			confirmPassword: [null as string | null, Validators.required],
+		}, {validators: [passwordValidator(), passwordRulesValidator()]}
 	);
 
 	/**

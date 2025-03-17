@@ -17,6 +17,8 @@
 					<ng-container errors>
 						@if (logInForm.controls.username.hasError('required')) {
 							<span>Username is required</span>
+						} @else if (logInForm.controls.username.hasError('maxlength')) {
+							<span>Username is too long</span>
 						}
 					</ng-container>
 				</app-form-field>
@@ -27,8 +29,18 @@
 							<span>Password is required</span>
 						} @else if (logInForm.controls.password.hasError('minlength')) {
 							<span>Password must be at least 8 characters</span>
+						} @else if (logInForm.controls.password.hasError('maxlength')) {
+							<span>Password is too long</span>
 						} @else if (logInForm.controls.password.hasError('invalid')) {
 							<span>Password is invalid</span>
+						} @else if (logInForm.controls.password.hasError('uppercase')) {
+							<span>Password must contain at least one uppercase letter</span>
+						} @else if (logInForm.controls.password.hasError('lowerCase')) {
+							<span>Password must contain at least one lowercase letter</span>
+						} @else if (logInForm.controls.password.hasError('number')) {
+							<span>Password must contain at least one number</span>
+						} @else if (logInForm.controls.password.hasError('specialChar')) {
+							<span>Password must contain at least one special character</span>
 						}
 					</ng-container>
 				</app-form-field>

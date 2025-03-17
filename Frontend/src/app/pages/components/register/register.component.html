@@ -65,8 +65,14 @@
 							<span>Password must be at least 8 characters</span>
 						} @else if (registerForm.controls.password.hasError('invalid')) {
 							<span>Password is invalid</span>
-						} @else if (registerForm.controls.password.hasError('maxlength')) {
-							<span>Password is too long</span>
+						} @else if (registerForm.controls.password.hasError('uppercase')) {
+							<span>Password must contain at least one uppercase letter</span>
+						} @else if (registerForm.controls.password.hasError('lowerCase')) {
+							<span>Password must contain at least one lowercase letter</span>
+						} @else if (registerForm.controls.password.hasError('number')) {
+							<span>Password must contain at least one number</span>
+						} @else if (registerForm.controls.password.hasError('specialChar')) {
+							<span>Password must contain at least one special character</span>
 						}
 					</ng-container>
 				</app-form-field>

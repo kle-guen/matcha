@@ -13,6 +13,7 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {ProfileHttpService} from "../../../data/http/profile-http.service";
 import {takeUntil} from "rxjs";
 import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
+import {passwordRulesValidator, passwordValidator} from "../../../shared/validators/password.validator";
 
 @Component({
 	selector: 'app-login',
@@ -69,9 +70,9 @@ export class LoginComponent {
 	 * The login form.
 	 */
 	protected logInForm = this.formBuilder.group({
-		username: [null as string | null, Validators.required],
-		password: [null as string | null, [Validators.required, Validators.minLength(8)]],
-	});
+		username: [null as string | null, Validators.required, Validators.maxLength(50)],
+		password: [null as string | null, [Validators.required, Validators.minLength(8), Validators.maxLength(255)]],
+	}, {validators: passwordRulesValidator()});
 
 	/**
 	 * Logs the user in.
