@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {MatCardImage, MatCardModule} from "@angular/material/card";
 import {ActivatedRoute, Router} from "@angular/router";
 import {MembersHttpService} from "../../../../data/http/members-http.service";
-import {NgClass, NgOptimizedImage} from "@angular/common";
+import {DatePipe, NgClass, NgOptimizedImage} from "@angular/common";
 import {createNgDestroySubject} from "../../../../shared/utils/create-ng-destroy-subject.fn";
 import {takeUntil} from "rxjs";
 import {ButtonComponent} from "../../../../ui/components/button/button.component";
@@ -11,6 +11,7 @@ import {MemberCompleteDto} from "../../../../data/dto/receive/member-complete.dt
 import {MatIcon} from "@angular/material/icon";
 import {GenderEnum} from "../../../../shared/enums/gender.enum";
 import {ImagesHttpService} from "../../../../data/http/images-http.service";
+import {ConnectionService} from "../../../../shared/services/connection.service";
 
 @Component({
 	selector: 'app-member-profile',
@@ -23,12 +24,19 @@ import {ImagesHttpService} from "../../../../data/http/images-http.service";
 		MatChip,
 		MatCardModule,
 		MatIcon,
-		NgClass
+		NgClass,
+		DatePipe
 	],
 	templateUrl: './member-profile.component.html',
 	styleUrl: './member-profile.component.scss'
 })
 export class MemberProfile implements OnInit {
+
+	/**
+	 * The on destroy
+	 * @private
+	 */
+	private readonly onDestroy$ = createNgDestroySubject();
 
 	/**
 	 * The ng destroy subject.
@@ -40,19 +48,25 @@ export class MemberProfile implements OnInit {
 	 * The activated route.
 	 * @private
 	 */
-	private readonly activatedRoute = inject(ActivatedRoute)
+	private readonly activatedRoute = inject(ActivatedRoute);
 
 	/**
 	 * The router.
 	 * @private
 	 */
-	private readonly route = inject(Router)
+	private readonly route = inject(Router);
 
 	/**
 	 * The users http service.
 	 * @private
 	 */
-	private readonly membersHttpService = inject(MembersHttpService)
+	private readonly membersHttpService = inject(MembersHttpService);
+
+	/**
+	 * The connection service.
+	 * @private
+	 */
+	private connectionService = inject(ConnectionService);
 
 	/**
 	 * The gender enum.
@@ -75,11 +89,19 @@ export class MemberProfile implements OnInit {
 
 	indexImg = 0;
 
+	isConnected = false;
+
 	/**
 	 * The on init.
 	 */
 	ngOnInit() {
 		this.member = this.activatedRoute.snapshot.data['member'];
+
+		this.connectionService.connectedMembers$.pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(ids => {
+			this.isConnected = ids.includes(this.member.id);
+		});
 
 		let picturesUrlTmp: (string | null | undefined)[] = [];
 
@@ -92,7 +114,9 @@ export class MemberProfile implements OnInit {
 		picturesUrlTmp = picturesUrlTmp.filter((url) => url !== null && url !== undefined);
 
 		picturesUrlTmp.forEach((imgName) => {
-			this.imagesHttpService.getImage(imgName || '').subscribe({
+			this.imagesHttpService.getImage(imgName || '').pipe(
+				takeUntil(this.onDestroy$)
+			).subscribe({
 				next: (img) => {
 					this.picturesUrl.push(this.imagesHttpService.loadUserImage(img));
 				},
@@ -129,12 +153,13 @@ export class MemberProfile implements OnInit {
 		this.membersHttpService.reportMemberById(this.member.id).pipe(
 			takeUntil(this.ngDestroy$)
 		).subscribe();
+		this.blockMember();
 	}
 
 	nextImg() {
 		this.indexImg++;
 		if (this.indexImg >= this.picturesUrl.length) {
-		 this.indexImg = 0;
+			this.indexImg = 0;
 		}
 	}
 }

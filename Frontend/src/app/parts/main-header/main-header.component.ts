@@ -3,6 +3,7 @@ import {RouterLink} from "@angular/router";
 import {MatIconModule} from "@angular/material/icon";
 import {MatBadgeModule} from "@angular/material/badge";
 import {AuthService} from "../../shared/services/auth-service";
+import {NgClass, NgStyle} from "@angular/common";
 
 @Component({
 	selector: 'app-main-header',
@@ -10,7 +11,9 @@ import {AuthService} from "../../shared/services/auth-service";
 	imports: [
 		RouterLink,
 		MatBadgeModule,
-		MatIconModule
+		MatIconModule,
+		NgStyle,
+		NgClass
 	],
 	templateUrl: './main-header.component.html',
 	styleUrl: './main-header.component.scss'
@@ -30,7 +33,7 @@ export class HeaderComponent {
 	/**
 	 * The number of messages.
 	 */
-	@Input() public messages: number = 1;
+	@Input() public messages: number = 0;
 
 	/**
 	 * Boolean to toggle the menu.

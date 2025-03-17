@@ -1,31 +1,24 @@
-:host {
-  .bubble {
-    max-width: 300px;
-    padding: 4px 20px 4px 20px;
-    border-radius: 20px;
-    position: relative;
-  }
+.bubble {
+  max-width: 300px;
+  padding: 4px 20px 4px 20px;
+  border-radius: 20px;
+  position: relative;
+  margin: 4px;
+  white-space: pre-wrap;
+  @apply break-words
+}
 
-  .left {
-    @apply text-gray-700;
-    border-bottom-left-radius: 0 0;
-    place-self: start;
-    background: lightgrey;
-  }
+.left {
+  @apply text-gray-700;
+  border-bottom-left-radius: 0 0;
+  place-self: start;
+  background: lightgrey;
+}
 
-  .right {
-    @apply text-white;
-    border-top-right-radius: 0 0;
-    place-self: end;
+.right {
+  @apply text-white;
+  border-top-right-radius: 0 0;
+  place-self: end;
 
-    @apply bg-gray-700;
-  }
-
-  @media screen and (max-width: 767px) {
-    --mat-sidenav-container-width: 100%;
-  }
-
-  .drawer-container {
-    height: calc(100vh - 64px);
-  }
+  @apply bg-gray-700;
 }

@@ -7,6 +7,12 @@
 						{{ member.sexe == GenderEnum.MALE ? 'male' : 'female' }}
 					</mat-icon>
 					{{ member.name }}
+						<div class="circle ml-2" [ngClass]="isConnected ? 'bg-green-500' : 'bg-red-500'"></div>
+					@if (!isConnected && member.lastConnection) {
+						<div class="text-[10px] text-gray-500 pl-1">
+							{{ member.lastConnection | date: 'dd/MM/yyyy HH:mm' }}
+						</div>
+					}
 				</div>
 			</mat-card-title>
 			<mat-card-subtitle>{{ member.nickname }}</mat-card-subtitle>
@@ -15,7 +21,7 @@
 			<div class="flex flex-wrap justify-center gap-10 mobile:flex-col ">
 				<mat-card class="flex-grow mobile:w-full desktop:w-[350px] tablet:w-[350px] h-fit p-5 mt-4">
 					<img
-							class="w-full member-img object-contain"
+							class="w-full member-img object-cover"
 							width='500'
 							height='500'
 							[src]="picturesUrl[indexImg] || 'assets/defaut.webp'"
@@ -36,6 +42,10 @@
 									<span class="font-bold">Looking for:
 										a {{ member.lookingFor[0] + ' or a ' + member.lookingFor[1] }}</span>
 								</li>
+								<li>
+									<span class="font-bold">Fame rating: {{member.fameRating}}</span>
+								</li>
+
 							}
 						</ul>
 						<span class="font-bold">Interests:</span>

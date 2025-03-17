@@ -6,6 +6,7 @@ import com.web.matcha.domain.dao.NotificationDAO;
 import com.web.matcha.domain.enums.TypeNotificationEnum;
 import com.web.matcha.mapper.NotificationMapper;
 import com.web.matcha.web.dto.NotificationDto;
+import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.NotFoundResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,8 @@ public class NotificationService {
 
 	private final NotificationMapper notificationMapper;
 
+	private final BlockService blockService;
+
 	public List<NotificationDto> getNotificationsByUserId() {
 		return notificationDAO.getNotificationsByUserId(UserHolder.getUserId())
 				.orElseThrow(() -> new NotFoundResponse("Notifications not found"))
@@ -27,12 +30,17 @@ public class NotificationService {
 				.toList();
 	}
 
-	public void createNotification(Integer userId, NotificationDto notificationDto) {
+	private void createNotification(Integer userId, NotificationDto notificationDto) {
 		notificationDAO.createNotification(userId, notificationMapper.toModel(notificationDto));
 	}
 
 	public void sendNotificationToUser(int memberId, TypeNotificationEnum type, String username) {
-		NotificationDto notification = new NotificationDto(
+		sendNotificationToUser(memberId, type, username, UserHolder.getUserId());
+	}
+
+	public void sendNotificationToUser(int memberId, TypeNotificationEnum type, String username, int senderId) {
+		final NotificationDto notification = new NotificationDto(
+				senderId,
 				type,
 				LocalDateTime.now(),
 				username,

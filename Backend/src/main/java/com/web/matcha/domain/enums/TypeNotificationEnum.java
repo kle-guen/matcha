@@ -5,5 +5,6 @@ public enum TypeNotificationEnum {
 	LIKE,
 	UNLIKE,
 	MATCH,
-	MESSAGE
+	MESSAGE,
+	BLOCK
 }

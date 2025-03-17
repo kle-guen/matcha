@@ -1,15 +1,15 @@
 import {inject, Injectable} from "@angular/core";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, takeUntil} from "rxjs";
 import {NotificationDto} from "../../data/dto/socket/notification.dto";
-import {ChatDto} from "../../data/dto/socket/chat.dto";
 import {NotificationsHttpService} from "../../data/http/notifications-http.service";
 import {NotificationsInterface} from "../../pages/components/notifications/notifications.interface";
 import {TypeNotificationEnum} from "../enums/type-notification.enum";
+import {AbstractService} from "./abstract.service";
 
 @Injectable({
 	providedIn: 'root'
 })
-export class NotificationsService {
+export class NotificationsService extends AbstractService{
 
 	/**
 	 * The NotificationsHttpService.
@@ -37,10 +37,42 @@ export class NotificationsService {
 	public notificationsCount$: Observable<number> = this.notificationsCountSubject.asObservable();
 
 	/**
+	 * The dislike subject.
+	 */
+	public dislikeSubject = new BehaviorSubject<number | null>(null);
+
+	/**
+	 * Observable for the id of the disliker.
+	 */
+	public dislike$: Observable<number | null> = this.dislikeSubject.asObservable();
+
+	/**
+	 * The dislike subject.
+	 */
+	public matchSubject = new BehaviorSubject<NotificationDto | null>(null);
+
+	/**
+	 * Observable for the id of the disliker.
+	 */
+	public match$: Observable<NotificationDto | null> = this.matchSubject.asObservable();
+
+	/**
+	 * The dislike subject.
+	 */
+	public blockSubject = new BehaviorSubject<number>(0);
+
+	/**
+	 * Observable for the id of the disliker.
+	 */
+	public block$: Observable<number> = this.blockSubject.asObservable();
+
+	/**
 	 * Get the notifications.
 	 */
 	public getNotifications(): void {
-		this.notificationHttpService.getNotifications().subscribe(notifications => {
+		this.notificationHttpService.getNotifications().pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(notifications => {
 			const processedNotification = notifications.map(this.processNotification).filter(notification => notification !== null) as NotificationsInterface[];
 			this.notificationsSubject.next(processedNotification);
 			this.notificationsCountSubject.next(processedNotification.filter(notification => !notification.isRead).length);
@@ -53,6 +85,17 @@ export class NotificationsService {
 	 */
 	public addNotification(notification: NotificationDto): void {
 		const newNotification = this.processNotification(notification);
+		switch (notification.type) {
+			case TypeNotificationEnum.MATCH:
+				this.matchSubject.next(notification);
+				break;
+			case TypeNotificationEnum.UNLIKE:
+				this.dislikeSubject.next(notification.userId);
+				break;
+			case TypeNotificationEnum.BLOCK:
+				this.blockSubject.next(notification.userId);
+				break;
+		}
 		if (newNotification) {
 			this.notificationsSubject.next([newNotification, ...this.notificationsSubject.value]);
 			this.notificationsCountSubject.next(this.notificationsCountSubject.value + 1);

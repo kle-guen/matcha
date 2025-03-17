@@ -17,14 +17,19 @@
 					<ng-container errors>
 						@if (registerForm.controls.firstName.hasError('required')) {
 							<span>Firstname is required</span>
+						} @else if (registerForm.controls.firstName.hasError('maxlength')) {
+							<span>Firstname is too long</span>
 						}
 					</ng-container>
 				</app-form-field>
 
-				<app-form-field class="flex flex-grow w-full" label="LastName" [control]="registerForm.controls.lastName">
+				<app-form-field class="flex flex-grow w-full" label="LastName"
+								[control]="registerForm.controls.lastName">
 					<ng-container errors>
 						@if (registerForm.controls.lastName.hasError('required')) {
-							<span>LastName is required</span>
+							<span>Lastname is required</span>
+						} @else if (registerForm.controls.lastName.hasError('maxlength')) {
+							<span>Lastname is too long</span>
 						}
 					</ng-container>
 				</app-form-field>
@@ -34,6 +39,8 @@
 					<ng-container errors>
 						@if (registerForm.controls.username.hasError('required')) {
 							<span>Username is required</span>
+						} @else if (registerForm.controls.username.hasError('maxlength')) {
+							<span>Username is too long</span>
 						}
 					</ng-container>
 				</app-form-field>
@@ -43,6 +50,8 @@
 							<span>Email is required</span>
 						} @else if (registerForm.controls.email.hasError('email')) {
 							<span>Email is invalid</span>
+						} @else if (registerForm.controls.email.hasError('maxlength')) {
+							<span>Email is too long</span>
 						}
 					</ng-container>
 				</app-form-field>
@@ -56,6 +65,14 @@
 							<span>Password must be at least 8 characters</span>
 						} @else if (registerForm.controls.password.hasError('invalid')) {
 							<span>Password is invalid</span>
+						} @else if (registerForm.controls.password.hasError('uppercase')) {
+							<span>Password must contain at least one uppercase letter</span>
+						} @else if (registerForm.controls.password.hasError('lowerCase')) {
+							<span>Password must contain at least one lowercase letter</span>
+						} @else if (registerForm.controls.password.hasError('number')) {
+							<span>Password must contain at least one number</span>
+						} @else if (registerForm.controls.password.hasError('specialChar')) {
+							<span>Password must contain at least one special character</span>
 						}
 					</ng-container>
 				</app-form-field>

@@ -1,11 +1,9 @@
 package com.web.matcha.service;
 
 import com.web.matcha.config.Env;
-import com.web.matcha.config.UserHolder;
 import com.web.matcha.domain.dao.EmailTokenDAO;
 import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.enums.EmailTokenTypeEnum;
-import com.web.matcha.domain.enums.TypeNotificationEnum;
 import com.web.matcha.domain.model.EmailTokenModel;
 import io.github.cdimascio.dotenv.Dotenv;
 import io.javalin.http.MisdirectedRequestResponse;
@@ -15,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 
 import java.util.Objects;
@@ -82,17 +81,12 @@ public class EmailService {
 			final Integer userId = getUserIdByEmail(receivingEmail);
 			final String emailToken = addEmailToken(userId, type);
 
-			Email email = new SimpleEmail();
-			email.setHostName(env.get("SMTP_HOSTNAME"));
-			email.setSmtpPort(Integer.parseInt(Objects.requireNonNull(env.get("SMTP_PORT"))));
-			email.setAuthenticator(new DefaultAuthenticator(env.get("SMTP_USERNAME"), env.get("SMTP_PASSWORD")));
-			email.setFrom("noreplymatcha42angouleme@gmail.com");
+			Email email = getConfEmail();
 
 			if (type == EmailTokenTypeEnum.VERIFY_EMAIL) {
 				email.setSubject("Matcha - Email Verification");
 				email.setMsg("Please click the following link to verify your email: " + env.get("FRONT_URL") + "/verify-email?token=" + emailToken);
-			}
-			else {
+			} else {
 				email.setSubject("Matcha - Reset Password");
 				email.setMsg("Please click the following link to reset your password: " + env.get("FRONT_URL") + "/forgot-password?token=" + emailToken);
 			}
@@ -101,7 +95,40 @@ public class EmailService {
 			email.send();
 
 		} catch (Exception e) {
-			log.error("Error sending email",e);
+			log.error("Error sending email", e);
+			throw new MisdirectedRequestResponse("Error sending email: " + e.getMessage());
+		}
+	}
+
+	public Email getConfEmail() throws EmailException {
+		Dotenv env = Env.getDotenv();
+
+		Email email = new SimpleEmail();
+		email.setHostName(env.get("SMTP_HOSTNAME"));
+		email.setSmtpPort(Integer.parseInt(Objects.requireNonNull(env.get("SMTP_PORT"))));
+		email.setAuthenticator(new DefaultAuthenticator(env.get("SMTP_USERNAME"), env.get("SMTP_PASSWORD")));
+		email.setFrom("noreplymatcha42angouleme@gmail.com");
+
+		return email;
+	}
+
+	/**
+	 * Send the verification email
+	 *
+	 * @param userId
+	 */
+	public void reportUser(int userId) {
+		try {
+			Email email = getConfEmail();
+
+			email.setSubject("Matcha - User Reported");
+			email.setMsg("User with id " + userId + " has been reported as a fake account.");
+
+			email.addTo("paulma16100@gmail.com");
+			email.send();
+
+		} catch (Exception e) {
+			log.error("Error sending email", e);
 			throw new MisdirectedRequestResponse("Error sending email: " + e.getMessage());
 		}
 	}

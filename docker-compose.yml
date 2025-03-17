@@ -14,6 +14,7 @@ services:
       - my_network
     volumes:
       - .env:/usr/src/app/.env
+      - ./uploads:/usr/src/app/uploads
 
   frontend:
     build:
@@ -43,7 +44,7 @@ services:
       - my_network
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./Backend/src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./Backend/src/main/resources/sql:/docker-entrypoint-initdb.d
 
 volumes:
   postgres_data:

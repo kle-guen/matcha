@@ -1,8 +1,9 @@
 package com.web.matcha.config;
 
+import com.web.matcha.domain.dao.UserDAO;
 import com.web.matcha.domain.utils.JwtUtils;
+import com.web.matcha.web.dto.MessageDto;
 import com.web.matcha.web.dto.NotificationDto;
-import com.web.matcha.web.ws.dto.WsDataConnection;
 import com.web.matcha.web.ws.dto.WsDto;
 import io.javalin.Javalin;
 import io.javalin.websocket.WsCloseContext;
@@ -11,6 +12,8 @@ import io.javalin.websocket.WsConnectContext;
 import io.javalin.websocket.WsContext;
 import io.javalin.websocket.WsErrorContext;
 import io.javalin.websocket.WsMessageContext;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -20,11 +23,16 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
+@RequiredArgsConstructor
 public class WebSocketConfig {
 
+	@Getter
 	private static final Map<String, WsContext> clientConnections = new ConcurrentHashMap<>();
 
+	@Getter
 	private static final Map<Integer, List<String>> sessionToUser = new ConcurrentHashMap<>();
+
+	private final UserDAO userDAO;
 
 	public void configure(Javalin app) {
 		app.ws("/ws", this::test);
@@ -51,18 +59,21 @@ public class WebSocketConfig {
 		}
 
 		Optional.ofNullable(sessionToUser.get(clientId))
-				.ifPresentOrElse(sessionsUser -> sessionsUser.add(ctx.sessionId()),
+				.ifPresentOrElse(sessionsUser -> sessionsUser.add(ctx.sessionId()), //if
 						() -> {
+							sessionToUser.forEach((k, v) -> {  //else
+								v.forEach(sessionId -> {
+									Optional.ofNullable(clientConnections.get(sessionId))
+											.ifPresent(c -> c.send(WsDto.builder()
+													.type("CONNECTION")
+													.data(clientId)
+													.build()));
+								});
+							});
 							sessionToUser.put(clientId, new ArrayList<>(List.of(ctx.sessionId())));
-							//TODO notifier les users l'user clientId s'est connecté
 						});
 		clientConnections.put(ctx.sessionId(), ctx);
 		log.info("Client {} a ouvert une session WebSocket", clientId);
-		ctx.send(WsDto.builder()
-				.data(WsDataConnection.builder()
-						.message("Connexion WebSocket établie")
-						.build())
-				.build());
 	}
 
 	void onMessage(final WsMessageContext ctx) {
@@ -72,9 +83,10 @@ public class WebSocketConfig {
 				.findFirst()
 				.orElse(null);
 		if (clientId != null) {
-			log.info("Message reçu de {} : {}", clientId, ctx.message());
-		} else {
-			log.info("Message reçu d'un client inconnu : {}", ctx.sessionId());
+			ctx.send(WsDto.builder()
+					.type("PONG")
+					.data("Message reçu")
+					.build());
 		}
 	}
 
@@ -82,15 +94,23 @@ public class WebSocketConfig {
 		clientConnections.remove(ctx.sessionId());
 		sessionToUser.forEach((k, v) -> {
 			if (v.remove(ctx.sessionId()) && v.isEmpty()) {
-				//TODO notifier les users l'user k s'est déconnecté
 				sessionToUser.remove(k);
+				sessionToUser.forEach((k2, v2) -> {
+					v2.forEach(sessionId -> {
+						Optional.ofNullable(clientConnections.get(sessionId))
+								.ifPresent(c -> c.send(WsDto.builder()
+										.type("DISCONNECTION")
+										.data(k)
+										.build()));
+					});
+				});
 				log.info("Client déconnecté : ID={}", k);
+				userDAO.updateLastConnection(k);
 			}
 		});
 	}
 
 	void onError(final WsErrorContext ctx) {
-//		log.error("Erreur WebSocket pour " + ctx.getSessionId() + " : " + ctx.error());
 	}
 
 	public static void sendNotificationToUser(Integer userId, NotificationDto notification) {
@@ -100,6 +120,26 @@ public class WebSocketConfig {
 							.ifPresent(ctx -> ctx.send(WsDto.builder()
 									.data(notification)
 									.type("NOTIFICATION")
+									.build()));
+				}));
+	}
+
+	public static void sendMessageToUser(Integer userId, MessageDto message) {
+		Optional.ofNullable(sessionToUser.get(userId))
+				.ifPresent(sessions -> sessions.forEach(sessionId -> {
+					Optional.ofNullable(clientConnections.get(sessionId))
+							.ifPresent(ctx -> ctx.send(WsDto.builder()
+									.data(message)
+									.type("CHAT")
+									.build()));
+				}));
+		message.setRead(true);
+		Optional.ofNullable(sessionToUser.get(message.senderId))
+				.ifPresent(sessions -> sessions.forEach(sessionId -> {
+					Optional.ofNullable(clientConnections.get(sessionId))
+							.ifPresent(ctx -> ctx.send(WsDto.builder()
+									.data(message)
+									.type("CHAT")
 									.build()));
 				}));
 	}

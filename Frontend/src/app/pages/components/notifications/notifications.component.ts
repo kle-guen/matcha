@@ -9,6 +9,8 @@ import {NotificationDto} from "../../../data/dto/socket/notification.dto";
 import {NotificationsInterface} from "./notifications.interface";
 import {ActivatedRoute} from "@angular/router";
 import {NotificationsService} from "../../../shared/services/notifications-service";
+import {takeUntil} from "rxjs";
+import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
 
 @Component({
 	selector: 'app-notifications',
@@ -23,7 +25,13 @@ import {NotificationsService} from "../../../shared/services/notifications-servi
 	templateUrl: './notifications.component.html',
 	styleUrl: './notifications.component.scss'
 })
-export class NotificationsComponent implements OnInit, OnDestroy {
+export class NotificationsComponent implements OnInit {
+
+	/**
+	 * The on destroy
+	 * @private
+	 */
+	private readonly onDestroy$ = createNgDestroySubject();
 
 	/**
 	 * The socket service.
@@ -49,19 +57,15 @@ export class NotificationsComponent implements OnInit, OnDestroy {
 	 * @inheritDoc
 	 */
 	public ngOnInit(): void {
-		this.notificationsService.notifications$.subscribe(notifications => {
+		this.notificationsService.notifications$.pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(notifications => {
 			this.hasOldNotifications = notifications.some(notification => notification.isRead);
 			this.hasUnreadNotifications = notifications.some(notification => !notification.isRead);
 			this.notificationsToDisplay = notifications.sort((a, b) => {
 				return new Date(b.date).getTime() - new Date(a.date).getTime();
 			});
 		});
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public ngOnDestroy(): void {
 		this.notificationsService.resetNotificationsCount();
 	}
 }

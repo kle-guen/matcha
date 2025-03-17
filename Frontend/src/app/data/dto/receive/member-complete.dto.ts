@@ -14,4 +14,8 @@ export class MemberCompleteDto extends MemberDto {
 
 	liked!: boolean;
 
+	fameRating!: number;
+
+	lastConnection?: Date;
+
 }

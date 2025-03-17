@@ -5,11 +5,13 @@ import {FormFieldComponent} from "../../../ui/components/form-field/form-field.c
 import {MatCard, MatCardContent, MatCardHeader, MatCardSubtitle, MatCardTitle} from "@angular/material/card";
 import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
-import {passwordMatchValidator} from "../../../shared/validators/passwordMatch.validator";
+import {passwordRulesValidator, passwordValidator} from "../../../shared/validators/password.validator";
 import {RegisterDto} from "../../../data/dto/send/register-dto";
 import {MatError} from "@angular/material/form-field";
 import {UsersHttpService} from "../../../data/http/users-http.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {takeUntil} from "rxjs";
+import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
 
 @Component({
 	selector: 'app-register',
@@ -31,6 +33,12 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 	styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
+
+	/**
+	 * The on destroy
+	 * @private
+	 */
+	private readonly onDestroy$ = createNgDestroySubject();
 
 	/**
 	 * The error message.
@@ -61,13 +69,13 @@ export class RegisterComponent {
 	 * The register form.
 	 */
 	protected registerForm = this.formBuilder.group({
-			firstName: [null as string | null, Validators.required],
-			lastName: [null as string | null, Validators.required],
-			username: [null as string | null, Validators.required],
-			email: [null as string | null, [Validators.required, Validators.email]],
-			password: [null as string | null, [Validators.required, Validators.minLength(8)]],
-			confirmPassword: [null as string | null, [Validators.required, Validators.minLength(8)]],
-		}, {validators: passwordMatchValidator()}
+			firstName: [null as string | null, [Validators.required, Validators.maxLength(50)]],
+			lastName: [null as string | null, [Validators.required, Validators.maxLength(50)]],
+			username: [null as string | null, [Validators.required, Validators.maxLength(50)]],
+			email: [null as string | null, [Validators.required, Validators.email, Validators.maxLength(255)]],
+			password: [null as string | null, [Validators.required, Validators.minLength(8), Validators.maxLength(255)]],
+			confirmPassword: [null as string | null, Validators.required],
+		}, {validators: [passwordValidator(), passwordRulesValidator()]}
 	);
 
 	/**
@@ -81,7 +89,9 @@ export class RegisterComponent {
 			email: this.registerForm.get('email')?.value as string,
 			password: this.registerForm.get('password')?.value as string
 		};
-		this.usersHttpService.createUser(payload).subscribe(success => {
+		this.usersHttpService.createUser(payload).pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe(success => {
 			if (success) {
 				this.snackBar.open('User created successfully.', 'Close', {duration: 3000});
 				this._router.navigate(['/login']);

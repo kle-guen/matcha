@@ -11,19 +11,29 @@
 				matInput
 				rows="4"
 				data-limit-rows="true"
-				data-limit-rows-max="4"
+				data-limit-rows-max="10"
 				maxlength="400"
 				[placeholder]="label"
 				[formControl]="control"
+				(input)="limitRows($event)"
 		></textarea>
 	} @else {
-		<input
-				matInput
-				[placeholder]="label"
-				[formControl]="control"
-				[type]="type"
-				[value]="value"
-		>
+		<div class="flex justify-between">
+			<input
+					matInput
+					[placeholder]="label"
+					[formControl]="control"
+					[type]="type"
+					[value]="value"
+					[autocomplete]="autocomplete"
+			>
+			@if (icon) {
+				<mat-icon class="text-gray-700 cursor-pointer hover:text-gray-500"
+						  (click)="sendEvent($event)">
+					{{ icon }}
+				</mat-icon>
+			}
+		</div>
 	}
 	@if (control.invalid) {
 		<mat-error>

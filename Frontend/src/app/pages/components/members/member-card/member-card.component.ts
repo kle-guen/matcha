@@ -7,6 +7,8 @@ import {GenderEnum} from "../../../../shared/enums/gender.enum";
 import {NgClass} from "@angular/common";
 import {MatIcon} from "@angular/material/icon";
 import {ImagesHttpService} from "../../../../data/http/images-http.service";
+import {takeUntil} from "rxjs";
+import {createNgDestroySubject} from "../../../../shared/utils/create-ng-destroy-subject.fn";
 
 @Component({
 	selector: 'app-member-card',
@@ -21,6 +23,12 @@ import {ImagesHttpService} from "../../../../data/http/images-http.service";
 	styleUrl: './member-card.component.scss'
 })
 export class MemberCardComponent implements OnInit {
+
+	/**
+	 * The on destroy
+	 * @private
+	 */
+	private readonly onDestroy$ = createNgDestroySubject();
 
 	/**
 	 * The router.
@@ -40,16 +48,15 @@ export class MemberCardComponent implements OnInit {
 	@Input({required: true})
 	member!: MemberDto;
 
+	profilePicture: string | null = null;
+
 	ngOnInit() {
-		this.imagesHttpService.getImage(this.member.pictures?.profilePicture || '').subscribe({
+		this.imagesHttpService.getImage(this.member.pictures?.profilePicture || '').pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe({
 			next: (img) => {
 				if (this.member.pictures) {
-					this.member.pictures.profilePicture = this.imagesHttpService.loadUserImage(img);
-				}
-			},
-			error: () => {
-				if (this.member.pictures) {
-					this.member.pictures.profilePicture = null;
+					this.profilePicture = this.imagesHttpService.loadUserImage(img);
 				}
 			}
 		});

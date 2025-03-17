@@ -22,13 +22,13 @@ public class AuthController extends AbstractController {
 
 	private void getTokens(final Context ctx) {
 		final UserDto userDto = ctx.bodyAsClass(UserDto.class);
-		final String email = userDto.getEmail();
+		final String username = userDto.getUsername();
 		final String password = userDto.getPassword();
-		if (email == null || password == null) {
-			throw new BadRequestResponse("Invalid email or password");
+		if (username == null || password == null) {
+			throw new BadRequestResponse("Invalid username or password");
 		}
 
-		final String token = authService.authenticate(email, password);
+		final String token = authService.authenticate(username, password);
 		ctx.status(HttpStatus.ACCEPTED)
 				.contentType("application/json")
 				.json(Collections.singletonMap("token", token));

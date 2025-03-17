@@ -1,6 +1,7 @@
 <mat-drawer-container class="h-full">
-	<mat-drawer #drawer class="mobile:w-full" mode="over">
-		<div class="p-8 flex flex-col justify-center items-center w-full gap-4">
+	<mat-drawer #drawer style="height: 100vh" class="mobile:w-full" mode="over">
+		<mat-icon class="cursor-pointer absolute right-2 top-2" (click)="drawer.toggle()">close</mat-icon>
+		<div class="p-8 flex flex-col justify-center items-center w-full gap-4 mt-5">
 			<div class="flex justify-between items-center w-full">
 				<mat-label>Age:</mat-label>
 				<mat-slider min="18" max="99" discrete color="primary">
@@ -57,7 +58,6 @@
 		</div>
 
 	</mat-drawer>
-
 	<div class="page-wrapper pb-4">
 		<h1 class="text-center pt-4">Research members</h1>
 		<div class="my-4 flex">
@@ -69,10 +69,18 @@
 					type="tertiary"
 			/>
 			<mat-chip-listbox>
-				<mat-chip-option (click)="sortList(SortResearchMembersEnum.AGE)" [selected]="sortBy === SortResearchMembersEnum.AGE">Age</mat-chip-option>
-				<mat-chip-option (click)="sortList(SortResearchMembersEnum.DISTANCE)" [selected]="sortBy === SortResearchMembersEnum.DISTANCE">Distance</mat-chip-option>
-				<mat-chip-option (click)="sortList(SortResearchMembersEnum.FAME_RATING)" [selected]="sortBy === SortResearchMembersEnum.FAME_RATING">Fame rating</mat-chip-option>
-				<mat-chip-option (click)="sortList(SortResearchMembersEnum.COMMON_INTERESTS)" [selected]="sortBy === SortResearchMembersEnum.COMMON_INTERESTS">Common tags</mat-chip-option>
+				<mat-chip-option (click)="sortList(SortResearchMembersEnum.AGE)"
+								 [selected]="sortBy === SortResearchMembersEnum.AGE">Age
+				</mat-chip-option>
+				<mat-chip-option (click)="sortList(SortResearchMembersEnum.DISTANCE)"
+								 [selected]="sortBy === SortResearchMembersEnum.DISTANCE">Distance
+				</mat-chip-option>
+				<mat-chip-option (click)="sortList(SortResearchMembersEnum.FAME_RATING)"
+								 [selected]="sortBy === SortResearchMembersEnum.FAME_RATING">Fame rating
+				</mat-chip-option>
+				<mat-chip-option (click)="sortList(SortResearchMembersEnum.COMMON_INTERESTS)"
+								 [selected]="sortBy === SortResearchMembersEnum.COMMON_INTERESTS">Common tags
+				</mat-chip-option>
 			</mat-chip-listbox>
 		</div>
 		<div class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-4">
@@ -80,6 +88,11 @@
 				<app-member-card [member]="user"/>
 			}
 		</div>
+		<div class="flex justify-between mt-4">
+			<app-button label="< Previous" type="secondary" [disabled]="page <= 1" (clicked)="previousPage()"/>
+			<app-button label="Next >" type="secondary" [disabled]="page >= nbPages" (clicked)="nextPage()"/>
+		</div>
 	</div>
+	<app-footer/>
 
 </mat-drawer-container>

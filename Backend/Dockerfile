@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY target/matcha-1.0-SNAPSHOT.jar ./app.jar
 
-COPY src/main/resources/init.sql ./init.sql
+RUN mkdir -p /usr/src/app/uploads
 
 EXPOSE 7000
 

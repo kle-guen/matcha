@@ -17,6 +17,7 @@ import {VerifyEmailComponent} from "./pages/components/verify-email/verify-email
 import {NotificationsComponent} from "./pages/components/notifications/notifications.component";
 import {NotificationsResolver} from "./data/resolvers/notifications.resolver";
 import {memberProfileResolver} from "./data/resolvers/members-profile.resolver";
+import {MatchesResolver} from "./data/resolvers/matches.resolver";
 import {ForgotPasswordComponent} from "./pages/components/forgot-password/forgot-password.component";
 
 export const routes: Routes = [
@@ -88,10 +89,9 @@ export const routes: Routes = [
 			{
 				path: 'chat',
 				component: ChatComponent,
-				// resolve: {
-				// 	matchs: MatchsResolver,
-				// 	messages: MessagesResolver
-				// }
+				resolve: {
+					matches: MatchesResolver
+				}
 			},
 			{
 				path: 'update-profile',

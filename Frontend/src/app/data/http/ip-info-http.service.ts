@@ -1,11 +1,12 @@
 import {inject, Injectable} from "@angular/core";
-import {Observable} from "rxjs";
+import {Observable, takeUntil} from "rxjs";
 import {HttpClient} from "@angular/common/http";
+import {AbstractService} from "../../shared/services/abstract.service";
 
 @Injectable({
 	providedIn: "root"
 })
-export class IpInfoHttpService {
+export class IpInfoHttpService extends AbstractService {
 
 	/**
 	 * The http client.
@@ -21,7 +22,9 @@ export class IpInfoHttpService {
 	 */
 	getIpAddress(): Observable<any> {
 		return new Observable<any>(observer => {
-			this.http.get(this.apiUrl).subscribe((data: any) => {
+			this.http.get(this.apiUrl).pipe(
+				takeUntil(this.onDestroy$)
+			).subscribe((data: any) => {
 				observer.next(data);
 				observer.complete();
 			});

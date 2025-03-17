@@ -15,9 +15,9 @@ public class AuthService {
 		this.userDAO = userDAO;
 	}
 
-	public String authenticate(String email, String password) {
-		final UserModel user = userDAO.getUserByEmail(email, password)
-				.orElseThrow(() -> new NotFoundResponse("Unknown email."));
+	public String authenticate(String username, String password) {
+		final UserModel user = userDAO.getUserByUsername(username, password)
+				.orElseThrow(() -> new NotFoundResponse("Unknown username."));
 
 		if (!BCrypt.checkpw(password, user.getPassword())) {
 			throw new UnauthorizedResponse("Invalid password");

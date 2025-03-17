@@ -49,7 +49,7 @@ public class UserDAO {
 								genderCondition,
 								StringUtils.isNotBlank(interestsCondition) ? "public.interests.code IN (" + interestsCondition + ") " : null,
 								researchMembersDto.getAgeMin() != null ? "birthdate < get_date_minus_years(?)" : null,
-								researchMembersDto.getAgeMax() != null ? "birthdate > get_date_minus_years(?)" : null, // TODO: A REVOIR
+								researchMembersDto.getAgeMax() != null ? "birthdate > get_date_minus_years(?)" : null,
 								researchMembersDto.getFameRatingMin() != null ? "calculate_fame_rating(users.id) >= ?" : null,
 								researchMembersDto.getDistanceMax() != null ? "calculate_distance(latitude, longitude, ?, ?) <= ?" : null)
 						.filter(StringUtils::isNotBlank)
@@ -79,7 +79,7 @@ public class UserDAO {
 				stmt.setInt(i++, researchMembersDto.getAgeMin());
 			}
 			if (researchMembersDto.getAgeMax() != null) {
-				stmt.setInt(i++, researchMembersDto.getAgeMax());
+				stmt.setInt(i++, researchMembersDto.getAgeMax() + 1);
 			}
 			if (researchMembersDto.getFameRatingMin() != null) {
 				stmt.setFloat(i++, researchMembersDto.getFameRatingMin());
@@ -123,19 +123,49 @@ public class UserDAO {
 		return Optional.empty();
 	}
 
-	public Optional<UserModel> getUserByEmail(final String email, final String password) {
-		String sql = "SELECT * FROM users WHERE email = ?";
+	public Optional<UserModel> getUserByUsername(final String username, final String password) {
+		String sql = "SELECT * FROM users WHERE username = ?";
 
 		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
 		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-			stmt.setString(1, email);
+			stmt.setString(1, username);
 			return Optional.ofNullable(extractUser(stmt.executeQuery()));
 
 		} catch (SQLException e) {
 			log.error("Error while getting user by email", e);
 		}
 		return Optional.empty();
+	}
+
+	public List<UserModel> getMatches(final int userId) {
+		String sql = "SELECT u.* FROM users u "
+				+ "JOIN likes l1 ON u.id = l1.liked_id "
+				+ "JOIN likes l2 ON u.id = l2.liker_id "
+				+ "WHERE l1.liker_id = ? "
+				+ "AND l2.liked_id = ? "
+				+ "AND l1.disliked = false "
+				+ "AND l2.disliked = false "
+				+ "AND u.id <> ?";
+
+		final List<UserModel> users = new ArrayList<>();
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, userId);
+			stmt.setInt(2, userId);
+			stmt.setInt(3, userId);
+			final ResultSet rs = stmt.executeQuery();
+			UserModel u = extractUser(rs);
+			while (u != null) {
+				users.add(u);
+				u = extractUser(rs);
+			}
+		} catch (SQLException e) {
+			log.error("Error while getting matches", e);
+		}
+		return users;
 	}
 
 
@@ -303,5 +333,19 @@ public class UserDAO {
 			log.error("Error while getting user id by email", e);
 		}
 		return Optional.empty();
+	}
+
+	public void updateLastConnection(int userId) {
+		final String sql = "UPDATE users SET last_login_at = now() WHERE id = ?";
+
+		try (final Connection conn = DatabaseConfig.getDataSource().getConnection();
+		     final PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+			stmt.setInt(1, userId);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			log.error("Error while updating last connection", e);
+		}
 	}
 }

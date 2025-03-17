@@ -1,22 +1,82 @@
-<div class="page-wrapper">
-	<mat-drawer-container class="drawer-container flex flex-grow justify-start">
-		<mat-drawer #drawer mode="side" class="chat-drawer flex flex-grow">
-			<div class="drawer-head flex flex-grow justify-between">
-				<h1>Users</h1>
-				<mat-icon (click)="drawer.toggle()">close</mat-icon>
-			</div>
-			<div class="drawer-content">
-				<app-users-list></app-users-list>
-			</div>
-		</mat-drawer>
-
-		<div class="sidenav-content flex flex-grow flex-col h-full">
-			<button type="button" mat-button (click)="drawer.toggle()">
-				Toggle sidenav
-			</button>
-			<app-message-list class="flex flex-grow"></app-message-list>
-			<app-message-input></app-message-input>
+<mat-drawer-container class="h-full">
+	<mat-drawer #drawer class="mobile:w-full" mode="over">
+		<div class="p-8 flex flex-col items-center w-full gap-4 relative"
+			 [ngClass]="matches.length === 0 ? 'h-full' : ''">
+			<mat-icon class="absolute right-1 top-1 cursor-pointer" (click)="drawer.toggle()">close</mat-icon>
+			@for (match of matches; track match.id) {
+					<mat-card appearance="outlined"
+							  class="w-full mat-card-chat cursor-pointer line-clamp-1 hover:bg-gray-200"
+							  [ngClass]="matchSelected?.id == match.id ? 'bg-green-150' : ''"
+							  (click)="selectUser(match.id)">
+						<mat-card-content>
+							<div class="w-[250px] overflow-hidden text-ellipsis">
+								{{ match.username }}
+							</div>
+						</mat-card-content>
+					</mat-card>
+			}
+			@if (matches.length === 0) {
+				<div class="flex flex-col justify-center items-center h-full">
+					<mat-icon class="text-gray-500">chat</mat-icon>
+					<p class="text-gray-500">No matches yet</p>
+				</div>
+			}
 		</div>
+	</mat-drawer>
+	<div class="h-full flex flex-col">
+		<div class="page-wrapper flex-grow">
+			<div class="h-full flex flex-col relative">
+				@if (matchSelected) {
+					<h3 class="text-xl flex justify-center items-center font-bold">
+						<mat-icon (click)="drawer.toggle()" class="absolute cursor-pointer left-0">
+							arrow_back
+						</mat-icon>
+						{{ matchSelected.username }}
+					</h3>
+				}
+				<div #textareaContainer class="flex flex-col flex-grow overflow-auto h-[1px]">
+					@if (matchSelected) {
+						@for (message of messages; track message) {
 
-	</mat-drawer-container>
-</div>
+							<div class="bubble" [ngClass]="message.receiverId === matchSelected.id ? 'right' : 'left'">
+								{{ message.content }}
+							</div>
+						}
+					} @else {
+						<div class="flex flex-col justify-center items-center h-full">
+							<div class="cursor-pointer flex flex-col justify-center items-center"
+								 (click)="drawer.toggle()">
+								<mat-icon class="text-gray-500">chat</mat-icon>
+								<p class="text-gray-500">Select a user to start chatting</p>
+							</div>
+						</div>
+					}
+				</div>
+				<mat-form-field class="w-full" appearance="outline">
+					<div class="flex justify-between">
+						<textarea
+								matInput
+								placeholder="Tape ici..."
+								style="resize: none; overflow: hidden"
+								maxlength="500"
+								[formControl]="messageControl"
+								[rows]="1"
+								(input)="onInput($event)"
+								(paste)="onInput($event)"
+								(keydown.enter)="onEnter($event)"
+						></textarea>
+						<mat-icon
+								class="text-gray-700 cursor-pointer hover:text-gray-500 self-end"
+								(click)="sendMessage()"
+						>
+							send
+						</mat-icon>
+					</div>
+				</mat-form-field>
+			</div>
+		</div>
+		<app-footer/>
+
+	</div>
+
+</mat-drawer-container>

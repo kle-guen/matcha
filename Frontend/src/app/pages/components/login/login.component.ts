@@ -11,6 +11,9 @@ import {AuthHttpService} from "../../../data/http/auth-http.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ProfileHttpService} from "../../../data/http/profile-http.service";
+import {takeUntil} from "rxjs";
+import {createNgDestroySubject} from "../../../shared/utils/create-ng-destroy-subject.fn";
+import {passwordRulesValidator, passwordValidator} from "../../../shared/validators/password.validator";
 
 @Component({
 	selector: 'app-login',
@@ -29,6 +32,12 @@ import {ProfileHttpService} from "../../../data/http/profile-http.service";
 	styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+
+	/**
+	 * The on destroy
+	 * @private
+	 */
+	private readonly onDestroy$ = createNgDestroySubject();
 
 	/**
 	 * The error message.
@@ -61,23 +70,27 @@ export class LoginComponent {
 	 * The login form.
 	 */
 	protected logInForm = this.formBuilder.group({
-		email: [null as string | null, [Validators.required, Validators.email]],
-		password: [null as string | null, [Validators.required, Validators.minLength(8)]],
-	});
+		username: [null as string | null, Validators.required, Validators.maxLength(50)],
+		password: [null as string | null, [Validators.required, Validators.minLength(8), Validators.maxLength(255)]],
+	}, {validators: passwordRulesValidator()});
 
 	/**
 	 * Logs the user in.
 	 */
 	public logIn(): void {
-		const email = this.logInForm.get('email')?.value;
+		const username = this.logInForm.get('username')?.value;
 		const password = this.logInForm.get('password')?.value;
-		if (!email || !password) return;
-		this.authHttpService.logIn(email, password).subscribe({
+		if (!username || !password) return;
+		this.authHttpService.logIn(username, password).pipe(
+			takeUntil(this.onDestroy$)
+		).subscribe({
 			next: (success) => {
 				if (success) {
 					this.snackBar.open('Logged in successfully', 'Close', {duration: 3000});
 
-					this.profileHttpService.isProfileComplete().subscribe({
+					this.profileHttpService.isProfileComplete().pipe(
+						takeUntil(this.onDestroy$)
+					).subscribe({
 						next: (isComplete) => {
 							if (isComplete) {
 								this.router.navigateByUrl('/members');
@@ -90,7 +103,7 @@ export class LoginComponent {
 						}
 					});
 				} else {
-					this.error = 'Invalid email or password';
+					this.error = 'Invalid username or password';
 				}
 			},
 			error: (error: HttpErrorResponse) => {
